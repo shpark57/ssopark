@@ -21,18 +21,8 @@ import UserModify from './pages/user/modify/UserModify';        //유저 정보 
 
 import {BrowserRouter as Router, Routes, Route  } from 'react-router-dom'
 
-import axios from 'axios'
-import { useEffect } from 'react';
-
-
 function App() {
 
-  const callApi = async () => {
-    axios.get("/api").then((res) => console.log(alert(res.data.id)));
-  }
-  useEffect(() => {
-    callApi();
-  }, []);
 
   //sessionStorage를 이용한 로그인처리
   // loggedIn 가 true 면 정상 페이지들을 보여주고

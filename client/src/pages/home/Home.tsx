@@ -7,8 +7,11 @@ import WidgetLg from 'src/components/widgetLg/WidgetLg'
 import Button from '@mui/material/Button';
 import Grid from '@mui/material/Grid';
 import useModal from "src/components/modal/hooks/useModal";
+import axios from 'axios'
+import { useEffect } from 'react';
 
 export default function Home(){
+
 
     //import useModal from "src/components/modal/hooks/useModal";
     const { showModal } = useModal();   
@@ -55,7 +58,14 @@ export default function Home(){
           }
         }
       });
+    };  
+
+    const handleClickRestTest = () => {
+          axios.get("/api").then((res) => console.log(alert(res.data.id)))
     };
+
+
+    
 
     return(
         <div className='home'>
@@ -81,6 +91,11 @@ export default function Home(){
                 sx={{  mr: 3, ml: 3  }}
                 onClick={handleClickDefaultModal}
             >Default</Button>
+            <Button 
+                variant="contained" 
+                sx={{  mr: 3, ml: 3  }}
+                onClick={handleClickRestTest}
+            >Rest API TEST</Button>
         </div>
     )
 }
