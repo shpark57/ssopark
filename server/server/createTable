@@ -1,0 +1,15 @@
+CREATE TABLE users(
+	id				VARCHAR(100) 	not null	PRIMARY KEY	
+	,password		VARCHAR(64)		not null 
+	,username		VARCHAR(100)	not null 
+	,avatar			VARCHAR(255)	
+	,email			VARCHAR(100)	not null	
+	,phone_number	VARCHAR(15)		not null
+	,use_yn			CHAR(1)			not null
+	,rgstr_id		VARCHAR(100) 	not null	
+	,rgstr_time		TIMESTAMP
+	,mdfr_id		VARCHAR(100) 	not null
+	,mdfr_time		TIMESTAMP
+	,last_login		TIMESTAMP	
+	,salt	VARCHAR(64)	not null 
+)

@@ -1,0 +1,62 @@
+
+
+.sidebar{ /* 사이드바 최상단 div  */
+    width:250px;
+    min-width: 200px;
+    height: calc(100vh - 50px);
+    background-color: rgb(240,239,239);
+
+    position : sticky;
+    top: 50px;
+}
+
+.sidebarMenu{ /* 메뉴의 그룹 div*/
+    margin-bottom:1rem;
+}
+
+.sidebarTitle{ /* 메뉴의 타이틀 */
+    font-size:0.9rem;
+    color:rgb(197,197,197);
+    margin-bottom: -15px;
+}
+
+.sidebarList{ /* 메뉴그룹 내의 메뉴 리스트 */
+    list-style: none;
+    padding:0.5rem;
+}
+
+.sidebarListItem{ /* 각각의 메뉴 */
+    padding:5px;
+    cursor:pointer;
+    display:flex;
+    align-items:center;
+    border-radius:10px;
+}
+
+.sidebarListItem.active,
+.sidebarListItem:hover{ /* 마우스 active,hover 이벤트 */
+    background-color: rgb(212,209,235);
+}
+
+.sidebarIcon{   
+    margin-right:10px;
+    font-size:20px !important;
+}
+
+a{  /* 페이지 이동을 위한 Link의 밑줄과 글자색 변경*/
+    color: black;
+    text-decoration: blink;
+}
+
+.subMenu {
+    
+    list-style: none;
+}
+.sidebarSubMenu{
+    padding:5px;   
+    cursor:pointer;
+    display:flex;
+    align-items:center;
+    border-radius:10px;
+    display : none;
+}

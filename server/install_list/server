@@ -1,0 +1,20 @@
+npm i -g typescript             // 타입스크립트 tsc 사용가능
+npm i --save express            // 서버를 띄우기위한 간결한 웹 프레임워크
+npm i --save ts-node            // .ts 컴파일러
+npm i --save @types/node        // node.js 에서 type 정의를 포함한 패키지
+npm i --save @types/express     // express 에서 type 정의를 포함한 패키지
+npm i --save nodemon            // 개발 시 변경사항을 실시간으로 업데이트 해주기 위한 패키지
+npm i --save concurrently       // 리액트 서버와 노드 서버를 동시에 실행 시키기 위한 모듈
+npm install --save mysql
+npm install --save-dev @types/mysql
+
+
+
+    "@types/express": "^4.17.13",
+    "@types/node": "^17.0.43",
+    "concurrently": "^7.2.2",
+    "cors": "^2.8.5",
+    "express": "^4.18.1",
+    "mysql": "^2.18.1",
+    "nodemon": "^2.0.16",
+    "ts-node": "^10.8.1"

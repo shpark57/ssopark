@@ -1,0 +1,1 @@
+npm i --save http-proxy-middleware //리액트 서버와 노드서버간의 데이터를 주고받기위해 프록시 설정.
