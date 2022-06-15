@@ -82,7 +82,7 @@
     "build": "node scripts/build.js",
     "test": "node scripts/test.js",
     "client": "concurrently \"node scripts/start.js\" \"npx json-server ./data.json --port 4000 \"",
-    "server": "cd ../ssopark_server & ts-node ./server/server.ts",
+    "server": "ts-node ../server/server/server.ts",
     "start": "concurrently  \"npm run server\" \"npm run client\" "
   },
   "eslintConfig": {
