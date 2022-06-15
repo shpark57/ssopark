@@ -1,9 +1,17 @@
 import express from 'express';
+import * as db from './mariaDB'
+
+
 
 const app = express();
-const test = require("./router/test");
+const router = require("./router/router");
+const users = require("./router/users");
 
-app.use("/api", test);
+db.init()
+
+app.use("/", router);
+
+app.use("/:table", users);
 
 const port: number = 5000;
 app.listen(port, () => console.log(`${port}`));

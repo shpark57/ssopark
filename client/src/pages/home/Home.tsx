@@ -60,10 +60,25 @@ export default function Home(){
       });
     };  
 
-    const handleClickRestTest = () => {
-          axios.get("/api").then((res) => console.log(alert(res.data.id)))
+    const handleClickgGetTest = () => {
+      axios.get("/users?username=다이&id=shpark8381&_limit=20&_sort=id&_order=DESC").then((res) => console.log(res))
     };
 
+    const handleClickgPostTest = () => {
+      axios.get("/users/shpark").then((res) => console.log(res))
+    };
+
+    const handleClickgPutTest = () => {
+      axios.get("/users").then((res) => console.log(res))
+    };
+
+    const handleClickgPatchTest = () => {
+      axios.patch("/api").then((res) => console.log(alert(res.data.id)))
+    };
+    const handleClickgDeleteTest = () => {
+      axios.delete("/api").then((res) => console.log(alert(res.data.id)))
+    };
+    
 
     
 
@@ -94,8 +109,28 @@ export default function Home(){
             <Button 
                 variant="contained" 
                 sx={{  mr: 3, ml: 3  }}
-                onClick={handleClickRestTest}
-            >Rest API TEST</Button>
+                onClick={handleClickgGetTest}
+            >Rest GET TEST</Button>
+            <Button 
+                variant="contained" 
+                sx={{  mr: 3, ml: 3  }}
+                onClick={handleClickgPostTest}
+            >Rest POST TEST</Button>
+            <Button 
+                variant="contained" 
+                sx={{  mr: 3, ml: 3  }}
+                onClick={handleClickgPutTest}
+            >Rest PUT TEST</Button>
+            <Button 
+                variant="contained" 
+                sx={{  mr: 3, ml: 3  }}
+                onClick={handleClickgPatchTest}
+            >Rest PATCH TEST</Button>
+            <Button 
+                variant="contained" 
+                sx={{  mr: 3, ml: 3  }}
+                onClick={handleClickgDeleteTest}
+            >Rest DELETE TEST</Button>
         </div>
     )
 }
