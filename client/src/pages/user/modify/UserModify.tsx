@@ -42,14 +42,14 @@ interface userInfo  {
     password: string;
     email: string;
     username: string;
-    phoneNumber: string;
+    phone_number: string;
     avatar: string;
     useYn: string;
-    rgstrId: string;
-    rgstrTime: string;
-    mdfrId: string;
-    mdfrTime: string;
-    lastLogin: string;
+    rgstr_id: string;
+    rgstr_time: string;
+    mdfr_id: string;
+    mdfr_time: string;
+    last_login: string;
     salt: string;
 }
 
@@ -65,19 +65,19 @@ export default function UserModify() {
                                         password : "",
                                         email : "", 
                                         username : "",
-                                        phoneNumber :"",
+                                        phone_number :"",
                                         avatar : "",
                                         useYn : "Y",
-                                        rgstrId: "",
-                                        rgstrTime:"" ,
-                                        mdfrId: "",
-                                        mdfrTime: "",      
-                                        lastLogin: "",
+                                        rgstr_id: "",
+                                        rgstr_time:"" ,
+                                        mdfr_id: "",
+                                        mdfr_time: "",      
+                                        last_login: "",
                                         salt : ""                           
                                     })
     
     useEffect(() => {
-        axios.get('http://localhost:4000/users?id='+{id}.id)
+        axios.get('/users?id='+{id}.id)
         .then(res => setUserParams(res.data[0]))
     },[0])  
 
@@ -100,7 +100,7 @@ export default function UserModify() {
     }
 
 
-    axios.put("http://localhost:4000/users/"+ userParams.id , userParams )
+    axios.put("/users/"+ userParams.id , userParams )
       .then((response) => { console.log(response);alert("수정 성공")})
       .then(()=> navigate(String("/users"))) 
       .catch((error) =>  {alert("수정 실패")});
@@ -111,8 +111,8 @@ export default function UserModify() {
     setUserParams((prevUser:userInfo ) => ({
         ...prevUser ,
         [e.target.id] : e.target.value,
-        mdfrId : user.id,
-        mdfrTime : Time.getTimeString()
+        mdfr_id : user.id,
+        mdfr_time : Time.getTimeString()
     }))
   }
 
@@ -191,11 +191,11 @@ export default function UserModify() {
                 <TextField
                   required
                   fullWidth
-                  id="phoneNumber"
+                  id="phone_number"
                   label="Phone Number"
-                  name="phoneNumber"
-                  autoComplete="phoneNumber"
-                  value={userParams.phoneNumber}
+                  name="phone_number"
+                  autoComplete="phone_number"
+                  value={userParams.phone_number}
                   onChange={(e:React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => inputFromHandler(e)}
                 />
               </Grid>

@@ -298,7 +298,7 @@ module.exports = function (webpackEnv) {
         "crypto": false,
         "crypto": require.resolve('crypto-browserify'),
         "buffer": false,
-        "buffer": require.resolve("buffer/") ,
+        "buffer": require.resolve("buffer") ,
         "stream": false,
         "stream": require.resolve("stream-browserify"),
         

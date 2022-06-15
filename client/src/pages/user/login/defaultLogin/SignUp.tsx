@@ -53,14 +53,14 @@ export default function SignUp() {
       password : hashPassword,
       email : data.get('email'), 
       username : data.get('username'),
-      phoneNumber : data.get('phoneNumber'),
+      phone_number : data.get('phone_number'),
       avatar : data.get('avatar'),
-      useYn : 'Y',
-      rgstrId: data.get('id'),
-      rgstrTime: Time.getTimeString() ,
-      mdfrId: data.get('id'),
-      mdfrTime: Time.getTimeString(),      
-      lastLogin: Time.getTimeString(),
+      use_yn : 'Y',
+      rgstr_id: data.get('id'),
+      rgstr_time: Time.getTimeString() ,
+      mdfr_id: data.get('id'),
+      mdfr_time: Time.getTimeString(),      
+      last_login: Time.getTimeString(),
       salt : salt                           //암호화시 키가 될값 저장
     }
     
@@ -68,14 +68,11 @@ export default function SignUp() {
       params.avatar = 'https://cdn.pixabay.com/photo/2017/11/10/05/48/user-2935527_960_720.png'
     }
 
-   
-    axios.post("http://localhost:4000/users/" , params )
+    axios.post("/users" , params)
       .then( (response) => { alert("등록 성공")})
-      .then(()=> window.location.replace("/"))
+      //.then(()=> window.location.replace("/"))
       .catch( (error) => { alert("등록 실패") });
-        
-
-
+    
   };
 
   return (
@@ -141,10 +138,10 @@ export default function SignUp() {
                 <TextField
                   required
                   fullWidth
-                  id="phoneNumber"
+                  id="phone_number"
                   label="Phone Number"
-                  name="phoneNumber"
-                  autoComplete="phoneNumber"
+                  name="phone_number"
+                  autoComplete="phone_number"
                 />
               </Grid>
               <Grid item xs={12}>

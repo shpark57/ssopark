@@ -54,7 +54,7 @@ export default function Login(){
         const res = await checkPassword(input_id ,input_password)
         if(res.check){
             //로그인 시 로그인 시간 저장
-            axios.patch("http://localhost:4000/users/"+ input_id , { lastLogin : Time.getTimeString() } )  
+            axios.patch("/users/"+ input_id , { last_login : Time.getTimeString() } )  
             .then((response) => { console.log("마지막 로그인 시간 수정 완료")})
             .catch((error) =>  {console.log("마지막 로그인 시간 수정 실패")});          
             let user = {
@@ -62,7 +62,7 @@ export default function Login(){
                 username : res.username,
                 avatar : res.avatar,
                 email : res.email,
-                phoneNumber : res.phoneNumber
+                phone_number : res.phone_number
             }
             setLoggedUser(user,remember)
         }else{

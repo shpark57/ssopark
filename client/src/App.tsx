@@ -40,7 +40,6 @@ function App() {
                       <Routes>
                         <Route path="/" element={ <Home/>}/>
                         <Route path="/users" element={<UserList/>}/>
-                        <Route path="/users" element={<UserList/>}/>
                         <Route path="/dragAndDrop" element={<DagAndDrop/>}/>
                         <Route path="/fileUpload" element={<FileUpload/>}/>
                         <Route path="/userModify/:id" element={ <UserModify/> }/>

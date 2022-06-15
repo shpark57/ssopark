@@ -16,10 +16,9 @@ import { LoginContext } from 'src/contexts/login'
 export default function UserList(){
     const {loggedIn , user , setLoggedOut} = useContext(LoginContext);
     const [tableData , setTableData] = useState([])
-    const params = {useYn: 'Y'}
     useEffect(() => {
-        axios.get('http://localhost:4000/users' , {params})
-            .then(res => setTableData(res.data))
+        axios.get('/users' , {params : {use_yn: 'Y'}})
+            .then(res =>  setTableData(res.data))
     },[0])   
 
 
@@ -36,10 +35,10 @@ export default function UserList(){
 
 
         /* useYn N 처리 업데이트 논리삭제*/
-        axios.patch("http://localhost:4000/users/" + row.id , { 
+        axios.patch("/users/" + row.id , { 
             useYn : 'N' ,  
-            mdfrId : user.id,
-            mdfrTime : Time.getTimeString()    
+            mdfr_id : user.id,
+            mdfr_time : Time.getTimeString()    
         } )
             .then( (response) => { alert("삭제 성공") })
             .catch( (error) => { alert("삭제 실패") });
@@ -67,11 +66,11 @@ export default function UserList(){
         
         },
         {   field : 'email' , headerName : 'Email' , width : 300},
-        {   field : 'phoneNumber' , headerName : 'PhoneNumber' , width : 150, 
+        {   field : 'phone_number' , headerName : 'phone_number' , width : 150, 
             renderCell: (params:any) =>{
                 return(
                     <div className="userListUser">
-                        {params.row.phoneNumber.replace(/(^02.{0}|^01.{1}|[0-9]{3})([0-9]+)([0-9]{4})/,"$1-$2-$3") }
+                        {params.row.phone_number.replace(/(^02.{0}|^01.{1}|[0-9]{3})([0-9]+)([0-9]{4})/,"$1-$2-$3") }
                     </div>
                 )
             }

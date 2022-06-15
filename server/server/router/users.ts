@@ -22,7 +22,7 @@ router.get('', (req: any, res: any) => {            //all 전체 조회
             if(key == '_limit'){
                 limit += ' limit ' + param.split('=')[1]
             }else if(key == '_sort'){
-                sort += ' order by ' + param.split('=')[1]
+                sort += ' ORDER BY ' + param.split('=')[1]
             }else if(key == '_order'){
                 if(sort != ''){
                     sort += ' ' + param.split('=')[1]
@@ -54,10 +54,11 @@ router.get('/:id', (req: any, res: any) => {        // id
     let query = 'SELECT * FROM '
     let table = req.baseUrl.substr(1)
     query = query + table
-    let where = ' where id = ' + '\''+req.params.id +'\''
+    let where = ' WHERE id = ' + '\''+req.params.id +'\''
+    query+= where
     db.execute(query, (err:Error, rows:any) => {
     if (!err) {
-        res.send(rows);
+        res.send(rows[0]?rows[0]:{});
     } else {
         console.log(`query error : ${err}`);
         res.send(err);
@@ -70,6 +71,29 @@ router.get('/:id', (req: any, res: any) => {        // id
 post
 */
 
+router.post('', (req: any, res: any) => {        // id
+    let params = ''
+    let values = ''
+    let table = req.baseUrl.substr(1)
+    let where = ' where id = ' + '\''+req.params +'\''
+    for(let key in req.body){
+        params += key + ','
+        values += '\''+ req.body[key] + '\'' + ','
+    }
+    params = params.slice(0,-1)
+    values = values.slice(0,-1)
+    let query = 'INSERT INTO ' + table +'  (' + params +') VALUES ( ' + values +' )'
+
+    console.log(query)
+    db.execute(query, (err:Error, rows:any) => {
+    if (!err) {
+        res.send(rows);
+    } else {
+        console.log(`query error : ${err}`);
+        res.send(err);
+    }
+    });
+});
 
 
 
