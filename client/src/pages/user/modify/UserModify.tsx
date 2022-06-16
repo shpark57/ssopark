@@ -78,7 +78,15 @@ export default function UserModify() {
     
     useEffect(() => {
         axios.get('/users?id='+{id}.id)
-        .then(res => setUserParams(res.data[0]))
+        .then(res =>  setUserParams(res.data[0]))
+        .then(res => {
+            setUserParams((prevUser:userInfo ) => ({
+              ...prevUser ,
+              mdfr_time : Time.getTimeString(),
+              rgstr_time : Time.toDateString(prevUser.rgstr_time),  //타임스탬프 변환해주어야함...
+              last_login :  Time.toDateString(prevUser.last_login), //타임스탬프 변환해주어야함...
+            }))
+          }).then(()=>console.log(userParams))
     },[0])  
 
 
@@ -112,7 +120,9 @@ export default function UserModify() {
         ...prevUser ,
         [e.target.id] : e.target.value,
         mdfr_id : user.id,
-        mdfr_time : Time.getTimeString()
+        mdfr_time : Time.getTimeString(),
+        rgstr_time : Time.toDateString(prevUser.rgstr_time),
+        last_login :  Time.toDateString(prevUser.last_login),
     }))
   }
 

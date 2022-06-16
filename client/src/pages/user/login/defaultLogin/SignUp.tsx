@@ -70,7 +70,7 @@ export default function SignUp() {
 
     axios.post("/users" , params)
       .then( (response) => { alert("등록 성공")})
-      //.then(()=> window.location.replace("/"))
+      .then(()=> window.location.replace("/"))
       .catch( (error) => { alert("등록 실패") });
     
   };

@@ -61,7 +61,7 @@ export default function Home(){
     };  
 
     const handleClickgGetTest = () => {
-      axios.get("/users?username=다이&id=shpark8381&_limit=20&_sort=id&_order=DESC").then((res) => console.log(res))
+      axios.get("/users?_page=1&username=다이&id=shpark8381").then((res) => console.log(res)) 
     };
 
     const handleClickgPostTest = () => {
@@ -69,14 +69,15 @@ export default function Home(){
     };
 
     const handleClickgPutTest = () => {
-      axios.get("/users").then((res) => console.log(res))
+      let params = {query : 'SELECT * FROM users'}
+      axios.post("/query" , {params}).then((res) => console.log(res))
     };
 
     const handleClickgPatchTest = () => {
       axios.patch("/api").then((res) => console.log(alert(res.data.id)))
     };
     const handleClickgDeleteTest = () => {
-      axios.delete("/api").then((res) => console.log(alert(res.data.id)))
+      axios.delete("/users").then((res) =>  console.log(res))
     };
     
 
@@ -120,7 +121,7 @@ export default function Home(){
                 variant="contained" 
                 sx={{  mr: 3, ml: 3  }}
                 onClick={handleClickgPutTest}
-            >Rest PUT TEST</Button>
+            >Rest Query TEST</Button>
             <Button 
                 variant="contained" 
                 sx={{  mr: 3, ml: 3  }}
