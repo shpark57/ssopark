@@ -36,8 +36,8 @@ function Copyright(props: any) {
 const theme = createTheme(); 
 export default function Login(){
     const {setLoggedUser } = useContext(LoginContext);
-    const [remember , setRemember] = useState(Boolean(window.localStorage.getItem('id')))
-    const [userId , setUserId] = useState(window.localStorage.getItem('id') ? String(window.localStorage.getItem('id')) : '')
+    const [remember , setRemember] = useState(Boolean(window.localStorage.getItem('user_id')))
+    const [userId , setUserId] = useState(window.localStorage.getItem('user_id') ? String(window.localStorage.getItem('user_id')) : '')
     
     const inputFromHandler = (e:React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) =>{
         setUserId(e.target.value) 
@@ -54,12 +54,12 @@ export default function Login(){
         const res = await checkPassword(input_id ,input_password)
         if(res.check){
             //로그인 시 로그인 시간 저장
-            axios.patch("/users/"+ input_id , { last_login : Time.getTimeString() } )  
+            axios.patch("/users/"+ res.id , {  last_login : Time.getTimeString() } )  
             .then((response) => { console.log("마지막 로그인 시간 수정 완료")})
             .catch((error) =>  {console.log("마지막 로그인 시간 수정 실패")});          
             let user = {
-                id : res.id,
-                username : res.username,
+                user_id : res.user_id,
+                user_name : res.user_name,
                 avatar : res.avatar,
                 email : res.email,
                 phone_number : res.phone_number

@@ -1,331 +1,254 @@
-const express = require("express");
+
+import * as express from "express";
+import {Request, Response} from "express";
 const router = express.Router();
-import * as db from '../mariaDB'
+import {createConnection , IsNull  , Not, MoreThan, Equal , LessThanOrEqual  , MoreThanOrEqual , } from "typeorm";
+
+import {Users} from "../src/entity/Users";
 
 
-/*
-구현 된것.
-GET , POST , PUT , PATCH
-*/
 
-const whereAnd = (whereAnd:string) =>{
-    // where 가 와야하는지 and 가 와야하는지 구분
-    return  (whereAnd == '' ? ' WHERE ' : ' AND ')
-}
-/*
-get
-*/
-router.get('', (req: any, res: any) => {
-    /* 구현해야 할것 */
-    /*
-        테이블 전체 조회 O
-        where 특정 칼럼 한개 조회 O
-        where 특정 칼럼 여러개 조회 O
-        order by 한개 O
-        order by 여러개 O
-        order by desc asc 추가 O
-        limit O
-        where 조건 >= <= != 조회 O
-        where null 비교 O
-        page 추가
+createConnection().then(connection => {
+    const usersRepository = connection.getRepository(Users)
 
-        2022-06-16 일단 완료 추가사항있으면 그때 추가하면될듯.
+    const findObjectSetting = ( req: Request) => { 
+        /* rest api 규칙을 동적으로 사용하기위한 함수 */
+        /*
+            테이블 전체 조회 O
+            where 특정 칼럼 한개 조회 O
+            where 특정 칼럼 여러개 조회 O
+            order by 한개 O
+            order by 여러개 O
+            order by desc asc 추가 O
+            limit O
+            where 조건 >= <= != 조회 O
+            where null 비교 O
+            page 추가
 
-    */
-    let limit = ''
-    let sort = ''
-    let paramOrder= ''
-    let paramSort= ''
-    let page = ''
-    let where = ''
+            조인 구현해야함.
 
-    let query = 'SELECT * FROM '
-    let table = req.baseUrl.substr(1)
-    let currentPage  = 10;  //page 조회시 선언 limit 선언 안하면 기본 10
-
-    query += table
-
-    
-    if(req.query){
+        */
+        let params = {}
+        let where = []
+        let whereObj = {}
+        let orderObj = {}
+        let paramOrder= ''
+        let paramSort= ''
         for(const [paramKey ,ParamValue] of Object.entries(req.query)){
             let key = `${paramKey}`.toLowerCase()
             let value = `${ParamValue}`.toLowerCase()
-
+            
             if(key.indexOf('_limit') !== -1){
-                limit = value
+                params['take'] = value
             }else if(key.indexOf('_page') !== -1){
-                page =  String(Number(value) - 1 )
+                params['skip'] = (Number(value)-1) * (params['take']?params['take']:10)
             }else if(key.indexOf('_sort') !== -1){
                 paramSort = value
             }else if(key.indexOf('_order') !== -1){
                 paramOrder = value
             }else if(key.indexOf('_gte') !== -1 ){
-                where +=  whereAnd(where) + key.replace('_gte','') + ' >= ' + '\'' + value + '\''
+                 whereObj[key.replace('_gte','')] =  MoreThanOrEqual(value)    // >= 
             }else if(key.indexOf('_lte') !== -1){
-                where +=  whereAnd(where) + key.replace('_lte','') + ' <= ' + '\'' + value + '\''
+                whereObj[key.replace('_lte','')] =  LessThanOrEqual(value)     // <=
             }else if(key.indexOf('_ne') !== -1 ){
                 if(value == 'null'){
-                    where +=  whereAnd(where) + key.replace('_ne','') + ' IS NOT NULL ' 
+                whereObj[key.replace('_ne','')] =  Not(IsNull())     // is not null
                 }else{
-                    where +=  whereAnd(where) + key.replace('_ne','')  + ' != ' + '\'' + value + '\''
+                    whereObj[key.replace('_ne','')] =  Not(value)     //  != 
                 }
             }else{
                 if(value == 'null'){
-                    where +=  whereAnd(where) + key + ' IS NULL ' 
+                    whereObj[key] = IsNull()
                 }else{
-                    where +=  whereAnd(where) + key + ' = ' + '\'' + value + '\''
+                    whereObj[key] = value
                 }
             }
-
         }
+        
         if(paramSort != ''){
             for(let i = 0; i< paramSort.split(',').length; i ++){
-                //sort 처리..
-                if(i == 0){
-                    sort = ' ORDER BY '
-                }else{
-                    sort += ', '
-                }
-    
-                sort += paramSort.split(',')[i] + ' ' +  (paramOrder.split(',')[i] ? paramOrder.split(',')[i] : '')
+                orderObj[paramSort.split(',')[i]] = (paramOrder.split(',')[i] ? paramOrder.split(',')[i] : 'ASC')
             }
         }
+        where.push(whereObj)
 
-        query += where
-    }
-
-    query += sort
-
-    if(page != ''){
-        limit = limit == '' ? String(currentPage) : limit
-        limit = ' LIMIT ' + Number(page) * Number(limit)  + ',' + limit
-    }else{
-        limit =  limit == '' ? '' :  ' LIMIT ' + limit
-    }
-
-    query += limit
-
-
-    console.log(query)
-    db.execute(query, (err:Error, rows:any) => {
-    if (!err) {
-        res.send(rows);
-    } else {
-        console.log(`query error : ${err}`);
-        res.status(500).send(err);
-    }
-    });
-});
-
-
-router.get('/:id', (req: any, res: any) => {
-    /* 구현해야 할것 */
-    /*
-        특정 아이디 조회
-    */
-    let query = 'SELECT * FROM '
-    let table = req.baseUrl.substr(1)
-    query = query + table
-    let where = ' WHERE id = ' + '\''+req.params.id +'\''
-    query+= where
-    console.log(query)
-    db.execute(query, (err:Error, rows:any) => {
-    if (!err) {
-        res.send(rows[0]?rows[0]:{});
-    } else {
-        console.log(`query error : ${err}`);
-        res.status(500).send(err);
-    }
-    });
-});
-
-
-/*
-post
-*/
-router.post('', (req: any, res: any) => {  
-    
-    /* 구현해야 할것 */
-    /*
-        insert 
-        ps ) user/:id  <이런건 구현 안할것임.
-    */ 
-    let params = ''
-    let values = ''
-    let table = req.baseUrl.substr(1)
-    for(let key in req.body){
-        params += key + ','
-        values += '\''+ req.body[key] + '\'' + ','
-    }
-    params = params.slice(0,-1)
-    values = values.slice(0,-1)
-    let query = 'INSERT INTO ' + table +'  (' + params +') VALUES ( ' + values +' )'
-
-    console.log(query)
-    db.execute(query, (err:Error, rows:any) => {
-    if (!err) {
-        res.send(rows);
-    } else {
-        console.log(`query error : ${err}`);
-        res.status(500).send(err);
-    }
-    });
-});
-
-
-/*
-put
-*/
-router.put('/:id', (req: any, res: any) => {
-    /* 구현해야 할것 */
-    /*
-        특정 id 업데이트 
-        어떻게 전부 업데이트 할지 몰라서.. patch 랑 같게 될듯..
-    */
-    let table = req.baseUrl.substr(1)
-    let query = 'UPDATE  ' +table+ ' SET ' 
-
-    let where = ' WHERE id = ' + '\''+req.params.id +'\''
-    var params= ''
-
-    for(let key in req.body){
-        params +=  key + ' = ' + '\''+req.body[key]+'\'' +',' 
-    }
-
-    query += params.slice(0,-1)
-
-    query+= where
-
-    console.log(query)
-    db.execute(query, (err:Error, rows:any) => {
-        if (!err) {
-            res.send(rows[0]?rows[0]:{});
-        } else {
-            console.log(`query error : ${err}`);
-
-            res.status(500).send(err);
+        if( Object.keys(where[0]).length != 0 ){
+            params['where'] =  where
         }
-    });
-    
-});
+        if(Object.keys(orderObj).length ){
+            params['order'] =  orderObj
+        }
 
-
-/*
-patch
-*/
-router.patch('/:id', (req: any, res: any) => {
-    /* 구현해야 할것 */
-    /*
-        특정 id 업데이트 
-        어떻게 전부 업데이트 할지 몰라서.. patch 랑 같게 될듯..
-    */
-    let table = req.baseUrl.substr(1)
-    let query = 'UPDATE  ' +table+ ' SET ' 
-
-    let where = ' WHERE id = ' + '\''+req.params.id +'\''
-    var params= ''
-
-    for(let key in req.body){
-        params +=  key + ' = ' + '\''+req.body[key]+'\'' +',' 
+        return params
     }
 
-    query += params.slice(0,-1)
-
-    query+= where
-
-    console.log(query)
-    db.execute(query, (err:Error, rows:any) => {
-        if (!err) {
-            res.send(rows[0]?rows[0]:{});
-        } else {
-            console.log(`query error : ${err}`);
-
-            res.status(500).send(err);
+    const findOneByRepository =  (table : string , req: Request, res: Response)  => {
+        if(table.toLowerCase() == 'users'){
+            const entity = usersRepository.findOneBy({id: Number(req.params.id)})
+            return entity
         }
-    });
+    }  
+
+    const findByRepository =  (table : string , req: Request, res: Response)  => {
+        //usersRepository 를 동적으로 사용하기 위한 함수. 
+        //테이블 추가하면 선언은 계속 해주어야한다..
+        const params = findObjectSetting(req)
+        if(table.toLowerCase() == 'users'){
+            
+            const entity = usersRepository.find(params)
+            return entity
+        }
     
-});
+    }  
 
-/*
-delete
-*/
+    const saveRepository =  (table : string , req: Request, res: Response)  => {
+        if(table.toLowerCase() == 'users'){
+            console.log(req.body)
+            const entity =   usersRepository.save(req.body)
+            return entity
+        }
+    }  
 
-router.delete('', (req: any, res: any) => {
-    /* 구현해야 할것 */
-    /*
+    const deleteOneByRepository =  async(table : string , req: Request, res: Response)  => {
+        if(table.toLowerCase() == 'users'){
+            const remove = await usersRepository.findOneBy(req.query)
+            const entity = await usersRepository.delete(remove)
+            return entity
+        }
+    }  
+
+    const deleteRepository = async(table : string , req: Request, res: Response)  => {
+    
+        const params = findObjectSetting(req)
+        if(table.toLowerCase() == 'users'){
+            let remove = await usersRepository.find(params)
+            const entity = await  usersRepository.remove(remove)
+            return entity
+        }
+    
+    }  
+    
+
+
+
+    router.get("/:id", function(req: Request, res: Response) {
+        // /테이블명/1 의 형태의 url은 이곳으로 온다.
+
+        let table = req.baseUrl.substr(1)
+        findOneByRepository(table , req , res)
+        .then(entity => {
+            console.log(entity)
+            res.send(entity);
+        })
+        .catch(err => {
+            console.log(`query error : ${err}`);
+            res.status(500).send(err);
+        });
+
+    });
+
+
+    router.get("", function(req: Request, res: Response) {
+        // /테이블명 또는 /테이블명?id=1  이런 형태의 url 은 이곳에 온다
+        let table = req.baseUrl.substr(1)
+        findByRepository(table , req , res)        
+        .then(entity => {
+            console.log(entity)
+            res.send(entity);
+        })
+        .catch(err => {
+            console.log(`query error : ${err}`);
+            res.status(500).send(err);
+        });
+
+    });
+
+
+    router.post("", async function(req: Request, res: Response) {
+        let table = req.baseUrl.substr(1)
+        const entity = await saveRepository(table , req , res)
+        .then(entity => {
+            console.log(entity)
+            res.send(entity);
+        })
+        .catch(err => {
+            console.log(`query error : ${err}`);
+            res.status(500).send(err);
+        });
+
+    
+    });
+
+
+    router.put("/:id", async function(req: Request, res: Response) {
+        let table = req.baseUrl.substr(1)
         
-    */
-    let where = ''
+        const entity = await saveRepository(table , req , res)
+        .then(entity => {
+            console.log(entity)
+            res.send(entity);
+        })
+        .catch(err => {
+            console.log(`query error : ${err}`);
+            res.status(500).send(err);
+        });
 
-    let query = 'DELETE FROM '
-    let table = req.baseUrl.substr(1)
-
-    query += table
-
+    });
     
-    if(req.query){
-        for(const [paramKey ,ParamValue] of Object.entries(req.query)){
-            let key = `${paramKey}`.toLowerCase()
-            let value = `${ParamValue}`.toLowerCase()
 
-            if(key.indexOf('_gte') !== -1 ){
-                where +=  whereAnd(where) + key.replace('_gte','') + ' >= ' + '\'' + value + '\''
-            }else if(key.indexOf('_lte') !== -1){
-                where +=  whereAnd(where) + key.replace('_lte','') + ' <= ' + '\'' + value + '\''
-            }else if(key.indexOf('_ne') !== -1 ){
-                if(value == 'null'){
-                    where +=  whereAnd(where) + key.replace('_ne','') + ' IS NOT NULL ' 
-                }else{
-                    where +=  whereAnd(where) + key.replace('_ne','')  + ' != ' + '\'' + value + '\''
-                }
-            }else{
-                if(value == 'null'){
-                    where +=  whereAnd(where) + key + ' IS NULL ' 
-                }else{
-                    where +=  whereAnd(where) + key + ' = ' + '\'' + value + '\''
-                }
-            }
+    router.patch("/:id", async function(req: Request, res: Response) {
+        let table = req.baseUrl.substr(1)
 
-        }
+        
+        req.body['id'] = Number(req.params.id)
+        const entity = await saveRepository(table , req , res)
+        .then(entity => {
+            console.log(entity)
+            res.send(entity);
+        })
+        .catch(err => {
+            console.log(`query error : ${err}`);
+            res.status(500).send(err);
+        });
 
-        query += where
-    }
-
-
-    console.log(query)
-    db.execute(query, (err:Error, rows:any) => {
-    if (!err) {
-        res.send(rows);
-    } else {
-        console.log(`query error : ${err}`);
-        res.status(500).send(err);
-    }
     });
-});
+    
 
+    router.delete("/:id", function(req: Request, res: Response) {
+        // /테이블명/1 의 형태의 url은 이곳으로 온다.
 
+        let table = req.baseUrl.substr(1)
+        deleteOneByRepository(table , req , res)
+        .then(entity => {
+            console.log(entity)
+            res.send(entity);
+        })
+        .catch(err => {
+            console.log(`query error : ${err}`);
+            res.status(500).send(err);
+        });
 
-router.delete('/:id', (req: any, res: any) => {
-    /* 구현해야 할것 */
-    /*
-        특정 아이디 조회
-    */
-    let query = 'DELETE FROM '
-    let table = req.baseUrl.substr(1)
-    query = query + table
-    let where = ' WHERE id = ' + '\''+req.params.id +'\''
-    query+= where
-    console.log(query)
-    db.execute(query, (err:Error, rows:any) => {
-    if (!err) {
-        res.send(rows[0]?rows[0]:{});
-    } else {
-        console.log(`query error : ${err}`);
-        res.status(500).send(err);
-    }
     });
-});
 
 
+    router.delete("", function(req: Request, res: Response) {
+        // /테이블명 또는 /테이블명?id=1  이런 형태의 url 은 이곳에 온다
+
+        let table = req.baseUrl.substr(1)
+        findByRepository(table , req , res)        
+        .then(entity => {
+            console.log(entity)
+            res.send(entity);
+        })
+        .catch(err => {
+            console.log(`query error : ${err}`);
+            res.status(500).send(err);
+        });
+
+    });
+
+
+
+}).catch(error => console.log("TypeORM connection error: ", error));
 
 module.exports = router;

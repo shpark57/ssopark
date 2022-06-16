@@ -14,6 +14,7 @@ import Container from '@mui/material/Container';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import axios from 'axios';
 import { useParams ,useNavigate} from 'react-router-dom';
+import { Hidden, Paper } from "@mui/material";
 
 
 import { LoginContext ,checkPassword } from 'src/contexts/login'
@@ -38,10 +39,11 @@ function Copyright(props: any) {
 }
 
 interface userInfo  {
-    id: string;
+    id: number;
+    user_id : string;
     password: string;
     email: string;
-    username: string;
+    user_name: string;
     phone_number: string;
     avatar: string;
     useYn: string;
@@ -61,10 +63,11 @@ export default function UserModify() {
 
 
     const [userParams , setUserParams] = useState({ 
-                                        id : "",
+                                        id : 0,
+                                        user_id : "",
                                         password : "",
                                         email : "", 
-                                        username : "",
+                                        user_name : "",
                                         phone_number :"",
                                         avatar : "",
                                         useYn : "Y",
@@ -77,8 +80,8 @@ export default function UserModify() {
                                     })
     
     useEffect(() => {
-        axios.get('/users?id='+{id}.id)
-        .then(res =>  setUserParams(res.data[0]))
+        axios.get('/users/'+id)
+        .then(res =>  setUserParams(res.data))
         .then(res => {
             setUserParams((prevUser:userInfo ) => ({
               ...prevUser ,
@@ -95,9 +98,11 @@ export default function UserModify() {
 
     const data = new FormData(event.currentTarget);
 
-    const input_id = String(data.get('id'))
+    const input_id = String(data.get('user_id'))
     const input_password = String(data.get('password'))
     const res = await checkPassword(input_id ,input_password)
+
+    console.log(res)
     if(!res.check){
       alert("비밀번호 다르다")
       return
@@ -119,7 +124,7 @@ export default function UserModify() {
     setUserParams((prevUser:userInfo ) => ({
         ...prevUser ,
         [e.target.id] : e.target.value,
-        mdfr_id : user.id,
+        mdfr_id : user.user_id,
         mdfr_time : Time.getTimeString(),
         rgstr_time : Time.toDateString(prevUser.rgstr_time),
         last_login :  Time.toDateString(prevUser.last_login),
@@ -131,7 +136,7 @@ export default function UserModify() {
     showModal({
       modalType: "DefaultModal",
       modalProps: {
-        message : ( <PasswordModifyModal userId={userParams.id}/>),
+        message : ( <PasswordModifyModal user_id={userParams.user_id}/>),
         title: "",
       }
     });
@@ -166,11 +171,11 @@ export default function UserModify() {
                 <TextField
                   required
                   fullWidth
-                  id="id"
+                  id="user_id"
                   label="ID"
-                  name="id"
-                  autoComplete="id"
-                  value={userParams.id}
+                  name="user_id"
+                  autoComplete="user_id"
+                  value={userParams.user_id}
                 />
               </Grid>
               <Grid item xs={12}>
@@ -189,11 +194,11 @@ export default function UserModify() {
                 <TextField
                   required
                   fullWidth
-                  id="username"
+                  id="user_name"
                   label="이름"
-                  name="username"
-                  autoComplete="username"
-                  value={userParams.username}
+                  name="user_name"
+                  autoComplete="user_name"
+                  value={userParams.user_name}
                   onChange={(e:React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => inputFromHandler(e)}
                 />
               </Grid>       

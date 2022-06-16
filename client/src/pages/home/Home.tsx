@@ -61,11 +61,11 @@ export default function Home(){
     };  
 
     const handleClickgGetTest = () => {
-      axios.get("/users?_page=1&username=다이&id=shpark8381").then((res) => console.log(res)) 
+      axios.get("/users").then((res) => console.log(res)) 
     };
 
     const handleClickgPostTest = () => {
-      axios.get("/users/shpark").then((res) => console.log(res))
+      axios.get("/users/2").then((res) => console.log(res))
     };
 
     const handleClickgPutTest = () => {

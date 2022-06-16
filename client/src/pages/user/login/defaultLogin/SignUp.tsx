@@ -49,16 +49,16 @@ export default function SignUp() {
 
 
     const params = {
-      id :  data.get('id'),
+      user_id :  data.get('user_id'),
       password : hashPassword,
       email : data.get('email'), 
-      username : data.get('username'),
+      user_name : data.get('user_name'),
       phone_number : data.get('phone_number'),
       avatar : data.get('avatar'),
       use_yn : 'Y',
-      rgstr_id: data.get('id'),
+      rgstr_id: data.get('user_id'),
       rgstr_time: Time.getTimeString() ,
-      mdfr_id: data.get('id'),
+      mdfr_id: data.get('user_id'),
       mdfr_time: Time.getTimeString(),      
       last_login: Time.getTimeString(),
       salt : salt                           //암호화시 키가 될값 저장
@@ -108,9 +108,9 @@ export default function SignUp() {
                 <TextField
                   required
                   fullWidth
-                  id="id"
+                  id="user_id"
                   label="ID"
-                  name="id"
+                  name="user_id"
                   autoComplete="id"
                 />
               </Grid>
@@ -128,10 +128,10 @@ export default function SignUp() {
                 <TextField
                   required
                   fullWidth
-                  id="username"
+                  id="user_name"
                   label="이름"
-                  name="username"
-                  autoComplete="username"
+                  name="user_name"
+                  autoComplete="user_name"
                 />
               </Grid>       
               <Grid item xs={12}>
