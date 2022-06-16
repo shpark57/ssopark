@@ -111,7 +111,10 @@ createConnection().then(connection => {
             const entity = usersRepository.find(params)
             return entity
         }else if(table.toLowerCase() == 'menu'){
-            params['children']=  ['parent_id']
+            params['join'] =  { alias : 'm' ,  leftJoinAndSelect : {children: 'm.children'}}
+            
+            params['where'] =  [{ parent_id : IsNull() }]
+            console.log(params)
             const entity = menuRepository.find(params)
             return entity
         }
