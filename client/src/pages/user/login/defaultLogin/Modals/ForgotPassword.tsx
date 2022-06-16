@@ -12,7 +12,6 @@ import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
-import { checkPassword } from 'src/contexts/login'
 
 import * as Time from 'src/types/time'
 import axios from 'axios';
@@ -22,10 +21,10 @@ import crypto from 'crypto'
 import useModal from "src/components/modal/hooks/useModal";
 
 type PasswordModifyModalProps = {
-  userId : string;
+  user_id : string;
 };
 
-const PasswordModifyModal:React.FC<PasswordModifyModalProps> = ({userId}) => {
+const PasswordModifyModal:React.FC<PasswordModifyModalProps> = ({user_id}) => {
   const { showModal } = useModal();
   const [errMsg , setErrMsg] = useState("")
   const handleSubmit = async(event: React.FormEvent<HTMLFormElement>) => {
@@ -47,14 +46,14 @@ const PasswordModifyModal:React.FC<PasswordModifyModalProps> = ({userId}) => {
       return
     }
 
-    const res = await checkPassword(userId ,password )
-    console.log(res)
-    if(res.check){
+    const res = await axios.post("/passwordCheck",{user_id:user_id,password:password})
+
+    if(res.data.check){
 
       const salt = crypto.randomBytes(32).toString('hex');
       const hashPassword = crypto.pbkdf2Sync(new_password, salt, 1, 32, 'sha512').toString('hex');
   
-      axios.patch("/users/"+ userId ,  { password :hashPassword , salt : salt } )
+      axios.patch("/users/"+ user_id ,  { password :hashPassword , salt : salt } )
       .then((response) => { 
         showModal({
           modalType: "AlertModal",

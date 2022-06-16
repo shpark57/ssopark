@@ -16,7 +16,7 @@ import Container from '@mui/material/Container';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 
 
-import { LoginContext , checkPassword} from 'src/contexts/login';
+import { LoginContext } from 'src/contexts/login';
 import * as Time from 'src/types/time'
 
 
@@ -33,6 +33,15 @@ function Copyright(props: any) {
     );
   }
  
+interface userInfo{
+    check:boolean,
+    id:number,
+    user_id:string,
+    user_name:string,
+    avatar:string,
+    email:string,
+    phone_number:string
+}
 const theme = createTheme(); 
 export default function Login(){
     const {setLoggedUser } = useContext(LoginContext);
@@ -51,20 +60,23 @@ export default function Login(){
 
         const input_id = String(data.get('input_id'))
         const input_password = String(data.get('input_password'))
-        const res = await checkPassword(input_id ,input_password)
-        if(res.check){
+        const res = await axios.post("/passwordCheck",{user_id:input_id,password:input_password})
+        
+        if(res.data.check){
             //로그인 시 로그인 시간 저장
-            axios.patch("/users/"+ res.id , {  last_login : Time.getTimeString() } )  
+            await axios.patch("/users/"+ res.data.id , {  last_login : Time.getTimeString() } )  
             .then((response) => { console.log("마지막 로그인 시간 수정 완료")})
-            .catch((error) =>  {console.log("마지막 로그인 시간 수정 실패")});          
+            .catch((error) =>  {console.log("마지막 로그인 시간 수정 실패")});    
+            
             let user = {
-                user_id : res.user_id,
-                user_name : res.user_name,
-                avatar : res.avatar,
-                email : res.email,
-                phone_number : res.phone_number
+                id : res.data.id,
+                user_id : res.data.user_id,
+                user_name : res.data.user_name,
+                avatar : res.data.avatar,
+                email : res.data.email,
+                phone_number : res.data.phone_number
             }
-            setLoggedUser(user,remember)
+            await setLoggedUser(user,remember)
         }else{
             setErrMsg('계정을 다시 확인해 주세요')
         }

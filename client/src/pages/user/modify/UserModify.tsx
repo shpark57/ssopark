@@ -17,7 +17,7 @@ import { useParams ,useNavigate} from 'react-router-dom';
 import { Hidden, Paper } from "@mui/material";
 
 
-import { LoginContext ,checkPassword } from 'src/contexts/login'
+import { LoginContext } from 'src/contexts/login'
 import * as Time from 'src/types/time'
 import crypto  from 'crypto'
 
@@ -57,9 +57,10 @@ interface userInfo  {
 
 const theme = createTheme();
 export default function UserModify() {
+  const { showModal } = useModal();   
     let navigate = useNavigate();   //페이지 이동을 위해필요.
     let {id} = useParams();
-    const {loggedIn , user , setLoggedOut} = useContext(LoginContext);
+    const {loggedIn , user } = useContext(LoginContext);
 
 
     const [userParams , setUserParams] = useState({ 
@@ -82,14 +83,15 @@ export default function UserModify() {
     useEffect(() => {
         axios.get('/users/'+id)
         .then(res =>  setUserParams(res.data))
-        .then(res => {
+       /* .then(res => {
             setUserParams((prevUser:userInfo ) => ({
               ...prevUser ,
               mdfr_time : Time.getTimeString(),
+              rgstr_id : user.user_id,                              //타임스탬프 변환해주어야함...
               rgstr_time : Time.toDateString(prevUser.rgstr_time),  //타임스탬프 변환해주어야함...
               last_login :  Time.toDateString(prevUser.last_login), //타임스탬프 변환해주어야함...
             }))
-          }).then(()=>console.log(userParams))
+          }).then(()=>console.log(userParams))*/
     },[0])  
 
 
@@ -100,23 +102,44 @@ export default function UserModify() {
 
     const input_id = String(data.get('user_id'))
     const input_password = String(data.get('password'))
-    const res = await checkPassword(input_id ,input_password)
-
-    console.log(res)
-    if(!res.check){
-      alert("비밀번호 다르다")
+    const res = await axios.post("/passwordCheck",{user_id:input_id,password:input_password})
+    if(!res.data.check){
+        showModal({
+          modalType: "AlertModal",
+          modalProps: {
+            message : '비밀번호가 다릅니다,'
+          }
+        });
       return
     }
     if( data.get('password') == '' ){
-        alert("비밀번호 입력해라")
+          showModal({
+            modalType: "AlertModal",
+            modalProps: {
+              message : '비밀번호를 입력해주세요,'
+            }
+          });
         return
     }
 
-
     axios.put("/users/"+ userParams.id , userParams )
-      .then((response) => { console.log(response);alert("수정 성공")})
+      .then((response) => {
+        showModal({
+          modalType: "AlertModal",
+          modalProps: {
+            message : '수정에 성공했습니다.'
+          }
+        });
+      })
       .then(()=> navigate(String("/users"))) 
-      .catch((error) =>  {alert("수정 실패")});
+      .catch((error) =>  {
+        showModal({
+          modalType: "AlertModal",
+          modalProps: {
+            message : '수정에 실패했습니다.'
+          }
+        });
+      });
 
   };
 
@@ -131,7 +154,6 @@ export default function UserModify() {
     }))
   }
 
-  const { showModal } = useModal();
   const handleClickDefaultModal = () => {
     showModal({
       modalType: "DefaultModal",

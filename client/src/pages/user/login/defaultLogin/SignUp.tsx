@@ -18,6 +18,7 @@ import axios from 'axios';
 
 import crypto  from 'crypto'
 
+import useModal from "src/components/modal/hooks/useModal";
 function Copyright(props: any) {
   return (
     <Typography variant="body2" color="text.secondary" align="center" {...props}>
@@ -33,12 +34,19 @@ function Copyright(props: any) {
 
 const theme = createTheme();
 export default function SignUp() {
+  const { showModal } = useModal();   
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
     
     if( data.get('password') != data.get('confirmPassword')){
-      alert("비밀번호 틀림")
+               
+        showModal({
+          modalType: "AlertModal",
+          modalProps: {
+            message: "비밀번호가 틀렸습니다!"
+          }
+        });
       return
     }
 
@@ -69,9 +77,25 @@ export default function SignUp() {
     }
 
     axios.post("/users" , params)
-      .then( (response) => { alert("등록 성공")})
+      .then( (response) => {
+        
+        showModal({
+          modalType: "AlertModal",
+          modalProps: {
+            message: "회원가입에 성공하셨습니다."
+          }
+        });
+      })
       .then(()=> window.location.replace("/"))
-      .catch( (error) => { alert("등록 실패") });
+      .catch( (error) => { 
+        
+        showModal({
+          modalType: "AlertModal",
+          modalProps: {
+            message: "회원가입에 실패하셨습니다."
+          }
+        });
+      });
     
   };
 

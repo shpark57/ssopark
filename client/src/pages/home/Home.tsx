@@ -1,4 +1,5 @@
-import React from 'react'
+import React , {useState,useContext} from 'react';
+import { LoginContext } from 'src/contexts/login'
 import './home.css'
 
 import FeaturedInfo from 'src/components/featuredInfo/FeaturedInfo'
@@ -9,11 +10,10 @@ import Grid from '@mui/material/Grid';
 import useModal from "src/components/modal/hooks/useModal";
 import axios from 'axios'
 import { useEffect } from 'react';
-
 export default function Home(){
 
 
-    //import useModal from "src/components/modal/hooks/useModal";
+  const {loggedIn , user } = useContext(LoginContext);
     const { showModal } = useModal();   
     const handleClickAlertModal = () => {
       showModal({
@@ -61,11 +61,11 @@ export default function Home(){
     };  
 
     const handleClickgGetTest = () => {
-      axios.get("/users").then((res) => console.log(res)) 
+      axios.post("/passwordCheck",{user_id:'shpark8381',password:'123qwe!@#'}).then((res) => console.log(res.data)) 
     };
 
     const handleClickgPostTest = () => {
-      axios.get("/users/2").then((res) => console.log(res))
+      axios.get("/menu").then((res) => console.log(res.data)) 
     };
 
     const handleClickgPutTest = () => {

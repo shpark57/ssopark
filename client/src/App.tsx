@@ -21,6 +21,9 @@ import UserModify from './pages/user/modify/UserModify';        //유저 정보 
 
 import {BrowserRouter as Router, Routes, Route  } from 'react-router-dom'
 
+import GlobalModal from "./components/modal/GlobalModal";
+
+
 function App() {
 
 
@@ -31,6 +34,7 @@ function App() {
   
   return (
     <LoginProvider>
+    <GlobalModal />
       {
         loggedIn ?  //loggedIn 삼항연산자 true 부분
                   <Router>

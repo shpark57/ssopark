@@ -1,4 +1,4 @@
-import React , {useState} from 'react';
+import React , {useState,useContext} from 'react';
 import Avatar from '@mui/material/Avatar';
 import Button from '@mui/material/Button';
 import CssBaseline from '@mui/material/CssBaseline';
@@ -12,7 +12,7 @@ import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
-import { checkPassword } from 'src/contexts/login'
+import { LoginContext } from 'src/contexts/login'
 
 import * as Time from 'src/types/time'
 import axios from 'axios';
@@ -28,6 +28,7 @@ type PasswordModifyModalProps = {
 const PasswordModifyModal:React.FC<PasswordModifyModalProps> = ({user_id}) => {
   const { showModal } = useModal();
   const [errMsg , setErrMsg] = useState("")
+  const {loggedIn , user } = useContext(LoginContext);
   const handleSubmit = async(event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
@@ -47,14 +48,10 @@ const PasswordModifyModal:React.FC<PasswordModifyModalProps> = ({user_id}) => {
       return
     }
 
-    const res = await checkPassword(user_id ,password )
-    console.log(res)
-    if(res.check){
+    const res = await axios.post("/passwordCheck",{user_id:user_id,password:password})
+    if(res.data.check){
 
-      const salt = crypto.randomBytes(32).toString('hex');
-      const hashPassword = crypto.pbkdf2Sync(new_password, salt, 1, 32, 'sha512').toString('hex');
-  
-      axios.patch("/users/"+ res.id ,  {password :hashPassword , salt : salt } )
+      axios.patch("/passwordChange/"+ res.data.id ,  {password :new_password , mdfr_time : Time.getTimeString() , mdfr_id : user.user_id } )
       .then((response) => { 
         showModal({
           modalType: "AlertModal",

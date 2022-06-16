@@ -5,11 +5,15 @@ const router = express.Router();
 import {createConnection , IsNull  , Not, MoreThan, Equal , LessThanOrEqual  , MoreThanOrEqual , } from "typeorm";
 
 import {Users} from "../src/entity/Users";
+import crypto from 'crypto'
+import { Menu } from "../src/entity/Menu";
 
 
 
 createConnection().then(connection => {
     const usersRepository = connection.getRepository(Users)
+    
+    const menuRepository = connection.getRepository(Menu)
 
     const findObjectSetting = ( req: Request) => { 
         /* rest api 규칙을 동적으로 사용하기위한 함수 */
@@ -56,6 +60,14 @@ createConnection().then(connection => {
                 }else{
                     whereObj[key.replace('_ne','')] =  Not(value)     //  != 
                 }
+            }else if(key.indexOf('_join') !== -1 ){
+
+                    '_join='
+
+            }else if(key.indexOf('_on') !== -1 ){
+
+                    
+
             }else{
                 if(value == 'null'){
                     whereObj[key] = IsNull()
@@ -93,15 +105,21 @@ createConnection().then(connection => {
         //usersRepository 를 동적으로 사용하기 위한 함수. 
         //테이블 추가하면 선언은 계속 해주어야한다..
         const params = findObjectSetting(req)
+        
         if(table.toLowerCase() == 'users'){
             
             const entity = usersRepository.find(params)
+            return entity
+        }else if(table.toLowerCase() == 'menu'){
+            params['children']=  ['parent_id']
+            const entity = menuRepository.find(params)
             return entity
         }
     
     }  
 
     const saveRepository =  (table : string , req: Request, res: Response)  => {
+        
         if(table.toLowerCase() == 'users'){
             console.log(req.body)
             const entity =   usersRepository.save(req.body)
@@ -181,8 +199,10 @@ createConnection().then(connection => {
 
 
     router.put("/:id", async function(req: Request, res: Response) {
+
         let table = req.baseUrl.substr(1)
         
+        req.body['id'] = Number(req.params.id)
         const entity = await saveRepository(table , req , res)
         .then(entity => {
             console.log(entity)
@@ -246,6 +266,75 @@ createConnection().then(connection => {
         });
 
     });
+
+
+    /*
+        페스워드 
+    */
+        router.post("/passwordCheck", async function(req: Request, res: Response) {
+            // /테이블명/1 의 형태의 url은 이곳으로 온다.
+    
+            let user_id = req.body.user_id
+            let password = req.body.password
+    
+            usersRepository.findOneBy({user_id : user_id})
+            .then((response) => {
+                const salt = response.salt 
+                password = crypto.pbkdf2Sync(password, salt, 1, 32, 'sha512').toString('hex');
+            }).then((response) => {
+                usersRepository.findOneBy({user_id : user_id , password : password})
+                .then((response) => {
+                    if(response){
+                        let params = {
+                            check : true,
+                            id : response.id,
+                            user_id : response.user_id,
+                            user_name : response.user_name,
+                            avatar : response.avatar,
+                            email : response.email,
+                            phone_number : response.phone_number
+                        }
+                        res.send(params);
+                    }else{
+                        let params = {
+                            check : false,
+                            id : 0,
+                            user_id : '',
+                            user_name : '',
+                            avatar : '',
+                            email : '',
+                            phone_number : ''
+                        }
+                        res.send(params);
+                    }
+                })
+            }) .catch(err => {
+                console.log(`query error : ${err}`);
+                res.status(500).send(err);
+            });
+        });
+    
+    
+        router.patch("passwordChange/:id", async function(req: Request, res: Response) {
+            // /테이블명/1 의 형태의 url은 이곳으로 온다.
+    
+            req.body['id'] = Number(req.params.id)
+            const salt = crypto.randomBytes(32).toString('hex');
+            req.body['salt'] = salt
+            req.body['password'] = crypto.pbkdf2Sync(req.body.password, salt, 1, 32, 'sha512').toString('hex');
+            const response = await usersRepository.save(req.body)
+            .then(response => {
+                console.log(response)
+                res.send(response);
+            })
+            .catch(err => {
+                console.log(`query error : ${err}`);
+                res.status(500).send(err);
+            });
+        });
+
+
+
 
 
 

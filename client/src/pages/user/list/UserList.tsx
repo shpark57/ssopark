@@ -9,12 +9,15 @@ import * as Time from 'src/types/time'
 import { LoginContext } from 'src/contexts/login'
 
 
+import useModal from "src/components/modal/hooks/useModal";
+
 
 
 
 
 export default function UserList(){
-    const {loggedIn , user , setLoggedOut} = useContext(LoginContext);
+    const { showModal } = useModal();   
+    const {loggedIn , user } = useContext(LoginContext);
     const [tableData , setTableData] = useState([])
     useEffect(() => {
         axios.get('/users' , {params : {use_yn: 'Y',_sort:'last_login',_order:'DESC' }})
@@ -34,8 +37,23 @@ export default function UserList(){
             mdfr_id : user.user_id,
             mdfr_time : Time.getTimeString()    
         } )
-            .then( (response) => { alert("삭제 성공") })
-            .catch( (error) => { alert("삭제 실패") });
+            .then( (response) => { 
+                showModal({
+                    modalType: "AlertModal",
+                    modalProps: {
+                      message: "삭제 성공!"
+                    }
+                  });
+            })
+            .catch( (error) => {
+                
+                showModal({
+                    modalType: "AlertModal",
+                    modalProps: {
+                      message: "삭제 실패!"
+                    }
+                  });
+            });
         
         setTableData(tableData.filter((item) => item['user_id']  !== row.user_id) )
     }
