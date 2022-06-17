@@ -46,7 +46,7 @@ const PasswordModifyModal:React.FC<PasswordModifyModalProps> = ({user_id}) => {
       return
     }
 
-    const res = await axios.post("/passwordCheck",{user_id:user_id,password:password})
+    const res = await axios.post("/password/check",{user_id:user_id,password:password})
 
     if(res.data.check){
 

@@ -60,7 +60,7 @@ export default function Login(){
 
         const input_id = String(data.get('input_id'))
         const input_password = String(data.get('input_password'))
-        const res = await axios.post("/passwordCheck",{user_id:input_id,password:input_password})
+        const res = await axios.post("/password/check",{user_id:input_id,password:input_password})
         
         if(res.data.check){
             //로그인 시 로그인 시간 저장

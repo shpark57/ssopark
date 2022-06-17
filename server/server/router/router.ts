@@ -11,8 +11,9 @@ import { Menu } from "../src/entity/Menu";
 
 
 createConnection().then(connection => {
+
+
     const usersRepository = connection.getRepository(Users)
-    
     const menuRepository = connection.getRepository(Menu)
 
     const findObjectSetting = ( req: Request) => { 
@@ -61,13 +62,11 @@ createConnection().then(connection => {
                     whereObj[key.replace('_ne','')] =  Not(value)     //  != 
                 }
             }else if(key.indexOf('_join') !== -1 ){
-
-                    '_join='
-
+                    //미구현 고민중
             }else if(key.indexOf('_on') !== -1 ){
-
-                    
-
+                    //미구현 고민중
+            }else if(key.indexOf('_rel') !== -1 ){
+                params['relations'] =  value.split(',')
             }else{
                 if(value == 'null'){
                     whereObj[key] = IsNull()
@@ -94,38 +93,39 @@ createConnection().then(connection => {
         return params
     }
 
-    const findOneByRepository =  (table : string , req: Request, res: Response)  => {
+    const findOneByRepository = async (table : string , req: Request, res: Response)  => {
         if(table.toLowerCase() == 'users'){
-            const entity = usersRepository.findOneBy({id: Number(req.params.id)})
+            const entity = await usersRepository.findOneBy({id: Number(req.params.id)})
+            return entity
+        }else if(table.toLowerCase() == 'menu'){
+            const entity = await menuRepository.findOneBy({id: Number(req.params.id)})
             return entity
         }
     }  
 
-    const findByRepository =  (table : string , req: Request, res: Response)  => {
+    const findByRepository =  async (table : string , req: Request, res: Response)  => {
         //usersRepository 를 동적으로 사용하기 위한 함수. 
         //테이블 추가하면 선언은 계속 해주어야한다..
         const params = findObjectSetting(req)
         
         if(table.toLowerCase() == 'users'){
-            
-            const entity = usersRepository.find(params)
+            const entity = await usersRepository.find(params)
             return entity
         }else if(table.toLowerCase() == 'menu'){
-            params['join'] =  { alias : 'm' ,  leftJoinAndSelect : {children: 'm.children'}}
-            
+            params['relations'] =  ['children']
             params['where'] =  [{ parent_id : IsNull() }]
-            console.log(params)
-            const entity = menuRepository.find(params)
+            const entity = await menuRepository.find(params)
             return entity
         }
     
     }  
 
-    const saveRepository =  (table : string , req: Request, res: Response)  => {
-        
+    const saveRepository =  async (table : string , req: Request, res: Response)  => {
         if(table.toLowerCase() == 'users'){
-            console.log(req.body)
-            const entity =   usersRepository.save(req.body)
+            const entity = await  usersRepository.save(req.body)
+            return entity
+        }else if(table.toLowerCase() == 'menu'){
+            const entity = await  menuRepository.save(req.body)
             return entity
         }
     }  
@@ -135,15 +135,22 @@ createConnection().then(connection => {
             const remove = await usersRepository.findOneBy(req.query)
             const entity = await usersRepository.delete(remove)
             return entity
+        }else if(table.toLowerCase() == 'menu'){
+            const remove = await menuRepository.findOneBy(req.query)
+            const entity = await menuRepository.delete(remove)
+            return entity
         }
     }  
 
     const deleteRepository = async(table : string , req: Request, res: Response)  => {
-    
         const params = findObjectSetting(req)
         if(table.toLowerCase() == 'users'){
             let remove = await usersRepository.find(params)
             const entity = await  usersRepository.remove(remove)
+            return entity
+        }else if(table.toLowerCase() == 'menu'){
+            let remove = await menuRepository.find(params)
+            const entity = await  menuRepository.remove(remove)
             return entity
         }
     
@@ -153,7 +160,7 @@ createConnection().then(connection => {
 
 
     router.get("/:id", function(req: Request, res: Response) {
-        // /테이블명/1 의 형태의 url은 이곳으로 온다.
+        // /테이블명/:id 의 형태의 url은 이곳으로 온다.
 
         let table = req.baseUrl.substr(1)
         findOneByRepository(table , req , res)
@@ -185,9 +192,9 @@ createConnection().then(connection => {
     });
 
 
-    router.post("", async function(req: Request, res: Response) {
+    router.post("",  function(req: Request, res: Response) {
         let table = req.baseUrl.substr(1)
-        const entity = await saveRepository(table , req , res)
+        const entity =  saveRepository(table , req , res)
         .then(entity => {
             console.log(entity)
             res.send(entity);
@@ -201,12 +208,12 @@ createConnection().then(connection => {
     });
 
 
-    router.put("/:id", async function(req: Request, res: Response) {
+    router.put("/:id",  function(req: Request, res: Response) {
 
         let table = req.baseUrl.substr(1)
         
         req.body['id'] = Number(req.params.id)
-        const entity = await saveRepository(table , req , res)
+        const entity =  saveRepository(table , req , res)
         .then(entity => {
             console.log(entity)
             res.send(entity);
@@ -219,12 +226,12 @@ createConnection().then(connection => {
     });
     
 
-    router.patch("/:id", async function(req: Request, res: Response) {
+    router.patch("/:id",  function(req: Request, res: Response) {
         let table = req.baseUrl.substr(1)
 
         
         req.body['id'] = Number(req.params.id)
-        const entity = await saveRepository(table , req , res)
+        const entity =  saveRepository(table , req , res)
         .then(entity => {
             console.log(entity)
             res.send(entity);
@@ -274,7 +281,7 @@ createConnection().then(connection => {
     /*
         페스워드 
     */
-        router.post("/passwordCheck", async function(req: Request, res: Response) {
+        router.post("/check",  function(req: Request, res: Response) {
             // /테이블명/1 의 형태의 url은 이곳으로 온다.
     
             let user_id = req.body.user_id
@@ -317,15 +324,15 @@ createConnection().then(connection => {
             });
         });
     
-    
-        router.patch("passwordChange/:id", async function(req: Request, res: Response) {
+        //패스워드 변경
+        router.patch("/change/:id", function(req: Request, res: Response) {
             // /테이블명/1 의 형태의 url은 이곳으로 온다.
     
             req.body['id'] = Number(req.params.id)
             const salt = crypto.randomBytes(32).toString('hex');
             req.body['salt'] = salt
             req.body['password'] = crypto.pbkdf2Sync(req.body.password, salt, 1, 32, 'sha512').toString('hex');
-            const response = await usersRepository.save(req.body)
+            const response = usersRepository.save(req.body)
             .then(response => {
                 console.log(response)
                 res.send(response);

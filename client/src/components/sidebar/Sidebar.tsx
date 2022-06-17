@@ -9,14 +9,16 @@ import axios from 'axios';
 
 
 
+
 export default function Sidebar(){
     let navigate = useNavigate();   //페이지 이동을 위해필요.
     const menuClick = (e:React.MouseEvent<HTMLLIElement>) => {  //li클릭 이벤트
         if(!(e.target instanceof HTMLLIElement)){ 
             return;
         }
+       
         const url = e.target.dataset.url                //menu 데이터에 url을 data-url 에 삽입
-        if(url == '#submenu'){  //서브메뉴는 url이 #submenu
+        if(typeof url === 'undefined'){  //서브메뉴는 url이 #submenu
             let subMenuDiv = e.target.nextElementSibling as HTMLUListElement    
             let childNodes = subMenuDiv.childNodes 
             for(let i =0; i < childNodes.length ; i++){
@@ -32,45 +34,66 @@ export default function Sidebar(){
         }
 
     }
-    const [menuData , setMenuData] = useState([{"menu":"","title":"","menuList":[ { "menu":"" ,"title":"","url" : "" , "icon" : "" , "subMenu": [{ "menu":"" ,"title":"","url" : "" , "icon" : ""}] }]}])
-    useEffect(() => {
-        axios.get('http://localhost:4000/menu')
-            .then(res => setMenuData(res.data))
+
+    interface menuInfo {
+        id:number,
+        parent_id:number,
+        name:string,
+        list_order:number,
+        url:string,
+        icon:string,
+        clildren:any
+    }
+    interface childrenInfo {
+        id:number,
+        parent_id:number,
+        name:string,
+        list_order:number,
+        url:string,
+        icon:string
+    }
+    const [menuData , setMenuData] = useState([ {id:0 , parent_id:0 , name:'' ,list_order:0,url:'',icon:'',children:[{id:0 , parent_id:0 , name:'' ,list_order:0,url:'',icon:''}]} ])
+    useEffect( () => {
+        async function getMenuAndSet(){
+            const res = await  axios.get('/menu?_rel=children&parent_id_ne=null')
+            setMenuData(res.data)
+        }
+        getMenuAndSet()
     },[])  
-    
     
     return (
         <div className="sidebar">
             <div className='sidebarWrapper'>
-                {menuData.map((menuList) =>{
-                    return (
-                        <div className='sidebarMenu' key={menuList.menu}>
-                            <h3 className='sidebarTitle'>{menuList.title}</h3>
-                            <ul className='sidebarList'>
-                                {menuList.menuList.map((menu) =>{
-                                    return(
-                                            <div key={menu.menu}>
-                                                <li className='sidebarListItem' onClick={menuClick} data-url={menu.url}>
-                                                    <HomeWorkIcon/>
-                                                    {menu.title}
-                                                </li>
-                                                    <ul className="subMenu">
-                                                        {menu.subMenu.map((subMenu) =>{
-                                                            return(
-                                                                <li className='sidebarSubMenu' key={subMenu.menu} onClick={menuClick} data-url={subMenu.url}>
-                                                                    <AccountBoxIcon/>
-                                                                    {subMenu.title}
-                                                                </li>
-                                                                )
-                                                            })}
-                                                    </ul>
-                                            </div>
-                                    )
-                                })}
-                            </ul>
-                        </div>
-                    )
-                })}
+            {
+                    menuData.map((menu) => {
+                        return(
+                            <div className='sidebarMenu' key={menu.id}>
+                                <h3 className='sidebarTitle'>{menu.name}</h3>
+                                <ul className='sidebarList'>
+                                <div key={menu.id}>
+                                    <li className='sidebarListItem' onClick={menuClick} data-url={menu.url}>
+                                        <HomeWorkIcon/>
+                                        {menu.name}
+                                    </li>
+                                    <ul className="subMenu">
+                                        { 
+                                            menu.children.map((child) => {
+                                                return(
+                                                    <li className='sidebarSubMenu' key={child.id} onClick={menuClick} data-url={child.url}>
+                                                        <AccountBoxIcon/>
+                                                        {child.name}
+                                                    </li>
+                                                )
+                                            })
+                                        }
+                                    </ul>
+                                </div>
+
+                                </ul>
+                            </div>
+                        )
+                    })
+            }
             </div>
         </div>
     )

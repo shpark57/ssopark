@@ -61,7 +61,7 @@ export default function Home(){
     };  
 
     const handleClickgGetTest = () => {
-      axios.post("/passwordCheck",{user_id:'shpark8381',password:'123qwe!@#'}).then((res) => console.log(res.data)) 
+      axios.post("/password/check",{user_id:'shpark8381',password:'123qwe!@#'}).then((res) => console.log(res.data)) 
     };
 
     const handleClickgPostTest = () => {

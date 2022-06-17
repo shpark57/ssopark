@@ -102,7 +102,7 @@ export default function UserModify() {
 
     const input_id = String(data.get('user_id'))
     const input_password = String(data.get('password'))
-    const res = await axios.post("/passwordCheck",{user_id:input_id,password:input_password})
+    const res = await axios.post("/password/check",{user_id:input_id,password:input_password})
     if(!res.data.check){
         showModal({
           modalType: "AlertModal",
