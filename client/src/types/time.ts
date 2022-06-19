@@ -28,3 +28,13 @@ export const toDateString = (time:string) => {
     var timeString = year +'-'+month+'-'+day+' '+  hours + ':' + minutes  + ':' + seconds;    
     return timeString;
 }
+
+export const getYmd =() => {
+    
+    let today = new Date();   
+    let year = today.getFullYear()
+    let month = ('0' + (today.getMonth()+1)).slice(-2); 
+    let day = ('0' + today.getDate()).slice(-2); 
+    let ymd = year+'/'+month+'/'+day+'/'
+    return ymd;
+}

@@ -13,10 +13,11 @@ import SignUp from './pages/user/login/defaultLogin/SignUp';    //회원가입 �
 import Topbar from './components/topbar/Topbar';                //탑바
 import Sidebar from './components/sidebar/Sidebar';             //사이드바
 import DagAndDrop from './pages/dragAndDrop/DragAndDrop';  //드래그앤드랍 샘플
-import FileUpload from './components/fileUpload/FileUpload';    //멀티파일업로드 
 import Home from './pages/home/Home';                           //홈
 import UserList from './pages/user/list/UserList';              //유저 테이블  
 import UserModify from './pages/user/modify/UserModify';        //유저 정보 수정
+import MoviesList from './pages/movies/list/MoviesList';        //영화 리스트
+import MovieAdd from './pages/movies/add/movieAdd';           //영화 추가
 
 
 import {BrowserRouter as Router, Routes, Route  } from 'react-router-dom'
@@ -44,8 +45,9 @@ function App() {
                       <Routes>
                         <Route path="/" element={ <Home/>}/>
                         <Route path="/users" element={<UserList/>}/>
+                        <Route path="/moviesList" element={<MoviesList/>}/>
+                        <Route path="/movieAdd" element={<MovieAdd/>}/>
                         <Route path="/dragAndDrop" element={<DagAndDrop/>}/>
-                        <Route path="/fileUpload" element={<FileUpload/>}/>
                         <Route path="/userModify/:id" element={ <UserModify/> }/>
                         
                       </Routes>

@@ -13,10 +13,6 @@ export interface AlertModalType {
   modalType: typeof MODAL_TYPES.AlertModal;
   modalProps: AlertModalProps;
 }
-export interface AlertModalType {
-  modalType: typeof MODAL_TYPES.AlertModal;
-  modalProps: AlertModalProps;
-}
 export interface DefaultModalType {
   modalType: typeof MODAL_TYPES.DefaultModal;
   modalProps: DefaultModalProps;

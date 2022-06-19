@@ -64,7 +64,7 @@ export default function Login(){
         
         if(res.data.check){
             //로그인 시 로그인 시간 저장
-            await axios.patch("/users/"+ res.data.id , {  last_login : Time.getTimeString() } )  
+            await axios.patch("/Users/"+ res.data.id , {  last_login : Time.getTimeString() } )  
             .then((response) => { console.log("마지막 로그인 시간 수정 완료")})
             .catch((error) =>  {console.log("마지막 로그인 시간 수정 실패")});    
             

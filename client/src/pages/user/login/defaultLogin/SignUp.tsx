@@ -76,7 +76,7 @@ export default function SignUp() {
       params.avatar = 'https://cdn.pixabay.com/photo/2017/11/10/05/48/user-2935527_960_720.png'
     }
 
-    axios.post("/users" , params)
+    axios.post("/Users" , params)
       .then( (response) => {
         
         showModal({

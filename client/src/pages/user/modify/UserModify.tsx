@@ -81,7 +81,7 @@ export default function UserModify() {
                                     })
     
     useEffect(() => {
-        axios.get('/users/'+id)
+        axios.get('/Users/'+id)
         .then(res =>  setUserParams(res.data))
        /* .then(res => {
             setUserParams((prevUser:userInfo ) => ({
@@ -122,7 +122,7 @@ export default function UserModify() {
         return
     }
 
-    axios.put("/users/"+ userParams.id , userParams )
+    axios.put("/Users/"+ userParams.id , userParams )
       .then((response) => {
         showModal({
           modalType: "AlertModal",
@@ -131,7 +131,7 @@ export default function UserModify() {
           }
         });
       })
-      .then(()=> navigate(String("/users"))) 
+      .then(()=> navigate(String("/Users"))) 
       .catch((error) =>  {
         showModal({
           modalType: "AlertModal",

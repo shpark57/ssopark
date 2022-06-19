@@ -3,19 +3,41 @@ import * as express from "express";
 import {Request, Response} from "express";
 const router = express.Router();
 import {createConnection , IsNull  , Not, MoreThan, Equal , LessThanOrEqual  , MoreThanOrEqual , } from "typeorm";
+import crypto from 'crypto'
+
 
 import {Users} from "../src/entity/Users";
-import crypto from 'crypto'
 import { Menu } from "../src/entity/Menu";
+import { Files } from "../src/entity/Files";
+import { Comment } from "../src/entity/Comment";
+import { Movies } from "../src/entity/Movies";
+import { Likes } from "../src/entity/Likes";
 
 
 
 createConnection().then(connection => {
 
+    const dinamicRepository = (table : string) => {
+        
+        let repository;
+        if(table == 'Users'){
+            repository =  connection.getRepository(Users)
+        }else if(table == 'Menu'){
+            repository =  connection.getRepository(Menu)
+        }else if(table == 'Files'){
+            repository =  connection.getRepository(Files)
+        }else if(table == 'Comment'){
+            repository =  connection.getRepository(Comment)
+        }else if(table == 'Movies'){
+            repository =  connection.getRepository(Movies)
+        }else if(table == 'Likes'){
+            repository =  connection.getRepository(Likes)
+        }
+        
 
-    const usersRepository = connection.getRepository(Users)
-    const menuRepository = connection.getRepository(Menu)
-
+        return repository;
+    }
+   
     const findObjectSetting = ( req: Request) => { 
         /* rest api 규칙을 동적으로 사용하기위한 함수 */
         /*
@@ -94,13 +116,9 @@ createConnection().then(connection => {
     }
 
     const findOneByRepository = async (table : string , req: Request, res: Response)  => {
-        if(table.toLowerCase() == 'users'){
-            const entity = await usersRepository.findOneBy({id: Number(req.params.id)})
-            return entity
-        }else if(table.toLowerCase() == 'menu'){
-            const entity = await menuRepository.findOneBy({id: Number(req.params.id)})
-            return entity
-        }
+
+        const entity = await  dinamicRepository(table).findOneBy({id: Number(req.params.id)})
+        return entity
     }  
 
     const findByRepository =  async (table : string , req: Request, res: Response)  => {
@@ -108,51 +126,34 @@ createConnection().then(connection => {
         //테이블 추가하면 선언은 계속 해주어야한다..
         const params = findObjectSetting(req)
         
-        if(table.toLowerCase() == 'users'){
-            const entity = await usersRepository.find(params)
-            return entity
-        }else if(table.toLowerCase() == 'menu'){
-            params['relations'] =  ['children']
-            params['where'] =  [{ parent_id : IsNull() }]
-            const entity = await menuRepository.find(params)
-            return entity
-        }
-    
+        const entity = await dinamicRepository(table).find(params)
+        return entity
+
     }  
 
     const saveRepository =  async (table : string , req: Request, res: Response)  => {
-        if(table.toLowerCase() == 'users'){
-            const entity = await  usersRepository.save(req.body)
-            return entity
-        }else if(table.toLowerCase() == 'menu'){
-            const entity = await  menuRepository.save(req.body)
-            return entity
-        }
+        console.log(req.body)
+        const entity = await  dinamicRepository(table).save(req.body)
+        return entity
+        
     }  
 
     const deleteOneByRepository =  async(table : string , req: Request, res: Response)  => {
-        if(table.toLowerCase() == 'users'){
-            const remove = await usersRepository.findOneBy(req.query)
-            const entity = await usersRepository.delete(remove)
-            return entity
-        }else if(table.toLowerCase() == 'menu'){
-            const remove = await menuRepository.findOneBy(req.query)
-            const entity = await menuRepository.delete(remove)
-            return entity
-        }
+        console.log(req.query)
+        const remove = await dinamicRepository(table).findOneBy(req.query)
+        const entity = await dinamicRepository(table).delete(remove)
+        return entity
+   
     }  
 
     const deleteRepository = async(table : string , req: Request, res: Response)  => {
         const params = findObjectSetting(req)
-        if(table.toLowerCase() == 'users'){
-            let remove = await usersRepository.find(params)
-            const entity = await  usersRepository.remove(remove)
-            return entity
-        }else if(table.toLowerCase() == 'menu'){
-            let remove = await menuRepository.find(params)
-            const entity = await  menuRepository.remove(remove)
-            return entity
-        }
+
+        console.log(params)
+        let remove = await dinamicRepository(table).find(params)
+        const entity = await  dinamicRepository(table).remove(remove)
+        return entity
+
     
     }  
     
@@ -194,6 +195,7 @@ createConnection().then(connection => {
 
     router.post("",  function(req: Request, res: Response) {
         let table = req.baseUrl.substr(1)
+        console.log('????:'+table)
         const entity =  saveRepository(table , req , res)
         .then(entity => {
             console.log(entity)
@@ -287,12 +289,12 @@ createConnection().then(connection => {
             let user_id = req.body.user_id
             let password = req.body.password
     
-            usersRepository.findOneBy({user_id : user_id})
+            connection.getRepository(Users).findOneBy({user_id : user_id})
             .then((response) => {
                 const salt = response.salt 
                 password = crypto.pbkdf2Sync(password, salt, 1, 32, 'sha512').toString('hex');
             }).then((response) => {
-                usersRepository.findOneBy({user_id : user_id , password : password})
+                connection.getRepository(Users).findOneBy({user_id : user_id , password : password})
                 .then((response) => {
                     if(response){
                         let params = {
@@ -332,7 +334,7 @@ createConnection().then(connection => {
             const salt = crypto.randomBytes(32).toString('hex');
             req.body['salt'] = salt
             req.body['password'] = crypto.pbkdf2Sync(req.body.password, salt, 1, 32, 'sha512').toString('hex');
-            const response = usersRepository.save(req.body)
+            const response = connection.getRepository(Users).save(req.body)
             .then(response => {
                 console.log(response)
                 res.send(response);

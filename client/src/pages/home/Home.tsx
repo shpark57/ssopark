@@ -60,24 +60,31 @@ export default function Home(){
       });
     };  
 
-    const handleClickgGetTest = () => {
+    const handleClickTest1 = () => {
       axios.post("/password/check",{user_id:'shpark8381',password:'123qwe!@#'}).then((res) => console.log(res.data)) 
     };
 
-    const handleClickgPostTest = () => {
-      axios.get("/menu").then((res) => console.log(res.data)) 
+    const handleClickTest2 = () => {
+      axios.get("/Menu").then((res) => console.log(res.data)) 
     };
 
-    const handleClickgPutTest = () => {
-      let params = {query : 'SELECT * FROM users'}
-      axios.post("/query" , {params}).then((res) => console.log(res))
+    const handleClickTest3 = () => {
+      axios.patch("/Movies/1" , {dis_like : 1 , like : 3}).then((res) => console.log(res))
     };
 
-    const handleClickgPatchTest = () => {
-      axios.patch("/api").then((res) => console.log(alert(res.data.id)))
+    const handleClickTest4 = () => {
+      axios.get("/Files?parent_id=1&type=Movies")
+      .then((res) =>  {
+        console.log("영화의 파일조회") 
+        console.log(res)
+      })  //대댓글 조회
     };
-    const handleClickgDeleteTest = () => {
-      axios.delete("/users").then((res) =>  console.log(res))
+    const handleClickTest5 = () => {
+      axios.get("/Comment?parent_id=1&_rel=children&parent_comment_id=null&type=Movies")
+      .then((res) =>  {
+        console.log("댓글조회") 
+        console.log(res)
+      })  //대댓글 조회
     };
     
 
@@ -110,28 +117,28 @@ export default function Home(){
             <Button 
                 variant="contained" 
                 sx={{  mr: 3, ml: 3  }}
-                onClick={handleClickgGetTest}
-            >Rest GET TEST</Button>
+                onClick={handleClickTest1}
+            >Test1</Button>
             <Button 
                 variant="contained" 
                 sx={{  mr: 3, ml: 3  }}
-                onClick={handleClickgPostTest}
-            >Rest POST TEST</Button>
+                onClick={handleClickTest2}
+            >Test2</Button>
             <Button 
                 variant="contained" 
                 sx={{  mr: 3, ml: 3  }}
-                onClick={handleClickgPutTest}
-            >Rest Query TEST</Button>
+                onClick={handleClickTest3}
+            >Test3</Button>
             <Button 
                 variant="contained" 
                 sx={{  mr: 3, ml: 3  }}
-                onClick={handleClickgPatchTest}
-            >Rest PATCH TEST</Button>
+                onClick={handleClickTest4}
+            >Test4</Button>
             <Button 
                 variant="contained" 
                 sx={{  mr: 3, ml: 3  }}
-                onClick={handleClickgDeleteTest}
-            >Rest DELETE TEST</Button>
+                onClick={handleClickTest5}
+            >Test5</Button>
         </div>
     )
 }

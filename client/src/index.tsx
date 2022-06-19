@@ -12,8 +12,6 @@ const root = ReactDOM.createRoot(
 );
 root.render(
     <RecoilRoot>
-
-      <GlobalModal />
       <App />
     </RecoilRoot>
 );

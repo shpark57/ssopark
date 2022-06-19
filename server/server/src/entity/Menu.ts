@@ -1,5 +1,5 @@
 import {Entity, Column, PrimaryGeneratedColumn , Index , Unique , OneToMany ,JoinColumn , ManyToOne} from "typeorm";
-import { ForeignKeyMetadata } from "typeorm/metadata/ForeignKeyMetadata";
+
 
 @Entity()
 export class Menu {
@@ -23,6 +23,20 @@ export class Menu {
 
     @Column({nullable : true})
     icon:string;
+
+    @Column({default: 'systemAdmin'})
+    rgstr_id: string;
+
+    @Index()
+    @Column({ type: 'timestamp' ,default: () => "CURRENT_TIMESTAMP"})
+    rgstr_time: Date;
+
+    @Column({default: 'systemAdmin'})
+    mdfr_id: string;
+
+    @Index()
+    @Column({ type: 'timestamp' ,default: () => "CURRENT_TIMESTAMP"})
+    mdfr_time: Date;
 
     @OneToMany(type => Menu , menu => menu.parent_id)
     children : Menu[]

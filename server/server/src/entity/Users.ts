@@ -29,22 +29,22 @@ export class Users {
     @Column()
     use_yn: string;
 
-    @Column()
+    @Column({default: 'systemAdmin'})
     rgstr_id: string;
 
     @Index()
-    @Column({ type: 'timestamp' })
+    @Column({ type: 'timestamp' ,default: () => "CURRENT_TIMESTAMP"})
     rgstr_time: Date;
 
-    @Column()
+    @Column({default: 'systemAdmin'})
     mdfr_id: string;
 
     @Index()
-    @Column({ type: 'timestamp' })
+    @Column({ type: 'timestamp' ,default: () => "CURRENT_TIMESTAMP"})
     mdfr_time: Date;
 
     @Index()
-    @Column({ type: 'timestamp' })
+    @Column({ type: 'timestamp' ,default: () => "CURRENT_TIMESTAMP"})
     last_login: Date;
 
     @Column()

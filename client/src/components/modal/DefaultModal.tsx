@@ -46,6 +46,7 @@ const DefaultModal = ({
   return (
     <Dialog
       open
+      onClose={onClose}
       aria-labelledby="alert-dialog-title"
       aria-describedby="alert-dialog-description"
       maxWidth="sm"
@@ -56,12 +57,6 @@ const DefaultModal = ({
       <DialogContent>
         {message}
       </DialogContent>
-      <DialogActions>
-        <Button onClick={onClose}>{cancelText}</Button>
-        <Button onClick={onConfirm} color="primary" autoFocus>
-          {confirmText}
-        </Button>
-      </DialogActions>
     </Dialog>
   );
 };

@@ -11,16 +11,24 @@ import React, {
     id: number;
     object: File;
   }
+  interface FileModalProps {
+    mulit : boolean;
+    parentCallBack:(files: IFileTypes[]) => void;
+  };
   
-  const FileUpload = () => {
+const FileUpload:React.FC<FileModalProps> =  (props) => {
     const [isDragging, setIsDragging] = useState<boolean>(false); // 드래그 중인지 확인 변수
     const [files, setFiles] = useState<IFileTypes[]>([]);   //file 변수
-  
+    const [isMulit, setIsmult] = useState<boolean>(props.mulit); // 드래그 중인지 확인 변수
+    
     const dragRef = useRef<HTMLLabelElement | null>(null);
     const fileId = useRef<number>(0);
   
-    const onChangeFiles = useCallback(
-      (e: ChangeEvent<HTMLInputElement> | any): void => {
+    useEffect(()=>{
+      props.parentCallBack(files)
+    })
+
+    const onChangeFiles = useCallback( (e: ChangeEvent<HTMLInputElement> | any): void => { 
         let selectFiles: File[] = [];
         let tempFiles: IFileTypes[] = files;
   
@@ -29,18 +37,34 @@ import React, {
         } else {
           selectFiles = e.target.files;
         }
-  
-        for (const file of selectFiles) {
-          tempFiles = [
-            ...tempFiles,
-            {
-              id: fileId.current++,
-              object: file
-            }
-          ];
+        console.log("?")
+        if(!props.mulit){
+          if(selectFiles.length > 1){
+            alert("하나만 올려라")
+            return
+          }
+          for (const file of selectFiles) {
+            tempFiles = [
+              {
+                id: fileId.current++,
+                object: file
+              }
+            ];
+          }
+          setFiles(tempFiles);   
+        }else{
+          for (const file of selectFiles) {
+            tempFiles = [
+              ...tempFiles,
+              {
+                id: fileId.current++,
+                object: file
+              }
+            ];
+          }       
+          setFiles(tempFiles);
         }
-  
-        setFiles(tempFiles);
+
       },
       [files]
     );
@@ -117,7 +141,7 @@ import React, {
           type="file"
           id="fileUpload"
           style={{ display: "none" }}
-          multiple={true}
+          multiple={isMulit}
           onChange={onChangeFiles}
         />
   
@@ -128,29 +152,29 @@ import React, {
         >
           <div>파일 첨부</div>
         </label>
-  
-        <div className="FileUpload-Files">
-          {files.length > 0 &&
-            files.map((file: IFileTypes) => {
-              const {
-                id,
-                object: { name }
-              } = file;
-  
-              return (
-                <div key={id}>
-                  <div>{name}</div>
-                  <div
-                    className="FileUpload-Files-Filter"
-                    onClick={() => handleFilterFile(id)}
-                  >
-                    X
+          <div className="FileUpload-Files">
+            {files.length > 0 &&
+              files.map((file: IFileTypes) => {
+                const {
+                  id,
+                  object: { name }
+                } = file;
+    
+                return (
+                  <div key={id}>
+                    <div>{name}</div>
+                    <div
+                      className="FileUpload-Files-Filter"
+                      onClick={() => handleFilterFile(id)}
+                    >
+                      X
+                    </div>
                   </div>
-                </div>
-              );
-            })}
+                );
+              })}
+          </div>
+        
         </div>
-      </div>
     );
   };
   

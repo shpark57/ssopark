@@ -53,7 +53,7 @@ const PasswordModifyModal:React.FC<PasswordModifyModalProps> = ({user_id}) => {
       const salt = crypto.randomBytes(32).toString('hex');
       const hashPassword = crypto.pbkdf2Sync(new_password, salt, 1, 32, 'sha512').toString('hex');
   
-      axios.patch("/users/"+ user_id ,  { password :hashPassword , salt : salt } )
+      axios.patch("/Users/"+ user_id ,  { password :hashPassword , salt : salt } )
       .then((response) => { 
         showModal({
           modalType: "AlertModal",
