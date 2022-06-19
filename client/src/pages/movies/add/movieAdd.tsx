@@ -21,10 +21,13 @@ import { createTheme, ThemeProvider } from '@mui/material/styles';
 import FileUpload from 'src/components/fileUpload/FileUpload';
 import useModal from "src/components/modal/hooks/useModal";
 
-
+import Loading from 'src/components/loding/Loding';
 
 
 const MovieAdd = () => {
+
+const [loading, setLoading] = useState(false);
+
   const { showModal } = useModal();   
   let navigate = useNavigate();   //페이지 이동을 위해필요.
   const {loggedIn , user } = useContext(LoginContext);
@@ -123,7 +126,7 @@ const MovieAdd = () => {
 
     
     try {
-      
+    setLoading(true);  
     const resMovies = await axios.post("/Movies" , params)    
 
     let formData = new FormData();
@@ -164,11 +167,13 @@ const MovieAdd = () => {
       }
     
       axios.post('/fileService/movie/upload',formData ,config)
+      .then(res=>{setLoading(false)})
       .then(res => navigate(String("/MoviesList")))
       .catch(err=>console.log(err))
     }) .catch(err=>console.log(err)) // 영상등록
 
   } catch (error) {
+    setLoading(false);
       showModal({
         modalType: "AlertModal",
         modalProps: {
@@ -176,23 +181,11 @@ const MovieAdd = () => {
         }
       });    
   }
-
-/*
-      .then(()=> ) 
-      .catch( (error) => { 
-        
-        showModal({
-          modalType: "AlertModal",
-          modalProps: {
-            message: "영화등록에 실패했습니다."
-          }
-        });
-      })
-    */
   };
 
   return (
       <Container component="main" maxWidth="lg">
+      {loading ? <Loading/> : null}
         <Box
           sx={{
             marginTop: 8,

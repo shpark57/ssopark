@@ -17,6 +17,11 @@ import useModal from "src/components/modal/hooks/useModal";
 
 
 export default function UserList(){
+
+    const testCLick =() =>{
+        //navigate(String("/MoviesView/" + ))
+    }
+
     let navigate = useNavigate();   //페이지 이동을 위해필요.
     const { showModal } = useModal();   
     const {loggedIn , user } = useContext(LoginContext);
@@ -61,9 +66,28 @@ export default function UserList(){
     }
 
     const columns =[
-        {   field : 'title' , headerName : '제목' , width : 150},
+        {   field : 'title' , headerName : '제목' , width : 150,   
+        renderCell: (params:any)=>{
+            return(
+                <> 
+                    <Link to={"/moviesView/"+ params.row.id}>
+                        {params.row.title}
+                    </Link>
+                </>
+            )
+        }},
 
-        {   field : 'content' , headerName : '내용' , width : 300},
+        {   field : 'content' , headerName : '내용' , width : 300,   
+            renderCell: (params:any)=>{
+                return(
+                    <> 
+                        <Link to={"/moviesView/"+ params.row.id}>
+                            {params.row.content}
+                        </Link>
+                    </>
+                )
+            }
+        },
         {   field : 'genre' , headerName : '장르' , width : 150},
 
         {   field : 'visits' , headerName : '방문자 수' , width : 150},

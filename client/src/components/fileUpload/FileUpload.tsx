@@ -37,7 +37,6 @@ const FileUpload:React.FC<FileModalProps> =  (props) => {
         } else {
           selectFiles = e.target.files;
         }
-        console.log("?")
         if(!props.mulit){
           if(selectFiles.length > 1){
             alert("하나만 올려라")

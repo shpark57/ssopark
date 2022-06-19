@@ -52,8 +52,4 @@ export class Movies {
     @Column({ type: 'timestamp' ,default: () => "CURRENT_TIMESTAMP"})
     mdfr_time: Date;
 
-    @Index()
-    @Column({ type: 'timestamp' ,default: () => "CURRENT_TIMESTAMP"})
-    last_login: Date;
-
 }

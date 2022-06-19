@@ -17,7 +17,8 @@ import Home from './pages/home/Home';                           //홈
 import UserList from './pages/user/list/UserList';              //유저 테이블  
 import UserModify from './pages/user/modify/UserModify';        //유저 정보 수정
 import MoviesList from './pages/movies/list/MoviesList';        //영화 리스트
-import MovieAdd from './pages/movies/add/movieAdd';           //영화 추가
+import MovieAdd from './pages/movies/add/MovieAdd';           //영화 추가
+import MoviesView from  './pages/movies/view/MoviesView';     //영화 뷰
 
 
 import {BrowserRouter as Router, Routes, Route  } from 'react-router-dom'
@@ -49,6 +50,7 @@ function App() {
                         <Route path="/movieAdd" element={<MovieAdd/>}/>
                         <Route path="/dragAndDrop" element={<DagAndDrop/>}/>
                         <Route path="/userModify/:id" element={ <UserModify/> }/>
+                        <Route path="/moviesView/:id" element={ <MoviesView/> }/>
                         
                       </Routes>
                     </div>  

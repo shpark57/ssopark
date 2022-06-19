@@ -7,6 +7,8 @@ import url from "url";
 
 import axios from 'axios';
 import multer from "multer";
+const fs=require('fs')
+const Minio=require('minio')
 
 let today = new Date();   
 let year = today.getFullYear()
@@ -14,9 +16,19 @@ let month = ('0' + (today.getMonth()+1)).slice(-2);
 let day = ('0' + today.getDate()).slice(-2); 
 let ymd = year+'/'+month+'/'+day+'/'
 
+
+
+router.get('/movie/read/', function(req: Request, res: Response) {
+
+  const {pathname} = url.parse(req.url, true)
+  const readStream =fs.createReadStream("C:/react/workspaces/files/movie/2022/06/19/64a2751f28a357b5c0175f9cab43f41c.mp4");
+  readStream.pipe(res);
+
+});
+
 let storage = multer.diskStorage({
     destination: function (req, file, cb) {
-      cb(null, "public/upload");
+      cb(null, 'C:/react/workspaces/files/movie/'+ymd);
     },
     filename: function (req, file, cb) {
       cb(
@@ -26,10 +38,8 @@ let storage = multer.diskStorage({
     },
   });
   let movieUpload = multer({
-    dest: 'C:/react/workspaces/files/movie/'+ymd,
+    storage:storage
   });
-
-
 
 router.post("/movie/upload", movieUpload.array('files',10) , async function(req: Request, res: Response) {
     /************************* */
@@ -54,7 +64,7 @@ router.post("/movie/upload", movieUpload.array('files',10) , async function(req:
                 ,type_detail    : req.body['files_params['+i+'].type_detail']
                 ,ymd            : req.body['files_params['+i+'].ymd']
                 ,origin_name    : req.body['files_params['+i+'].origin_name']
-                ,change_name    : req.files[i].filename
+                ,change_name    : req.files[i].filename.replace('.'+req.body['files_params['+i+'].file_type' ] , '')
                 ,file_type      : req.body['files_params['+i+'].file_type' ]
                 ,size           : req.body['files_params['+i+'].size' ]
             }
