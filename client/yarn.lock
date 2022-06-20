@@ -2259,6 +2259,13 @@
   dependencies:
     "react-loader-spinner" "*"
 
+"@types/react-plyr@^2.1.1":
+  "integrity" "sha512-UsTp3kfTxemKAxkzNaiSwApMSP03lCr6xMMYFVSAxxroZUj41e7RgQJ3TwhFGZEhWDby4MNxvDy3X0d7S1SRXA=="
+  "resolved" "https://registry.npmjs.org/@types/react-plyr/-/react-plyr-2.1.1.tgz"
+  "version" "2.1.1"
+  dependencies:
+    "@types/react" "*"
+
 "@types/react-router-dom@^5.3.3":
   "integrity" "sha512-kpqnYK4wcdm5UaWI3fLcELopqLrHgLqNsdpHauzlQktfkHL3npOSwtj1Uz9oKBAzs7lFtVkV8j83voAz2D8fhw=="
   "resolved" "https://registry.npmjs.org/@types/react-router-dom/-/react-router-dom-5.3.3.tgz"

@@ -173,7 +173,7 @@ const [loading, setLoading] = useState(false);
     }) .catch(err=>console.log(err)) // 영상등록
 
   } catch (error) {
-    setLoading(false);
+      setLoading(false);
       showModal({
         modalType: "AlertModal",
         modalProps: {

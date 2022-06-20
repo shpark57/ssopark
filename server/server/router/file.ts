@@ -8,7 +8,7 @@ import url from "url";
 import axios from 'axios';
 import multer from "multer";
 const fs=require('fs')
-const Minio=require('minio')
+import  mkdirp from 'mkdirp'
 
 let today = new Date();   
 let year = today.getFullYear()
@@ -18,17 +18,17 @@ let ymd = year+'/'+month+'/'+day+'/'
 
 
 
-router.get('/movie/read/', function(req: Request, res: Response) {
 
-  const {pathname} = url.parse(req.url, true)
-  const readStream =fs.createReadStream("C:/react/workspaces/files/movie/2022/06/19/64a2751f28a357b5c0175f9cab43f41c.mp4");
-  readStream.pipe(res);
 
-});
 
+
+const dir = 'C:/react/workspaces/files/movie/'
 let storage = multer.diskStorage({
-    destination: function (req, file, cb) {
-      cb(null, 'C:/react/workspaces/files/movie/'+ymd);
+    destination: async function  (req, file, cb) {
+      if(!fs.existsSync(dir+ymd)){
+        await mkdirp(dir+ymd).then((res) => console.log(res)).catch(err=>console.log(err))
+      }
+      await cb(null, dir+ymd);
     },
     filename: function (req, file, cb) {
       cb(
@@ -40,6 +40,32 @@ let storage = multer.diskStorage({
   let movieUpload = multer({
     storage:storage
   });
+
+
+  router.get('/read/:id', async function(req: Request, res: Response) {
+    const file = await axios.get('http://'+req.headers.host+'/Files/'+req.params.id)
+    if(file.data){
+      const url = dir + file.data.ymd + file.data.change_name + '.' +file.data.file_type
+      if(fs.existsSync(url)){
+        const readStream = fs.createReadStream(url)
+
+        readStream.pipe(res)
+        readStream.on('error',(error) =>{
+          res.status(500).send(error)
+        })
+      }else{
+        res.status(500).send({
+          message: "파일없음"
+        })
+      }
+    }else{
+      res.status(500).send({
+        message: "파일없음"
+      })
+    }
+  });
+  
+
 
 router.post("/movie/upload", movieUpload.array('files',10) , async function(req: Request, res: Response) {
     /************************* */

@@ -18,23 +18,22 @@ import { Likes } from "../src/entity/Likes";
 createConnection().then(connection => {
 
     const dinamicRepository = (table : string) => {
-        
+        table = table.toLowerCase()
         let repository;
-        if(table == 'Users'){
+        if(table == 'users'){
             repository =  connection.getRepository(Users)
-        }else if(table == 'Menu'){
+        }else if(table == 'menu'){
             repository =  connection.getRepository(Menu)
-        }else if(table == 'Files'){
+        }else if(table == 'files'){
             repository =  connection.getRepository(Files)
-        }else if(table == 'Comment'){
+        }else if(table == 'comment'){
             repository =  connection.getRepository(Comment)
-        }else if(table == 'Movies'){
+        }else if(table == 'movies'){
             repository =  connection.getRepository(Movies)
-        }else if(table == 'Likes'){
+        }else if(table == 'likes'){
             repository =  connection.getRepository(Likes)
         }
         
-
         return repository;
     }
    
@@ -195,7 +194,6 @@ createConnection().then(connection => {
 
     router.post("",  function(req: Request, res: Response) {
         let table = req.baseUrl.substr(1)
-        console.log('????:'+table)
         const entity =  saveRepository(table , req , res)
         .then(entity => {
             console.log(entity)

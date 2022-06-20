@@ -4,6 +4,8 @@ import axios from 'axios';
 import { useEffect, useState } from 'react';
 import { useParams ,useNavigate} from 'react-router-dom';
 import ReactPlayer from 'react-player/lazy';    //비디오플레이어
+import Plyr from 'react-plyr';
+
 const MoviesView = () =>{  
     let {id} = useParams();
     interface Movie {
@@ -66,10 +68,14 @@ const MoviesView = () =>{
         console.log("끝")
     }
 
+    const [videoUrl ,setVideoUrl ] = useState('')
     useEffect(() => {
-        axios.get('/fileService/movie/read/'+id)
-        .then(res=>console.log(res))
-    
+        if(id){
+            axios.get('/Files?parent_id='+ id +'&Type=Movies&type_detail=video&_limit=1')
+            .then(res=>{
+                setVideoUrl('/fileService/read/'+res.data[0].id)
+            })
+        }
     },[])  
 
 
@@ -80,7 +86,7 @@ const MoviesView = () =>{
                 <div className='player-wrapper'>
                     <ReactPlayer
                         className='react-player'
-                        url={'/fileService/movie/read/'}    // 플레이어 url
+                        url={videoUrl}    // 플레이어 url
                         width='800px'         // 플레이어 크기 (가로)
                         height='500px'        // 플레이어 크기 (세로)
                         playing={true}        // 자동 재생 on
@@ -96,8 +102,6 @@ const MoviesView = () =>{
         )
     }
     
-
-
 
     return (
         <div>
