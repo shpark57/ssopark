@@ -137,8 +137,31 @@ createConnection().then(connection => {
         
     }  
 
+    
+    const patchRepository =  async (table : string , req: Request, res: Response)  => {
+
+        const post = await dinamicRepository(table).findOneById(req.body.id);
+
+        for(let key in req.body){
+            if(key.indexOf('++') !== -1 ){
+                let value = req.body[key]
+                key = key.replace('++','')
+                post[key]  =   post[key] + value
+            }else if(key.indexOf('--') !== -1 ){
+                let value = req.body[key]
+                key = key.replace('--','')
+                post[key]  =   post[key] + value
+            }else{
+                post[key] = req.body[key]
+            }
+        }
+        const entity = await  dinamicRepository(table).save(post)
+        return entity
+        
+    }  
+
     const deleteOneByRepository =  async(table : string , req: Request, res: Response)  => {
-        console.log(req.query)
+        req.query['id'] = req.params.id
         const remove = await dinamicRepository(table).findOneBy(req.query)
         const entity = await dinamicRepository(table).delete(remove)
         return entity
@@ -227,11 +250,13 @@ createConnection().then(connection => {
     
 
     router.patch("/:id",  function(req: Request, res: Response) {
-        let table = req.baseUrl.substr(1)
+        /*
+            patch 사용시 '변수명++'로 param을 보내명 현재값 + value 
+        */
 
-        
+        let table = req.baseUrl.substr(1)
         req.body['id'] = Number(req.params.id)
-        const entity =  saveRepository(table , req , res)
+        const entity =  patchRepository(table , req , res)
         .then(entity => {
             console.log(entity)
             res.send(entity);
@@ -248,6 +273,10 @@ createConnection().then(connection => {
         // /테이블명/1 의 형태의 url은 이곳으로 온다.
 
         let table = req.baseUrl.substr(1)
+        console.log(req.query)
+        console.log(req.body)
+        console.log(req.body)
+        
         deleteOneByRepository(table , req , res)
         .then(entity => {
             console.log(entity)

@@ -25,10 +25,12 @@
 .movieButton.좋아요{
     background-color:#e5faf2;
     color: #3bb077;
+    cursor:pointer;
 }
 .movieButton.싫어요{
     background-color:#e5faf2;
     color: #d95087;
+    cursor:pointer;
 }
 .movieTable{
     width:100%;
@@ -52,3 +54,4 @@
     object-fit: corver;
     margin-right:10px;
 }
+

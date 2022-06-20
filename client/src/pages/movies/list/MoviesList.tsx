@@ -18,10 +18,6 @@ import useModal from "src/components/modal/hooks/useModal";
 
 export default function UserList(){
 
-    const testCLick =() =>{
-        //navigate(String("/MoviesView/" + ))
-    }
-
     let navigate = useNavigate();   //페이지 이동을 위해필요.
     const { showModal } = useModal();   
     const {loggedIn , user } = useContext(LoginContext);
@@ -64,7 +60,19 @@ export default function UserList(){
         
         setTableData(tableData.filter((item) => item['id']  !== row.id) )
     }
+    const goMoviesView = async (e : React.MouseEvent<HTMLSpanElement>) => {
+        if(!(e.target instanceof HTMLSpanElement)){ 
+            return;
+        }
+        const id = e.target.dataset.id    
+        
 
+        await axios.patch('/Movies/'+id ,{'visits++' : 1})
+        navigate(String("/moviesView/"+ id))
+    }
+
+
+       
     const columns =[
         {   field : 'title' , headerName : '제목' , width : 150,   
         renderCell: (params:any)=>{
@@ -81,9 +89,7 @@ export default function UserList(){
             renderCell: (params:any)=>{
                 return(
                     <> 
-                        <Link to={"/moviesView/"+ params.row.id}>
-                            {params.row.content}
-                        </Link>
+                        <span onClick={goMoviesView}  data-id={params.row.id}>{params.row.content}</span>   
                     </>
                 )
             }
