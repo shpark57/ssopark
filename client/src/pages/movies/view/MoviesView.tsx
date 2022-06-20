@@ -5,8 +5,32 @@ import { useEffect, useState } from 'react';
 import { useParams ,useNavigate} from 'react-router-dom';
 import ReactPlayer from 'react-player/lazy';    //비디오플레이어
 import Plyr from 'react-plyr';
+import './moviesView.css'
+import Button from '@mui/material/Button';
+
+import * as Time from 'src/types/time'
+
+import {Container , Grid, Box} from '@mui/material';
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 const MoviesView = () =>{  
+    
     let {id} = useParams();
     interface Movie {
         id: number,
@@ -103,10 +127,57 @@ const MoviesView = () =>{
     }
     
 
+    const Button = ( {type} : any ) =>{
+        return <button className={'movieButton '+ type}>{type}</button>
+    }
     return (
-        <div>
+
+        
+
+
+
+
+      <Container component="main" maxWidth="lg"   >
+        <Grid container spacing={3}>
+            <Grid item xs={5} container justifyContent="flex-start" sx={{ mt: 3 }}>
+                <h3 className="movieTitle">{movie && movie.title}</h3>
+            </Grid>
+
+            <Grid item xs={3} container  justifyContent="flex-end" sx={{ mt: 6 }}>
+                {movie && movie.rgstr_id} <br/> {movie && Time.toDateString(movie.rgstr_time)  }
+            </Grid>
+
+            <Grid item xs={1}  container  justifyContent="flex-end" sx={{ mt: 7 }}>
+                댓글 수 : 5
+            </Grid>
+
+
+            <Grid item xs={12}>
+                내용
+            </Grid>
+
+        </Grid>
+        
+
+
+
             
-            <div>영화 아이디  :{movie && movie.id        }</div>      <br/>
+            
+            <Button type='좋아요'/>
+            <Button type='싫어요'/>
+
+
+
+
+
+
+
+
+
+
+            <div>
+            
+            <div>영화 아이디  :</div>      <br/>
             <div>영화 제목 :{movie && movie.title     }</div>   <br/>
             <div>영화 내용 :{movie && movie.content   }</div>   <br/>
             <div>영화 장르 :{movie && movie.genre     }</div>   <br/>
@@ -153,6 +224,7 @@ const MoviesView = () =>{
              }
              {Video()}
         </div>
+      </Container>
     )
 }
 
