@@ -168,5 +168,5 @@
       "react-app"
     ]
   },
-  "proxy": "http://localhost:5000/"
+  "proxy": "http://shpark91.synology.me:8081/"
 }

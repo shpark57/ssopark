@@ -24,7 +24,7 @@ function Copyright(props: any) {
     return (
       <Typography variant="body2" color="text.secondary" align="center" {...props}>
         {'Copyright © '}
-        <Link color="inherit" href="http://localhost:3000/">
+        <Link color="inherit" href="http://shpark91.synology.me:8080/">
           SsoPark
         </Link>{' '}
         {new Date().getFullYear()}
