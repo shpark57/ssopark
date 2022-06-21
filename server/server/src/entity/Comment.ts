@@ -21,6 +21,12 @@ export class Comment {
 
     @Column({nullable : false})
     comment: string;                //댓글 내용
+    
+    @Column({nullable : false ,  default: 0})
+    like:number         //좋아요 수  , not null , 디폴트 0
+
+    @Column({nullable : false ,  default: 0})
+    dis_like:number     //싫어요 수  , not null , 디폴트 0
 
     @Column({default: 'systemAdmin'})
     rgstr_id: string;

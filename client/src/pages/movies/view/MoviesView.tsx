@@ -67,7 +67,7 @@ const MoviesView = () =>{
     }
     useEffect(() => {
         getMovie()
-    },[])  
+    },[rerend])  
 
     
     const { user } = useContext(LoginContext);
@@ -146,10 +146,8 @@ const MoviesView = () =>{
         
 
         }else if(likeCheck.data.length > 0){
-            console.log(likeCheck.data[0])
             if(likeCheck.data[0].like_type == target_type){
                 const likeDel =  await axios.delete('/Likes/'+likeCheck.data[0].id)
-          
             }else{
                 showModal({
                     modalType: "AlertModal",
