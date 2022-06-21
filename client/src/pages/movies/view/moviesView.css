@@ -6,7 +6,7 @@
 }
 
 .movieTitle{
-    font-size:22px;
+    font-size:1.7em;
     font-weight:600;
 }
 
@@ -55,3 +55,29 @@
     margin-right:10px;
 }
 
+.movieContent{
+    font-size:1.2em;
+    white-space:pre-wrap;
+}
+
+.commentTitle {
+    font:bold;
+}
+.commentTime{
+    font-size:0.5em;
+}
+.commentContent{
+    margin-top: 5px;
+    margin-left: 20px;
+    font-size:0.9em;
+    white-space:pre-wrap;
+}
+.replyBtn{
+    cursor: pointer;
+    margin-top: 3px;
+    font-size:0.8em;
+}
+
+.commentDelete{
+    cursor: pointer;
+}

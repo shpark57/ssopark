@@ -11,8 +11,7 @@ export class Movies {
     title: string;      //제목  not null
 
     
-    @Index()
-    @Column({nullable : false})
+    @Column("text")
     content: string;    //내용  not null
 
     

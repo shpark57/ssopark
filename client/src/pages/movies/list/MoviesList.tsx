@@ -78,9 +78,7 @@ export default function UserList(){
         renderCell: (params:any)=>{
             return(
                 <> 
-                    <Link to={"/moviesView/"+ params.row.id}>
-                        {params.row.title}
-                    </Link>
+                    <span onClick={goMoviesView}  data-id={params.row.id} className="listCellClick" >{params.row.title}</span>   
                 </>
             )
         }},
@@ -89,7 +87,7 @@ export default function UserList(){
             renderCell: (params:any)=>{
                 return(
                     <> 
-                        <span onClick={goMoviesView}  data-id={params.row.id}>{params.row.content}</span>   
+                        <span onClick={goMoviesView}  data-id={params.row.id} className="listCellClick" >{params.row.content}</span>   
                     </>
                 )
             }

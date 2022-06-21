@@ -151,6 +151,8 @@ createConnection().then(connection => {
                 let value = req.body[key]
                 key = key.replace('--','')
                 post[key]  =   post[key] + value
+            }else if(req.body[key] == null){
+                delete req.body[key]
             }else{
                 post[key] = req.body[key]
             }
@@ -162,7 +164,13 @@ createConnection().then(connection => {
 
     const deleteOneByRepository =  async(table : string , req: Request, res: Response)  => {
         req.query['id'] = req.params.id
+        console.log(req.params)
         const remove = await dinamicRepository(table).findOneBy(req.query)
+        for(let key in remove){
+            if(remove[key] == null){
+                delete remove[key]
+            }
+        }
         const entity = await dinamicRepository(table).delete(remove)
         return entity
    
@@ -170,9 +178,12 @@ createConnection().then(connection => {
 
     const deleteRepository = async(table : string , req: Request, res: Response)  => {
         const params = findObjectSetting(req)
-
-        console.log(params)
         let remove = await dinamicRepository(table).find(params)
+        for(let key in remove){
+            if(remove[key] == null){
+                delete remove[key]
+            }
+        }
         const entity = await  dinamicRepository(table).remove(remove)
         return entity
 
@@ -273,10 +284,6 @@ createConnection().then(connection => {
         // /테이블명/1 의 형태의 url은 이곳으로 온다.
 
         let table = req.baseUrl.substr(1)
-        console.log(req.query)
-        console.log(req.body)
-        console.log(req.body)
-        
         deleteOneByRepository(table , req , res)
         .then(entity => {
             console.log(entity)
@@ -294,7 +301,7 @@ createConnection().then(connection => {
         // /테이블명 또는 /테이블명?id=1  이런 형태의 url 은 이곳에 온다
 
         let table = req.baseUrl.substr(1)
-        findByRepository(table , req , res)        
+        deleteRepository(table , req , res)        
         .then(entity => {
             console.log(entity)
             res.send(entity);

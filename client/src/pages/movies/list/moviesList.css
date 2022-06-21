@@ -28,3 +28,6 @@
     color:red;
     cursor:pointer;
 }
+.listCellClick{
+    cursor:pointer;
+}
