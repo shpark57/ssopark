@@ -17,21 +17,6 @@ import DeleteIcon from '@mui/icons-material/Delete';
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 const MoviesView = () =>{  
     
     let {id} = useParams();
@@ -71,13 +56,14 @@ const MoviesView = () =>{
         }]
     }
 
+
+    const [rerend,setRerend] = useState(false)
     const [movie , setMovie] = useState<Movie|null>(null)
     const getMovie = () => {
         axios.get('/Movies/'+id+'?use_yn=Y')
         .then(res =>{
-            console.log(res.data)
             setMovie(res.data)
-        }).then(res=> console.log({movie}))
+        })
     }
     useEffect(() => {
         getMovie()
@@ -86,26 +72,24 @@ const MoviesView = () =>{
     
     const { user } = useContext(LoginContext);
     const [comments , setComments] = useState<Comment[]|null>([])
-    const getComment = () => {
+
+    const [childShow , setChildShow] = useState([false])
+
+    useEffect(() => {
         axios.get('/Comment?parent_id='+id+'&_rel=children&parent_comment_id=null&_sort=rgstr_time&_order=desc')
         .then(res =>{
             setComments(res.data)
-        }).then(res=> console.log({comments}))
-    }
-    useEffect(() => {
-        getComment()
-    },[])  
+        })
+    },[rerend])  
 
+    
     const [commentCnt , setCommentCnt] = useState(0)
-    const getCommentCnt =() => {
+    useEffect(() => {
         axios.get('/Comment?parent_id='+id)
         .then(res =>{
             setCommentCnt(res.data.length)
         })
-    }
-    useEffect(() => {
-        getCommentCnt()
-    },[])  
+    },[rerend])  
 
     const { showModal } = useModal();   
     const handleVideo = () => {
@@ -159,13 +143,13 @@ const MoviesView = () =>{
 
         if(likeCheck.data.length ==0) {
             const saveLike =  await axios.post('/Likes',{parent_id:id ,type:'Movies' ,rgstr_id : user.user_id, like_type:target_type }) //좋아요 , 싫어요 등록
-            console.log('등록 성공')
+        
 
         }else if(likeCheck.data.length > 0){
             console.log(likeCheck.data[0])
             if(likeCheck.data[0].like_type == target_type){
                 const likeDel =  await axios.delete('/Likes/'+likeCheck.data[0].id)
-                console.log('삭제 성공')
+          
             }else{
                 showModal({
                     modalType: "AlertModal",
@@ -217,16 +201,21 @@ const MoviesView = () =>{
                 }
               });
             setMyComment('')
-            getComment()
-            getCommentCnt()
+            setRerend(!rerend)
         })
             
         
     }
+    const [childComment , setChildComment] = useState([''])
+    const childInputFromHandler = (e:React.ChangeEvent<HTMLInputElement >) =>{
+        e.preventDefault();
+        const comment_id:number = Number(e.target.id)
+        childComment[comment_id] = e.target.value
+    }
+
     
 
     const commentDelete = (event :React.MouseEvent<HTMLButtonElement>) =>{
-        console.log(event)
         if(!(event.target instanceof HTMLButtonElement)){ 
             return;
         }
@@ -242,8 +231,7 @@ const MoviesView = () =>{
               handleConfirm: () => {
                 axios.patch('/Comment/'+comment_id, {comment: '삭제한 댓글 입니다.'})
                 .then(res=>{
-                    getComment()
-                    getCommentCnt()   
+                    setRerend(!rerend)
                 })
               },
               handleClose: () => {
@@ -254,8 +242,11 @@ const MoviesView = () =>{
 
     }
 
+
+
     return (
-      <Container component="main" maxWidth="lg" >
+      <Container component="main" maxWidth="lg" className='movie' sx={{ mb: 8}} >
+        
         <Grid container spacing={3} sx={{ mb: 5}} >
             <Grid item xs={5} container justifyContent="flex-start" sx={{ mt: 3}}>
                 <h3 className="movieTitle">{movie?.title}</h3>
@@ -271,7 +262,7 @@ const MoviesView = () =>{
 
 
 
-            <Grid item xs={12} sx={{alignItems: 'center'}}>
+            <Grid item xs={12} sx={{alignItems: 'center'}} >
                 <Box
                     sx={{
                     display: 'flex',
@@ -319,64 +310,59 @@ const MoviesView = () =>{
                 </Box>
             </Grid>
         </Grid>
+        <Box  className="comment">
 
-        <Grid item container spacing={3}  xs={12}>
-                <Grid item  xs={1}>
-                </Grid>
-                <Grid item  xs={10}>
-                            {commentCnt} 개의 댓글
-                            <hr/>
-                </Grid>
-                <Grid item  xs={1}>
-                </Grid>
-        </Grid>
+            <Grid item container spacing={3}  xs={12}>
+                    <Grid item  xs={1}>
+                    </Grid>
+                    <Grid item  xs={10}>
+                                {commentCnt} 개의 댓글
+                                <hr/>
+                    </Grid>
+                    <Grid item  xs={1}>
+                    </Grid>
+            </Grid>
 
-        <Grid item container spacing={3}  xs={12}>
-                <Grid item  xs={1}>
-                </Grid>
-                <Grid item  xs={10}>
-                    <TextField
-                    required
-                    fullWidth
-                    id="content"
-                    label="댓글을 입력해주세요"
-                    name="content"
-                    variant="outlined"
-                    multiline
-                    minRows={3}
-                    maxRows={3}
-                    value ={myComment}
-                    onChange={(e:React.ChangeEvent<HTMLInputElement>) => inputFromHandler(e)}
-                    />    
-                    
-                <Grid container justifyContent="flex-end">
-                    <Button
-                        variant="contained"
-                        sx={{ mt: 1, mb: 2 }}
-                        onClick={commentInsertBtn}
-                    >
-                        등록
-                    </Button>
-                </Grid>         
-                </Grid>
-                <Grid item  xs={1}>
-                </Grid>
-        </Grid>
+            <Grid item container spacing={3}  xs={12}>
+                    <Grid item  xs={1}>
+                    </Grid>
+                    <Grid item  xs={10}>
+                        <TextField
+                        
+                        fullWidth
+                        id="content"
+                        label="댓글을 입력해주세요"
+                        name="content"
+                        variant="outlined"
+                        multiline
+                        minRows={3}
+                        maxRows={3}
+                        value ={myComment}
+                        onChange={(e:React.ChangeEvent<HTMLInputElement>) => inputFromHandler(e)}
+                        />    
+                        
+                    <Grid container justifyContent="flex-end">
+                        <Button
+                            variant="contained"
+                            sx={{ mt: 1, mb: 2 }}
+                            onClick={commentInsertBtn}
+                        >
+                            등록
+                        </Button>
+                    </Grid>         
+                    </Grid>
+                    <Grid item  xs={1}>
+                    </Grid>
+            </Grid>
 
+        </Box>
 
-
-
-
-
-
-            <div>
+            <>
 
              {
-                comments?.map(comment=>{
+                comments && comments.map((comment,index)=>{
                     return(
-                        <div>
-                            
-                            <Grid item container spacing={3}  xs={12}>
+                            <Grid item container spacing={3}  xs={12}   key={'container_'+index}>
                                     <Grid item  xs={1}>
                                     </Grid>
                                     <Grid item  xs={9}>
@@ -387,35 +373,112 @@ const MoviesView = () =>{
                                         <div className='commentContent'>
                                             {comment.comment }
                                         </div>
-                                        <div className='replyBtn'>
+                                        <div className='replyBtn' onClick={()=>{
+                                            
+                                            childShow[comment.id]  = !childShow[comment.id] 
+                                            
+                                            setRerend(!rerend)
+                                        }}>
                                             {comment.children.length > 0 ? `답글 ${comment.children.length}` : '답글 작성'}
                                         </div>
                                         <hr/>  
                                     </Grid>
-                                    <Grid item  xs={1}>
-                                            <Button onClick={commentDelete} data-id= {comment.id} > X </Button>
+                                    {   comment.rgstr_id == user.user_id && comment.comment != '삭제한 댓글 입니다.' 
+                                        ?
+                                            <Grid item  xs={1}>
+                                                <Button onClick={commentDelete} data-id= {comment.id} > X </Button>
+                                            </Grid>
+                                        : ''
+                                    }
+                                        {  childShow[comment.id] && comment.children.map((child,index)=>{
+                                            return(
+                                                    <Grid item container spacing={3}  xs={12} key={'child_'+index}>
+                                                            <Grid item  xs={2}>
+                                                            </Grid>
+                                                            <Grid item  xs={8} >
+                                                                <div className="commentTitle">{child.rgstr_id }</div>
+                        
+                                                                <div className="commentTime">{child && Time.toDateString(child.rgstr_time) }</div>
+                                                                
+                                                                <div className='commentContent'>
+                                                                    {child.comment }
+                                                                </div>
+                                                            </Grid>
+                                                            {   child.rgstr_id == user.user_id && child.comment != '삭제한 댓글 입니다.' 
+                                                                ?
+                                                                    <Grid item  xs={1}>
+                                                                        <Button onClick={commentDelete} data-id= {child.id} > X </Button>
+                                                                    </Grid>
+                                                                : ''
+                                                            }
+                                                            <Grid item  xs={2}>
+                                                            </Grid>
+                                                            
+                                                    </Grid>
+                                            )   
+                                           
+                                        }) 
+
+                                    }
+                                    {
+                                      childShow[comment.id] ?
+                                    
+                                    <Grid item container spacing={3}  xs={12}>
+
+                                        <Grid item  xs={1}>
+                                        </Grid>
+                                        <Grid item  xs={9}>
+                                                    <TextField
+                                                        fullWidth
+                                                        id={String(comment.id)}
+                                                        label="댓글을 입력해주세요"
+                                                        name="content"
+                                                        variant="outlined"
+                                                        multiline
+                                                        minRows={2}
+                                                        //value={childComment[comment.id]}
+                                                        maxRows={2}
+                                                        onChange={(e:React.ChangeEvent<HTMLInputElement>) => childInputFromHandler(e)}
+                                                    />    
+                                                    <hr/>
+                                        </Grid>
+                                        <Grid item  xs={1}>
+                                            <Button
+                                                variant="contained"
+                                                sx={{ mt: 4}}
+                                                onClick={() =>{
+                                                    const params = { parent_id : id , type : 'Movies' , comment : childComment[comment.id] , rgstr_id : user.user_id , parent_comment_id : comment.id }
+                                                    
+                                                    axios.post('/Comment' ,params).then(res=>{
+                                                        childComment[comment.id] = ''
+                                                        /* 이렇게 쓰면안되는데 어쩔수 없었음 */
+                                                        let input:any = document.getElementById(String(comment.id))
+                                                        input.value=''
+                                                                                                    
+                                                        showModal({
+                                                            modalType: "AlertModal",
+                                                            modalProps: {
+                                                            message: "댓글을 등록했습니다."
+                                                            }
+                                                        });
+                                                        setRerend(!rerend)
+                                                    })
+
+                                                }}
+                                            >
+                                                등록
+                                            </Button>
+                                        </Grid>
+ 
+                                    
                                     </Grid>
+                                    :''
+                                    }
                             </Grid>
-                            {comment?.children.map(child=>{
-                                return(
-                                    <div>
-                                        <div>ㄴ 대댓글 아이디 :{child.id } </div>  <br/>
-                                        <div>ㄴ 대댓글 상위아이디 :{child.parent_id } </div>  <br/>
-                                        <div>ㄴ 대댓글 타입 :{child.type } </div>  <br/>
-                                        <div>ㄴ 대댓글 타입상세 :{child.type_detail } </div>  <br/>
-                                        <div>ㄴ 대댓글 상위댓글아이디 :{child.parent_comment_id } </div>  <br/>
-                                        <div>ㄴ 대댓글 내용 :{child.comment } </div>  <br/>
-                                        <div>ㄴ 대댓글 등록자ID :{child.rgstr_id } </div>  <br/>
-                                        <div>ㄴ 대댓글 등록시간 :{child.rgstr_time } </div>  <br/>
-                                    </div>
-                                )
-                             })
-                            }
-                        </div>
                     )
                 })
              }
-        </div>
+        </>
         
       </Container>
     )
