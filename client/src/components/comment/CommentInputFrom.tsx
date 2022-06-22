@@ -1,28 +1,28 @@
 import axios from 'axios';
 import React, { useEffect, useState ,useContext} from 'react';
-import { useParams ,useNavigate} from 'react-router-dom';
 import Button from '@mui/material/Button';
-import * as Time from 'src/types/time'
-import {Container , Grid, Box , TextField} from '@mui/material';
+import { Grid , TextField} from '@mui/material';
 import { LoginContext } from 'src/contexts/login'
 import useModal from "src/components/modal/hooks/useModal";
-import DeleteIcon from '@mui/icons-material/Delete';
 
 
-import {CommentHeaderProp} from './CommentComponent';
+import {CommentInputProp} from './CommentComponent';
 
-
-const CommentHeader:React.FC<CommentHeaderProp> =  (props) => {
-
-    const { user } = useContext(LoginContext);
-    const { showModal } = useModal();   
-    const [comment , setComment] =useState('')
+const CommentInputFrom:React.FC<CommentInputProp> =  (props) => {
+    
+    const { user } = useContext(LoginContext);  //로그인 사용자 정보
+    const { showModal } = useModal();           //모달 사용
+    const [comment , setComment] =useState('')  //댓글 입력시 사용되는 변수
     const inputFromHandler = (event:React.ChangeEvent<HTMLInputElement>) => {
+        //댓글 입력시마다 수정되는 글자를 인식시켜줌
         setComment(event.target.value)
     }
     const commentSaveBtn = () => {
-        const params = { parent_id : props.parent_id , type : props.type , comment : comment , rgstr_id : user.user_id }
-            
+        //댓글 저장
+        //parent_comment_id 가 있으면 대댓글이고 없으면 그냥 댓글이다.
+        const params = { parent_id : props.parent_id , type : props.type , comment : comment , rgstr_id : user.user_id , parent_comment_id  : props.parent_comment_id}
+         
+        
         axios.post('/Comment',  params )
         .then(res=>{
             showModal({
@@ -32,19 +32,13 @@ const CommentHeader:React.FC<CommentHeaderProp> =  (props) => {
                 }
               });
               setComment('')
-              props.setCommentHeaderRerend(!props.commentHeaderRerend)
+              props.setCommentHeaderRerend(!props.commentHeaderRerend)  // 해더부분 리랜더링
+              props.setCommentBodyRerend(!props.commentBodyRerend)      // 댓글부분 리랜더링
         }).catch(err => {console.log(err)})
+        
     }
     return (
-        <>
-            <Grid item xs={12}>
-                <Grid item  xs={12}>
-                    {props.commentCnt} 개의 댓글
-                    <hr/>
-                </Grid>
-            </Grid>
-
-            <Grid item container spacing={2}  xs={12}>
+            <Grid item container spacing={2}  xs={12} className="comment">
                     <Grid item  xs={12}>
                         <TextField
                             fullWidth
@@ -70,7 +64,6 @@ const CommentHeader:React.FC<CommentHeaderProp> =  (props) => {
                     </Grid>         
                     </Grid>
             </Grid>    
-        </>
     )
 }
-export default CommentHeader
+export default CommentInputFrom

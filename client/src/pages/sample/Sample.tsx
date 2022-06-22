@@ -9,7 +9,7 @@ import useModal from "src/components/modal/hooks/useModal";
 import DeleteIcon from '@mui/icons-material/Delete';
 
 
-import CommentComponent from './comment/CommentComponent';
+import CommentComponent from 'src/components/comment/CommentComponent';
 
 const Sample = () => {
     const [parent_id , setParent_id] = useState(1)

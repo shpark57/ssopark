@@ -1,0 +1,36 @@
+.comment{
+    position : sticky;
+    top:50px;
+    background-color: white;
+    z-index: 100;
+}
+
+.commentBodyTitle {
+    font:bold;
+}
+.commentBodyTime{
+    font-size:0.5em;
+}
+.commentBodyContent{
+    margin-top: 10px;
+    margin-bottom: 5px;
+    margin-left: 50px;
+    font-size:0.9em;
+    white-space:pre-wrap;
+}
+.commentBodyChildBtn{
+    margin-top: 3px;
+    font-size:0.8em;
+    cursor: pointer;
+}
+
+.commentBodyDelBtn{
+    float: right;
+    margin-right: 20px;
+    cursor: pointer;
+}
+
+
+.childComment{
+    display: none;
+}
