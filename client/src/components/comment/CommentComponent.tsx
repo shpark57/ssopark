@@ -1,12 +1,6 @@
 import axios from 'axios';
 import React, { useEffect, useState ,useContext} from 'react';
-import { useParams ,useNavigate} from 'react-router-dom';
-import Button from '@mui/material/Button';
-import * as Time from 'src/types/time'
 import {Container , Grid, Box , TextField} from '@mui/material';
-import { LoginContext } from 'src/contexts/login'
-import useModal from "src/components/modal/hooks/useModal";
-import DeleteIcon from '@mui/icons-material/Delete';
 import CommentHeader from './CommentHeader';
 import CommentBody from './CommentBody'
 
@@ -55,6 +49,12 @@ export interface CommentBodyProp {
 }
 
 const CommentComponent:React.FC<CommentProps> = ({parent_id,type}) => {
+
+    /**************************************************
+     * 
+     *  사용방법 <CommentComponent parent_id={Number(id)} type={'Movies'} />
+     * 
+     *************************************************/
 
    
     const [commentCnt , setCommentCnt] = useState(0) //댓글 컴포넌트 최상단의 총 댓글 갯수 조회.
