@@ -12,5 +12,5 @@ app.use("/fileService", file);
 app.use("/:table", router);
 
 
-const port: number = 8081;
+const port: number = 5000;
 app.listen(port, () => console.log(`${port}`));
