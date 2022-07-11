@@ -22,7 +22,7 @@ let ymd = year+'/'+month+'/'+day+'/'
 
 
 
-const dir = 'C:/react/workspaces/files/movie/'
+const dir = path.join(__dirname, '../../../files/movie/')
 let storage = multer.diskStorage({
     destination: async function  (req, file, cb) {
       if(!fs.existsSync(dir+ymd)){
