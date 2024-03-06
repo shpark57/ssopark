@@ -1,5 +1,6 @@
 .userList{
     flex:5;
+    height: 500px;
 }
 .userListUser{
     display:flex;

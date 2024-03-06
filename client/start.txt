@@ -17,10 +17,10 @@ npm install axios --save
  //url에따른 다른 페이지 보여주기 위한 react-router-dom 타입스크립트버전
  $ npm install react-router-dom @types/react-router-dom
 
- //그리드 사용
- npm install @mui/x-data-grid 
+//그리드 사용
+npm install @mui/x-data-grid
 
- //scss 사용
+//scss 사용
 npm install node-sass --save
 
 // client , server 동시 실행 가능모듈  설치하고 package.json script에  "dev" : "concurrently \"npm start\" \"npx json-server ./data.json --port 4000 \""  추가해서

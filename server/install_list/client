@@ -1,1 +1,7 @@
 npm i --save http-proxy-middleware //리액트 서버와 노드서버간의 데이터를 주고받기위해 프록시 설정.
+
+
+//슬라이드 이미지를 위해 사용
+npm install --save @types/react-slick
+npm install --save react-slick
+npm install --save slick-carousel

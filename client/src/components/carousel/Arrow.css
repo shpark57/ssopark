@@ -1,0 +1,7 @@
+.slick-prev:before {
+    content: '';
+}
+
+.slick-next:before {
+    content: '';
+}

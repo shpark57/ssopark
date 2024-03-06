@@ -3,13 +3,20 @@ import { LoginContext } from 'src/contexts/login'
 import './home.css'
 
 import FeaturedInfo from 'src/components/featuredInfo/FeaturedInfo'
-import WidgetSm from 'src/components/widgetSm/WidgetSm'
-import WidgetLg from 'src/components/widgetLg/WidgetLg'
 import Button from '@mui/material/Button';
 import Grid from '@mui/material/Grid';
 import useModal from "src/components/modal/hooks/useModal";
 import axios from 'axios'
 import { useEffect } from 'react';
+import VisibilityIcon from "@mui/icons-material/Visibility";
+
+import Slider from "react-slick";
+import "slick-carousel/slick/slick.css";
+import "slick-carousel/slick/slick-theme.css";
+
+import Carousel from  "src/components/carousel/Carousel";
+
+
 export default function Home(){
 
 
@@ -58,7 +65,8 @@ export default function Home(){
           }
         }
       });
-    };  
+    };
+
 
     const handleClickTest1 = () => {
       axios.post("/password/check",{user_id:'shpark8381',password:'123qwe!@#'}).then((res) => console.log(res.data)) 
@@ -86,59 +94,23 @@ export default function Home(){
         console.log(res)
       })  //대댓글 조회
     };
-    
 
-    
 
     return(
         <div className='home'>
-            <FeaturedInfo/>
-
             <div className='homeWidgets'>
-                <WidgetSm/>
-                <WidgetLg/>
-                
+                <div className="homeCard">
+                    <img src="https://www.kindacode.com/wp-content/uploads/2021/06/cute-dog.jpeg" />
+
+                </div>
             </div>
-            <Button 
-                variant="contained" 
-                sx={{  mr: 3, ml: 3  }}
-                onClick={handleClickAlertModal}
-            >Alert</Button>
-            <Button 
-                variant="contained" 
-                sx={{  mr: 3, ml: 3  }}
-                onClick={handleClickConfirmModal}
-            >Confirm</Button>
-            <Button 
-                variant="contained" 
-                sx={{  mr: 3, ml: 3  }}
-                onClick={handleClickDefaultModal}
-            >Default</Button>
-            <Button 
-                variant="contained" 
-                sx={{  mr: 3, ml: 3  }}
-                onClick={handleClickTest1}
-            >Test1</Button>
-            <Button 
-                variant="contained" 
-                sx={{  mr: 3, ml: 3  }}
-                onClick={handleClickTest2}
-            >Test2</Button>
-            <Button 
-                variant="contained" 
-                sx={{  mr: 3, ml: 3  }}
-                onClick={handleClickTest3}
-            >Test3</Button>
-            <Button 
-                variant="contained" 
-                sx={{  mr: 3, ml: 3  }}
-                onClick={handleClickTest4}
-            >Test4</Button>
-            <Button 
-                variant="contained" 
-                sx={{  mr: 3, ml: 3  }}
-                onClick={handleClickTest5}
-            >Test5</Button>
+
+
+          <div className='homeWidgets'>
+                <div className="homeCard" >
+                  <Carousel urls={["https://www.kindacode.com/wp-content/uploads/2021/06/cute-dog.jpeg","https://www.kindacode.com/wp-content/uploads/2021/06/cute-dog.jpeg","https://www.kindacode.com/wp-content/uploads/2021/06/cute-dog.jpeg","https://www.kindacode.com/wp-content/uploads/2021/06/cute-dog.jpeg","https://www.kindacode.com/wp-content/uploads/2021/06/cute-dog.jpeg"]}/>
+                </div>
+            </div>
         </div>
     )
 }

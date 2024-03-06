@@ -47,7 +47,7 @@ const [loading, setLoading] = useState(false);
     showModal({
       modalType: "DefaultModal",
       modalProps: {
-        message : ( <FileUpload  mulit ={false} parentCallBack={movieParentCallBack} />),
+        message : ( <FileUpload  mulit ={true} parentCallBack={movieParentCallBack} />),
         title: "",
 
       }

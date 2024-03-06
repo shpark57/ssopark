@@ -1,10 +1,10 @@
 {
     "type": "mysql",
-    "host": "shpark91.synology.me",
-    "port": 3306,
-    "username": "ssopark",
-    "password": "ss5parkPASSW%RD",
-    "database": "ssopark",
+    "host": "shpark91.iptime.org",
+    "port": 3307,
+    "username": "shpark",
+    "password": "SILV@Rs5ul",
+    "database": "shpark_farm",
     "entities": ["server/src/entity/*.ts"],
     "logging": true,
     "synchronize": true

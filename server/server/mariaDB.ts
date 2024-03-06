@@ -6,10 +6,10 @@ let pool : Pool;
 export const init = () => {
     try {
       pool = createPool({
-        host: 'shpark91.synology.me',
-        user: 'ssopark',
-        password: 'ss5parkPASSW%RD',
-        database: 'ssopark',
+        host: 'shpark91.iptime.org',
+        user: 'shpark',
+        password: 'SILV@Rs5ul',
+        database: 'shpark_farm',
         connectionLimit: 4,
       });
   
