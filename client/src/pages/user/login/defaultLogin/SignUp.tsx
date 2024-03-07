@@ -16,7 +16,7 @@ import { createTheme, ThemeProvider } from '@mui/material/styles';
 import * as Time from 'src/types/time'
 import axios from 'axios';
 
-import crypto  from 'crypto'
+import * as crypto from 'src/types/crypto-browserify'
 
 import useModal from "src/components/modal/hooks/useModal";
 function Copyright(props: any) {
