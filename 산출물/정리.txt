@@ -1,0 +1,14 @@
+git
+shpark91@kakao.com
+SILV@Rs5ul
+
+내려받기
+git clone https://github.com/shpark57/ssopark.git
+
+
+도커 폴더 접근
+sudo chmod 666 /var/run/docker.sock
+
+docker exec -t -i ssopark-client-1 /bin/bash
+
+docker exec -u 0 -it ssopark-server-1 sh  

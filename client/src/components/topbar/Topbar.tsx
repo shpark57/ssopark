@@ -137,6 +137,9 @@ export default function Topbar(){
                         <MenuItem onClick={menuClick} data-url="/users">
                             유저
                         </MenuItem>
+                        <MenuItem onClick={menuClick} data-url="/productsList">
+                            제품 리스트
+                        </MenuItem>
                     </Menu>
                 </div>
                 <div className='topRight'>
