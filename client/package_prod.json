@@ -172,7 +172,7 @@
       "react-app"
     ]
   },
-  "proxy": "http://localhost:6000/",
+  "proxy": "http://shpark91.iptime.org:6000",
 
 
 }
