@@ -1,7 +1,7 @@
 
 import React, { useEffect, useState ,useContext} from 'react';
 
-import {ProductProps} from 'src/pages/producrs/list/ProductProps'
+import {ProductProps} from 'src/pages/producrs/props/ProductProps'
 import 'src/pages/producrs/list/ProductBody.css'
 
 
@@ -16,20 +16,32 @@ import CardContent from '@mui/material/CardContent';
 import CardMedia from '@mui/material/CardMedia';
 import Typography from '@mui/material/Typography';
 import { Button, CardActionArea, CardActions } from '@mui/material';
+import axios from "axios";
 const ProductBody:React.FC<ProductProps> = (props) => {
 
     const theme = createTheme();
+    const [productUrl ,setProductUrl ] = useState('')
+    const getImgUrl = () =>{
+        axios.get('/Files?parent_id='+ props.id +'&Type=Products&type_detail=poto&_limit=1')
+            .then(res=>{
+                setProductUrl('/fileService/read/'+res.data[0].id)
+            })
+    }
+    useEffect(() => {
+        getImgUrl()
+    },[])
 
     return (
 
-    <Card sx={{  marginTop: 5}}>
+    <Card sx={{  marginTop: 5 , alignItems:"center"}} >
         <CardActionArea >
-            <CardMedia
-                component="img"
-                image="https://www.kindacode.com/wp-content/uploads/2021/06/cute-dog.jpeg"
-                alt="green iguana"
-                
-            />
+                <CardMedia
+                    component="img"
+                    image={productUrl}
+                    alt="green iguana"
+
+                />
+
             <CardContent >
                 <Typography gutterBottom variant="h5" component="div">
                     {props.product_nm}

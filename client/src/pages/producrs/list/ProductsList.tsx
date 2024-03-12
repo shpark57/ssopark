@@ -10,6 +10,7 @@ import {ThemeProvider} from "@mui/material/styles";
 
 
 import Loading from 'src/components/loding/Loding';
+import {FileProps} from "../../../contexts/file/FileProps";
 
 
 interface productsInterface {
@@ -20,6 +21,7 @@ export default function ProductsList(){
     const { showModal } = useModal();
     const {loggedIn , user } = useContext(LoginContext);
     const [products , setProducts] = useState<productsInterface[]>([])
+    const [imgs , setImgs] = useState<string[]>([])
 
 
     const [page, setPage] = useState(0);
@@ -35,9 +37,10 @@ export default function ProductsList(){
     // API를 호출하는 부분
     const fetchData = async () => {
         setIsLoading(true);
-        console.log(page)
         try {
-            const response = await await axios.get('/Products' , {params : {use_yn: 'Y',_sort:'id',_order:'DESC',_limit: 4,_page: page }})
+            const response = await axios.get('/Products' , {params : {use_yn: 'Y',_sort:'id',_order:'DESC',_limit: 4,_page: page }})
+
+
             const newData = response.data.map(
                 (product:productsInterface) => ({
                     id :product.id
@@ -51,9 +54,12 @@ export default function ProductsList(){
                     ,product_type:product.product_type
                     ,count:product.count
                 })
-            );
+            )
             // 불러온 데이터를 배열에 추가
             setProducts((prevData) => [...prevData, ...newData]);
+
+
+
         } catch (error) {
             console.log(error);
         }
@@ -86,7 +92,7 @@ export default function ProductsList(){
             { products &&
                 products.map( (product, index ,array) => {
                     return(
-                        <ProductBody key={index} id={product.id} grade={product.grade} price={product.price} product_nm={product.product_nm} product_type={product.product_type} rgstr_id={product.rgstr_id} rgstr_time={product.rgstr_time} content={product.content} use_yn={product.use_yn} count={product.count} ></ProductBody>
+                        <ProductBody key={index} id={product.id} grade={product.grade} price={product.price} product_nm={product.product_nm} product_type={product.product_type} rgstr_id={product.rgstr_id} rgstr_time={product.rgstr_time} content={product.content} use_yn={product.use_yn} count={product.count} mdfr_id={product.rgstr_id} mdfr_time={product.rgstr_time}></ProductBody>
 
                     )
               })

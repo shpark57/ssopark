@@ -14,7 +14,7 @@ export class Comment {
     @Column({nullable : false})
     type: string;                   //댓글을 사용하는 테이블명 ex) movies , comments
 
-    @ManyToOne(type => Comment)
+    @ManyToOne(() => Comment)
     @JoinColumn({ name: 'parent_comment_id' })
     @Column({nullable : true})
     parent_comment_id: string;      //대댓글 시 사용

@@ -22,13 +22,14 @@ let ymd = year+'/'+month+'/'+day+'/'
 
 
 
-const dir = path.join(__dirname, '../../../files/movie/')
+const dir = path.join(__dirname, '../../../files/')
 let storage = multer.diskStorage({
     destination: async function  (req, file, cb) {
-      if(!fs.existsSync(dir+ymd)){
-        await mkdirp(dir+ymd).then((res) => console.log(res)).catch(err=>console.log(err))
+      const type = req.params.type
+      if(!fs.existsSync(dir+type+'/'+ymd)){
+        await mkdirp(dir+type+'/'+ymd).then((res) => console.log(res)).catch(err=>console.log(err))
       }
-      await cb(null, dir+ymd);
+      await cb(null, dir+type+'/'+ymd);
     },
     filename: function (req, file, cb) {
       cb(
@@ -37,7 +38,7 @@ let storage = multer.diskStorage({
       );
     },
   });
-  let movieUpload = multer({
+  let fileUpload = multer({
     storage:storage
   });
 
@@ -45,7 +46,7 @@ let storage = multer.diskStorage({
   router.get('/read/:id', async function(req: Request, res: Response) {
     const file = await axios.get('http://'+req.headers.host+'/Files/'+req.params.id)
     if(file.data){
-      const url = dir + file.data.ymd + file.data.change_name + '.' +file.data.file_type
+      const url = dir +file.data.type+'/'+ file.data.ymd + file.data.change_name + '.' +file.data.file_type
       if(fs.existsSync(url)){
         const readStream = fs.createReadStream(url)
 
@@ -67,7 +68,7 @@ let storage = multer.diskStorage({
   
 
 
-router.post("/movie/upload", movieUpload.array('files',10) , async function(req: Request, res: Response) {
+router.post("/upload/:type", fileUpload.array('files',10) , async function(req: Request, res: Response) {
     /************************* */
     /*
         필요한 값,
@@ -94,7 +95,11 @@ router.post("/movie/upload", movieUpload.array('files',10) , async function(req:
                 ,file_type      : req.body['files_params['+i+'].file_type' ]
                 ,size           : req.body['files_params['+i+'].size' ]
             }
-           axios.post(req.headers.origin+'/Files',params)
+
+            let origin = req.headers.origin
+            origin = origin.charAt(origin.length - 1) == '/' ? origin : origin+'/'
+
+            axios.post( origin +'Files',params)
         }     
         
         res.status(201).send({

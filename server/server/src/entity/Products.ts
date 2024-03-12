@@ -1,10 +1,11 @@
-import {Entity, Column, PrimaryGeneratedColumn , Index , Unique } from "typeorm";
+import {Entity, Column, PrimaryGeneratedColumn, Index, Unique, ManyToOne, JoinColumn, OneToMany} from "typeorm";
+import {Files} from "./Files";
 
 @Entity()
 export class Products {
 
     @PrimaryGeneratedColumn()
-    id: number;         //key
+    id: number;
 
     @Index()
     @Column({nullable : false})

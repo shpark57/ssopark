@@ -173,5 +173,5 @@
       "react-app"
     ]
   },
-  "proxy": "http://localhost:6000/"
+  "proxy": "http://localhost:6000"
 }

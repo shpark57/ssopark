@@ -19,7 +19,9 @@ import UserModify from './pages/user/modify/UserModify';        //유저 정보 
 import MoviesList from './pages/movies/list/MoviesList';        //영화 리스트
 import MovieAdd from './pages/movies/add/MovieAdd';           //영화 추가
 import MoviesView from  './pages/movies/view/MoviesView';     //영화 뷰
-import ProductsList from  './pages/producrs/list/ProductsList';     //영화 뷰
+import ProductsList from  './pages/producrs/list/ProductsList';     //상품 리스트
+import ProductsAdd from  './pages/producrs/add/ProductAdd';     //상품 상품 등록
+
 import Sample from './pages/sample/Sample'
 
 import {BrowserRouter as Router, Routes, Route  } from 'react-router-dom'
@@ -52,6 +54,7 @@ function App() {
                         <Route path="/userModify/:id" element={ <UserModify/> }/>
                         <Route path="/moviesView/:id" element={ <MoviesView/> }/>
                         <Route path="/ProductsList" element={ <ProductsList/> }/>
+                        <Route path="/ProductsAdd" element={ <ProductsAdd/> }/>
                         <Route path="/sample" element={ <Sample/> }/>
 
                        

@@ -1,4 +1,5 @@
-import {Entity, Column, PrimaryGeneratedColumn , Index , Unique } from "typeorm";
+import {Entity, Column, PrimaryGeneratedColumn, Index, Unique, ManyToOne, JoinColumn} from "typeorm";
+import {Products} from "./Products";
 
 @Entity()
 export class Files {
@@ -6,10 +7,10 @@ export class Files {
         파일을 저장하면
         /{type}/{ymd}/{change_name}.file_type 형태로 저장할 예정
     */
-    
+
     @PrimaryGeneratedColumn()
     id: number;
-    
+
     @Index()
     @Column({nullable : false})
     parent_id: string;

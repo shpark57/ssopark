@@ -5,18 +5,11 @@ import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import * as Time from 'src/types/time'
 
-import Avatar from '@mui/material/Avatar';
 import Button from '@mui/material/Button';
-import CssBaseline from '@mui/material/CssBaseline';
 import TextField from '@mui/material/TextField';
-import FormControlLabel from '@mui/material/FormControlLabel';
-import Checkbox from '@mui/material/Checkbox';
-import Link from '@mui/material/Link';
 import Grid from '@mui/material/Grid';
 import Box from '@mui/material/Box';
-import TextareaAutosize from '@mui/material/TextareaAutosize'
 import Container from '@mui/material/Container';
-import { createTheme, ThemeProvider } from '@mui/material/styles';
 
 import FileUpload from 'src/components/fileUpload/FileUpload';
 import useModal from "src/components/modal/hooks/useModal";
@@ -24,11 +17,12 @@ import useModal from "src/components/modal/hooks/useModal";
 import Loading from 'src/components/loding/Loding';
 
 
-const MovieAdd = () => {
+const ProductAdd = () => {
+
 
 const [loading, setLoading] = useState(false);
 
-  const { showModal } = useModal();   
+  const { showModal } = useModal();
   let navigate = useNavigate();   //페이지 이동을 위해필요.
   const {loggedIn , user } = useContext(LoginContext);
 
@@ -38,34 +32,34 @@ const [loading, setLoading] = useState(false);
     object: File;
   }
 
-  
-  const [movieFiles, setMovieFiles] = useState<IFileTypes[]>([]);   //file 변수
+
+  const [imgFiles, setImgFiles] = useState<IFileTypes[]>([]);   //file 변수
 
 
-  const movieUploadModal = (event: React.MouseEvent<HTMLButtonElement>) => {
+  const fileUploadModal = (event: React.MouseEvent<HTMLButtonElement>) => {
     event.preventDefault();
     showModal({
       modalType: "DefaultModal",
       modalProps: {
-        message : ( <FileUpload  mulit ={true} parentCallBack={movieParentCallBack} />),
+        message : ( <FileUpload  mulit ={true} parentCallBack={productParentCallBack} />),
         title: "",
 
       }
     });
   };
-  function movieParentCallBack(files:IFileTypes[]){
-    setMovieFiles(files)
+  function productParentCallBack(files:IFileTypes[]){
+    setImgFiles(files)
   }
 
-  const MovieDelFilterFile = useCallback(
+  const productDelFilterFile = useCallback(
     (id: number): void => {
-      setMovieFiles(movieFiles.filter((file: IFileTypes) => file.id !== id));
+      setImgFiles(imgFiles.filter((file: IFileTypes) => file.id !== id));
     },
-    [movieFiles]
+    [imgFiles]
   );
 
   const [subtitleFiles, setSubtitleFiles] = useState<IFileTypes[]>([]);   //file 변수
- 
+
   const subtitleUploadModal = (event: React.MouseEvent<HTMLButtonElement>) => {
     event.preventDefault();
     showModal({
@@ -93,7 +87,7 @@ const [loading, setLoading] = useState(false);
     event.preventDefault();
     const data = new FormData(event.currentTarget);
     if( data.get('title') == ''){
-               
+
       showModal({
         modalType: "AlertModal",
         modalProps: {
@@ -103,7 +97,7 @@ const [loading, setLoading] = useState(false);
       return
     }
     if( data.get('내용은 필수값 입니다.') == ''){
-               
+
       showModal({
         modalType: "AlertModal",
         modalProps: {
@@ -115,19 +109,20 @@ const [loading, setLoading] = useState(false);
 
 
     const params = {
-      title     : data.get('title'),
-      content   : data.get('content'),
-      genre     : data.get('genre'),
-      tag       : data.get('tag'),
+      product_nm     : data.get('product_nm'),
+      product_type   : data.get('product_type'),
+      price     : data.get('price'),
+      content       : data.get('content'),
+      count       : data.get('count'),
       rgstr_id  : user.user_id,
       mdfr_id   : user.user_id,
     }
-    
 
-    
+
+
     try {
-    setLoading(true);  
-    const resMovies = await axios.post("/Movies" , params)    
+    setLoading(true);
+    const resProducts = await axios.post("/Products" , params)
 
     let formData = new FormData();
     const config = {
@@ -135,40 +130,40 @@ const [loading, setLoading] = useState(false);
         "content-type": "multipart/form-data"
       }
     };
-    for(let i  in movieFiles){
-      formData.append('files', movieFiles[i].object)
+    for(let i  in imgFiles){
+      formData.append('files', imgFiles[i].object)
 
-      formData.append('files_params['+i+'].parent_id', resMovies.data.id)
-      formData.append('files_params['+i+'].type', 'MovieFiles')
-      formData.append('files_params['+i+'].type_detail', 'video')
+      formData.append('files_params['+i+'].parent_id', resProducts.data.id)
+      formData.append('files_params['+i+'].type', 'Products')
+      formData.append('files_params['+i+'].type_detail', 'poto')
       formData.append('files_params['+i+'].ymd', Time.getYmd() )
-      formData.append('files_params['+i+'].origin_name', movieFiles[i].object.name.split('.')[0])
+      formData.append('files_params['+i+'].origin_name', imgFiles[i].object.name.split('.')[0])
       formData.append('files_params['+i+'].change_name', '')
-      formData.append('files_params['+i+'].file_type', movieFiles[i].object.name.split('.')[1])
-      formData.append('files_params['+i+'].size', String(movieFiles[i].object.size))
+      formData.append('files_params['+i+'].file_type', imgFiles[i].object.name.split('.')[1])
+      formData.append('files_params['+i+'].size', String(imgFiles[i].object.size))
     }
 
-    
-    axios.post('/fileService/upload/MovieFiles',formData ,config) // Movies 타입은 테이블명. 이게 폴더명으로 변경 됨
+
+    axios.post('/fileService/upload/Products',formData ,config) // Products 타입은 테이블명. 이게 폴더명으로 변경 됨
     .then(res=>{
 
       let formData = new FormData();
       for(let i  in subtitleFiles){
         formData.append('files', subtitleFiles[i].object )
-  
-        formData.append('files_params['+i+'].parent_id', resMovies.data.id)
-        formData.append('files_params['+i+'].type', 'MovieFiles')
-        formData.append('files_params['+i+'].type_detail', 'video')
+
+        formData.append('files_params['+i+'].parent_id', resProducts.data.id)
+        formData.append('files_params['+i+'].type', 'Products')
+        formData.append('files_params['+i+'].type_detail', 'poto')
         formData.append('files_params['+i+'].ymd', Time.getYmd() )
         formData.append('files_params['+i+'].origin_name', subtitleFiles[i].object.name.split('.')[0])
         formData.append('files_params['+i+'].change_name', '')
         formData.append('files_params['+i+'].file_type', subtitleFiles[i].object.name.split('.')[1])
         formData.append('files_params['+i+'].size', String(subtitleFiles[i].object.size))
       }
-    
-      axios.post('/fileService/upload/MovieFiles',formData ,config) // Movies 타입은 테이블명. 이게 폴더명으로 변경 됨
+
+      axios.post('/fileService/upload/Products',formData ,config) // Products 타입은 테이블명. 이게 폴더명으로 변경 됨
       .then(res=>{setLoading(false)})
-      .then(res => navigate(String("/MoviesList")))
+      .then(res => navigate(String("/ProductsList")))
       .catch(err=>console.log(err))
     }) .catch(err=>console.log(err)) // 영상등록
 
@@ -177,9 +172,9 @@ const [loading, setLoading] = useState(false);
       showModal({
         modalType: "AlertModal",
         modalProps: {
-          message: "영화등록에 실패했습니다."
+          message: "파일 등록에 실패했습니다."
         }
-      });    
+      });
   }
   };
 
@@ -198,11 +193,29 @@ const [loading, setLoading] = useState(false);
             <Grid container spacing={2}>
               <Grid item xs={12}>
                 <TextField
-                  required
-                  fullWidth
-                  id="title"
-                  label="제목"
-                  name="title"
+                    required
+                    fullWidth
+                    id="product_nm"
+                    label="상품명"
+                    name="product_nm"
+                />
+              </Grid>
+              <Grid item xs={12}>
+                <TextField
+                    required
+                    fullWidth
+                    id="product_type"
+                    label="상품 종류"
+                    name="product_type"
+                />
+              </Grid>
+              <Grid item xs={12}>
+                <TextField
+                    required
+                    fullWidth
+                    id="price"
+                    label="가격"
+                    name="price"
                 />
               </Grid>
               <Grid item xs={12}>
@@ -217,12 +230,12 @@ const [loading, setLoading] = useState(false);
                   minRows={10}
                 />
               </Grid>
-              
+
 
               <Grid item xs={12} sm={8}>
                 <div className="FileUpload-Files">
-                    {movieFiles.length > 0 &&
-                      movieFiles.map((file: IFileTypes) => {
+                    {imgFiles.length > 0 &&
+                      imgFiles.map((file: IFileTypes) => {
                         const {
                           id,
                           object: { name }
@@ -233,7 +246,7 @@ const [loading, setLoading] = useState(false);
                             <div>{name}</div>
                             <div
                               className="FileUpload-Files-Filter"
-                              onClick={() => MovieDelFilterFile(id)}
+                              onClick={() => productDelFilterFile(id)}
                             >
                               X
                             </div>
@@ -242,74 +255,29 @@ const [loading, setLoading] = useState(false);
                       })}
                 </div>
               </Grid>
-              
+
               <Grid item xs={12} sm={4} container  justifyContent="flex-end">
                   <Button
                     variant="contained"
                     sx={{ mr: 3 ,mt: 1 }}
-                    onClick={movieUploadModal}
+                    onClick={fileUploadModal}
                     style={{height : '40px' }}
                   >
-                    영상
+                    이미지
                   </Button>
               </Grid>
-              
 
-              <Grid item xs={12} sm={8}>
-                <div className="FileUpload-Files">
-                    {subtitleFiles.length > 0 &&
-                      subtitleFiles.map((file: IFileTypes) => {
-                        const {
-                          id,
-                          object: { name }
-                        } = file;
 
-                        return (
-                          <div key={id}>
-                            <div>{name}</div>
-                            <div
-                              className="FileUpload-Files-Filter"
-                              onClick={() => SubtitleDelFilterFile(id)}
-                            >
-                              X
-                            </div>
-                          </div>
-                        );
-                      })}
-                </div>
-              </Grid>
-              
-              <Grid item xs={12} sm={4} container  justifyContent="flex-end">
-                  <Button
-                    variant="contained"
-                    sx={{ mr: 3 ,mt: 1 }}
-                    style={{height : '40px' }}
-                    onClick={subtitleUploadModal}
-                  >
-                    자막
-                  </Button>
-              </Grid>
               <Grid item xs={12}>
                 <TextField
                   required
                   fullWidth
-                  id="genre"
-                  label="장르"
-                  name="genre"
-                  autoComplete="genre"
+                  id="count"
+                  label="갯수"
+                  name="count"
                 />
-              </Grid>              
-              <Grid item xs={12}>
-                <TextField
-                  required
-                  fullWidth
-                  id="tag"
-                  label="태그"
-                  name="tag"
-                  autoComplete="tag"
-                />
-              </Grid>       
-             
+              </Grid>
+
             </Grid>
 
             <Grid container justifyContent="flex-end">
@@ -327,4 +295,4 @@ const [loading, setLoading] = useState(false);
   );
 }
 
-export default  MovieAdd;
+export default  ProductAdd;

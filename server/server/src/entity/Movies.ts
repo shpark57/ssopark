@@ -1,10 +1,10 @@
-import {Entity, Column, PrimaryGeneratedColumn , Index , Unique } from "typeorm";
+import {Entity, Column, PrimaryGeneratedColumn, Index, Unique, OneToMany} from "typeorm";
 
 @Entity()
 export class Movies {
 
     @PrimaryGeneratedColumn()
-    id: number;         //key
+    id: number;
 
     @Index()
     @Column({nullable : false})
