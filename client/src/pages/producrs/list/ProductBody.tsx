@@ -22,14 +22,14 @@ const ProductBody:React.FC<ProductProps> = (props) => {
     const theme = createTheme();
     const [productUrl ,setProductUrl ] = useState('')
     const getImgUrl = () =>{
-        axios.get('/Files?parent_id='+ props.id +'&Type=Products&type_detail=poto&_limit=1')
+        axios.get('/Files?parent_id='+ props.id +'&type=Products&type_detail=poto&_limit=1')
             .then(res=>{
                 setProductUrl('/fileService/read/'+res.data[0].id)
             })
     }
     useEffect(() => {
         getImgUrl()
-    },[])
+    },[0])
 
     return (
 

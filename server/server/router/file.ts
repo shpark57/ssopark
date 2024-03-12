@@ -25,6 +25,7 @@ let ymd = year+'/'+month+'/'+day+'/'
 const dir = path.join(__dirname, '../../../files/')
 let storage = multer.diskStorage({
     destination: async function  (req, file, cb) {
+        console.log("타입 뭔데 ?:" + req.params.type)
       const type = req.params.type
       if(!fs.existsSync(dir+type+'/'+ymd)){
         await mkdirp(dir+type+'/'+ymd).then((res) => console.log(res)).catch(err=>console.log(err))
