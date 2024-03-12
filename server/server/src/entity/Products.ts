@@ -25,6 +25,8 @@ export class Products {
     @Column({type : 'double' , nullable : false ,  default: 0})
     grade:number        //평점 수  , not null , 디폴트 0
 
+    @Column({nullable : false ,  default: 0})
+    count: number      //제품 가격  not null
 
 
     @Column({default: 'systemAdmin'})

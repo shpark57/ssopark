@@ -12,6 +12,7 @@ import { Files } from "../src/entity/Files";
 import { Comment } from "../src/entity/Comment";
 import { Movies } from "../src/entity/Movies";
 import { Likes } from "../src/entity/Likes";
+import { Products } from "../src/entity/Products";
 
 
 
@@ -32,6 +33,8 @@ createConnection().then(connection => {
             repository =  connection.getRepository(Movies)
         }else if(table == 'likes'){
             repository =  connection.getRepository(Likes)
+        }else if(table == 'products'){
+            repository =  connection.getRepository(Products)
         }
         
         return repository;
@@ -63,11 +66,13 @@ createConnection().then(connection => {
         for(const [paramKey ,ParamValue] of Object.entries(req.query)){
             let key = `${paramKey}`.toLowerCase()
             let value = `${ParamValue}`.toLowerCase()
-            
+
             if(key.indexOf('_limit') !== -1){
                 params['take'] = value
             }else if(key.indexOf('_page') !== -1){
-                params['skip'] = (Number(value)-1) * (params['take']?params['take']:10)
+
+
+                params['skip'] = (Number(  value   )-1) * (params['take']?params['take']:10)
             }else if(key.indexOf('_sort') !== -1){
                 paramSort = value
             }else if(key.indexOf('_order') !== -1){

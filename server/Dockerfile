@@ -1,4 +1,4 @@
-FROM node
+FROM node:18.18.1
 
 WORKDIR /usr/app
 
@@ -9,4 +9,4 @@ COPY . .
 
 EXPOSE 6000
 
-CMD ["npm", "start"]
+CMD ["npm", "run" , "server"]

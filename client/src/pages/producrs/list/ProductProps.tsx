@@ -11,4 +11,5 @@ export interface ProductProps {
     grade : number
     rgstr_id : string
     rgstr_time : string
+    count : number
 }

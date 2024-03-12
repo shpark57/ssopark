@@ -94,7 +94,7 @@ router.post("/movie/upload", movieUpload.array('files',10) , async function(req:
                 ,file_type      : req.body['files_params['+i+'].file_type' ]
                 ,size           : req.body['files_params['+i+'].size' ]
             }
-           axios.post(req.headers.origin+'Files',params)
+           axios.post(req.headers.origin+'/Files',params)
         }     
         
         res.status(201).send({
