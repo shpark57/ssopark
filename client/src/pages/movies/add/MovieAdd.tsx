@@ -47,7 +47,7 @@ const [loading, setLoading] = useState(false);
     showModal({
       modalType: "DefaultModal",
       modalProps: {
-        message : ( <FileUpload  mulit ={true} parentCallBack={movieParentCallBack} />),
+        message : ( <FileUpload  mulit ={true} parentCallBack={movieParentCallBack} accept={"video/*"}/>),
         title: "",
 
       }
@@ -71,7 +71,7 @@ const [loading, setLoading] = useState(false);
     showModal({
       modalType: "DefaultModal",
       modalProps: {
-        message : ( <FileUpload  mulit ={false} parentCallBack={subtitleParentCallBack} />),
+        message : ( <FileUpload  mulit ={false} parentCallBack={subtitleParentCallBack}  accept={"video/*"}/>),
         title: "",
 
       }
@@ -139,7 +139,7 @@ const [loading, setLoading] = useState(false);
       formData.append('files', movieFiles[i].object)
 
       formData.append('files_params['+i+'].parent_id', resMovies.data.id)
-      formData.append('files_params['+i+'].type', 'MovieFiles')
+      formData.append('files_params['+i+'].type', 'Movies')
       formData.append('files_params['+i+'].type_detail', 'video')
       formData.append('files_params['+i+'].ymd', Time.getYmd() )
       formData.append('files_params['+i+'].origin_name', movieFiles[i].object.name.split('.')[0])
@@ -149,7 +149,7 @@ const [loading, setLoading] = useState(false);
     }
 
     
-    axios.post('/fileService/upload/MovieFiles',formData ,config) // Movies 타입은 테이블명. 이게 폴더명으로 변경 됨
+    axios.post('/fileService/upload/Movies',formData ,config) // Movies 타입은 테이블명. 이게 폴더명으로 변경 됨
     .then(res=>{
 
       let formData = new FormData();
@@ -157,7 +157,7 @@ const [loading, setLoading] = useState(false);
         formData.append('files', subtitleFiles[i].object )
   
         formData.append('files_params['+i+'].parent_id', resMovies.data.id)
-        formData.append('files_params['+i+'].type', 'MovieFiles')
+        formData.append('files_params['+i+'].type', 'Movies')
         formData.append('files_params['+i+'].type_detail', 'video')
         formData.append('files_params['+i+'].ymd', Time.getYmd() )
         formData.append('files_params['+i+'].origin_name', subtitleFiles[i].object.name.split('.')[0])
@@ -166,7 +166,7 @@ const [loading, setLoading] = useState(false);
         formData.append('files_params['+i+'].size', String(subtitleFiles[i].object.size))
       }
     
-      axios.post('/fileService/upload/MovieFiles',formData ,config) // Movies 타입은 테이블명. 이게 폴더명으로 변경 됨
+      axios.post('/fileService/upload/Movies',formData ,config) // Movies 타입은 테이블명. 이게 폴더명으로 변경 됨
       .then(res=>{setLoading(false)})
       .then(res => navigate(String("/MoviesList")))
       .catch(err=>console.log(err))

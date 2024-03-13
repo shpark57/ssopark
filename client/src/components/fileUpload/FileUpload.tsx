@@ -14,12 +14,14 @@ import React, {
   interface FileModalProps {
     mulit : boolean;
     parentCallBack:(files: IFileTypes[]) => void;
+    accept :string;
   };
   
 const FileUpload:React.FC<FileModalProps> =  (props) => {
     const [isDragging, setIsDragging] = useState<boolean>(false); // 드래그 중인지 확인 변수
     const [files, setFiles] = useState<IFileTypes[]>([]);   //file 변수
     const [isMulit, setIsmult] = useState<boolean>(props.mulit); // 드래그 중인지 확인 변수
+    const [isAccept, setAccept] = useState<string>(props.accept); // 확장자 제한
     
     const dragRef = useRef<HTMLLabelElement | null>(null);
     const fileId = useRef<number>(0);
@@ -142,6 +144,7 @@ const FileUpload:React.FC<FileModalProps> =  (props) => {
           style={{ display: "none" }}
           multiple={isMulit}
           onChange={onChangeFiles}
+          accept = {isAccept}
         />
   
         <label

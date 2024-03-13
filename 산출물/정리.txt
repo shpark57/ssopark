@@ -18,3 +18,6 @@ docker logs --tail 50 -f 9f228b62c87a
 git remote add origin https://github.com/shpark57/ssopark.git
 
 
+
+
+dpkg-reconfigure tzdata   // 타임존 설정

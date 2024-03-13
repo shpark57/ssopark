@@ -41,7 +41,7 @@ const [loading, setLoading] = useState(false);
     showModal({
       modalType: "DefaultModal",
       modalProps: {
-        message : ( <FileUpload  mulit ={true} parentCallBack={productParentCallBack} />),
+        message : ( <FileUpload  mulit ={true} parentCallBack={productParentCallBack}  accept={"image/*"}/>),
         title: "",
 
       }
@@ -65,7 +65,7 @@ const [loading, setLoading] = useState(false);
     showModal({
       modalType: "DefaultModal",
       modalProps: {
-        message : ( <FileUpload  mulit ={false} parentCallBack={subtitleParentCallBack} />),
+        message : ( <FileUpload  mulit ={false} parentCallBack={subtitleParentCallBack}  accept={"image/*"}/>),
         title: "",
 
       }

@@ -15,8 +15,10 @@ import Card from '@mui/material/Card';
 import CardContent from '@mui/material/CardContent';
 import CardMedia from '@mui/material/CardMedia';
 import Typography from '@mui/material/Typography';
-import { Button, CardActionArea, CardActions } from '@mui/material';
+import {Button, CardActionArea, CardActions, Grid} from '@mui/material';
 import axios from "axios";
+
+
 const ProductBody:React.FC<ProductProps> = (props) => {
 
     const theme = createTheme();
@@ -33,31 +35,40 @@ const ProductBody:React.FC<ProductProps> = (props) => {
 
     return (
 
-    <Card sx={{  marginTop: 5 , alignItems:"center"}} >
-        <CardActionArea >
+        <CardActionArea>
                 <CardMedia
                     component="img"
                     image={productUrl}
                     alt="green iguana"
-
+                    style={{
+                        left : '0'
+                        ,right : '0'
+                        ,margin: '10px auto'
+                    }}
+                    sx={{height : 300}}
                 />
 
             <CardContent >
-                <Typography gutterBottom variant="h5" component="div">
+                <Typography gutterBottom variant="h5" >
                     {props.product_nm}
                 </Typography>
-                <Typography variant="h6" color="red">
-                    {props.price.toLocaleString('ko-KR')} 원
-                </Typography>
 
 
-                <Typography  variant="h6" textAlign ="right" >
-                    남은 개수 : {props.count}
-                </Typography>
+                <Grid container spacing={2}>
+                    <Grid item xs={6}>
+                        <Typography variant="h6" color="red" align="left" >
+                            {props.price.toLocaleString('ko-KR')} 원
+                        </Typography>
+                    </Grid>
+                    <Grid item xs={6}>
+                        <Typography  variant="h6" align ="right" >
+                            남은 개수 : {props.count}
+                        </Typography>
+                    </Grid>
+                </Grid>
+
             </CardContent>
         </CardActionArea>
-    </Card>
-
     )
 } 
 export default ProductBody
