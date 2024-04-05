@@ -38,7 +38,6 @@ interface userInfo{
     id:number,
     user_id:string,
     user_name:string,
-    avatar:string,
     email:string,
     phone_number:string
 }
@@ -72,7 +71,6 @@ export default function Login(){
                 id : res.data.id,
                 user_id : res.data.user_id,
                 user_name : res.data.user_name,
-                avatar : res.data.avatar,
                 email : res.data.email,
                 phone_number : res.data.phone_number
             }

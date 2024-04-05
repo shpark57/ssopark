@@ -6,7 +6,6 @@ interface userInfo {      //공유되는 유저정보 타입
     id : number,
     user_id : string ,
     user_name : string ,
-    avatar : string,
     email : string ,
     phone_number : string ,
   }
@@ -15,7 +14,6 @@ const LoginContext = createContext({//로그인 시 공유할 유저 정보
         id : 0,
         user_id : '',
         user_name : '',
-        avatar : '',
         email : '',
         phone_number : '',      
     },
@@ -34,8 +32,7 @@ const LoginProvider = ({ children }: Props): JSX.Element => { //App에서 LoginP
   const [user, setUser] = useState<userInfo>({
         id : Number(sessionStorage.getItem('id')) 
         ,user_id : String(sessionStorage.getItem('user_id')) 
-        ,user_name : String(sessionStorage.getItem('user_name')) 
-        ,avatar : String(sessionStorage.getItem('avatar')) 
+        ,user_name : String(sessionStorage.getItem('user_name'))
         ,email : String(sessionStorage.getItem('email')) 
         ,phone_number : String(sessionStorage.getItem('phone_number'))  
     });
@@ -46,7 +43,6 @@ const LoginProvider = ({ children }: Props): JSX.Element => { //App에서 LoginP
     sessionStorage.setItem('loggedIn' , 'true');
     sessionStorage.setItem('id' , String(user.id));
     sessionStorage.setItem('user_id' , user.user_id);
-    sessionStorage.setItem('avatar' , user.avatar);
     sessionStorage.setItem('email' , user.email);
     sessionStorage.setItem('phone_number' , user.phone_number);
     sessionStorage.setItem('user_name' , user.user_name);
@@ -68,7 +64,6 @@ const LoginProvider = ({ children }: Props): JSX.Element => { //App에서 LoginP
       id : 0,
       user_id : '',
       user_name : '',
-      avatar : '',
       email : '',
       phone_number : '',      
     });

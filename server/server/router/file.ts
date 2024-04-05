@@ -10,22 +10,15 @@ import multer from "multer";
 const fs=require('fs')
 import  mkdirp from 'mkdirp'
 
-let today = new Date();   
-let year = today.getFullYear()
-let month = ('0' + (today.getMonth()+1)).slice(-2); 
-let day = ('0' + today.getDate()).slice(-2); 
-let ymd = year+'/'+month+'/'+day+'/'
-
-
-
-
-
-
-
 const dir = path.join(__dirname, '../../../files/')
 let storage = multer.diskStorage({
     destination: async function  (req, file, cb) {
-        console.log("")
+      let today = new Date();
+      let year = today.getFullYear()
+      let month = ('0' + (today.getMonth()+1)).slice(-2);
+      let day = ('0' + today.getDate()).slice(-2);
+      let ymd = year+'/'+month+'/'+day+'/'
+
       const type = req.params.type
       if(!fs.existsSync(dir+type+'/'+ymd)){
         await mkdirp(dir+type+'/'+ymd).then((res) => console.log(res)).catch(err=>console.log(err))

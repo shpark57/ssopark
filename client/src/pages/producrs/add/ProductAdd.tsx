@@ -1,5 +1,5 @@
 
-import React , {useState, useEffect,useContext , useCallback} from 'react';
+import React, {useState, useEffect, useContext, useCallback, useRef} from 'react';
 import { LoginContext } from 'src/contexts/login'
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
@@ -16,6 +16,15 @@ import useModal from "src/components/modal/hooks/useModal";
 
 import Loading from 'src/components/loding/Loding';
 
+
+import 'src/pages/producrs/add/ProductAdd.css'
+
+
+import '@toast-ui/editor/dist/toastui-editor.css';
+import {Editor,  EditorProps} from '@toast-ui/react-editor';
+import '@toast-ui/editor/dist/i18n/ko-kr';
+import CardMedia from "@mui/material/CardMedia";
+import {CardActionArea} from "@mui/material";
 
 const ProductAdd = () => {
 
@@ -41,18 +50,34 @@ const [loading, setLoading] = useState(false);
     showModal({
       modalType: "DefaultModal",
       modalProps: {
-        message : ( <FileUpload  mulit ={true} parentCallBack={productParentCallBack}  accept={"image/*"}/>),
+        message : ( <FileUpload  mulit ={false} parentCallBack={productParentCallBack}  accept={"image/*"}/>),
         title: "",
 
       }
     });
   };
+
+  var fr = new FileReader();
+  const [titleImg, setTitleImg] = useState("");
+  fr.addEventListener("load", function(){
+    // @ts-ignore
+    setTitleImg(this.result);
+  });
+
   function productParentCallBack(files:IFileTypes[]){
+    if(files.length > 0){
+      fr.readAsDataURL(files[0].object)
+    }else{
+      setTitleImg("");
+    }
+
     setImgFiles(files)
   }
 
   const productDelFilterFile = useCallback(
     (id: number): void => {
+
+      setTitleImg("");
       setImgFiles(imgFiles.filter((file: IFileTypes) => file.id !== id));
     },
     [imgFiles]
@@ -83,7 +108,10 @@ const [loading, setLoading] = useState(false);
   );
 
 
-  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
+  const editorRef =  useRef<Editor>(null);
+
+
+  const handleSubmit = (event: React.FormEvent<HTMLFormElement>)  => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
     if( data.get('title') == ''){
@@ -106,175 +134,149 @@ const [loading, setLoading] = useState(false);
       });
       return
     }
+    if( titleImg == ''){
+
+      showModal({
+        modalType: "AlertModal",
+        modalProps: {
+          message: "대표이미지를 등록해야 합니다."
+        }
+      });
+      return
+    }
 
 
     const params = {
       product_nm     : data.get('product_nm'),
       product_type   : data.get('product_type'),
       price     : data.get('price'),
-      content       : data.get('content'),
-      count       : data.get('count'),
+      content   : editorRef.current?.getInstance().getHTML(),
+      cnt       : data.get('cnt'),
       rgstr_id  : user.user_id,
       mdfr_id   : user.user_id,
+      title_img : titleImg
     }
 
 
 
     try {
-    setLoading(true);
-    const resProducts = await axios.post("/Products" , params)
-
-    let formData = new FormData();
-    const config = {
-      headers: {
-        "content-type": "multipart/form-data"
-      }
-    };
-    for(let i  in imgFiles){
-      formData.append('files', imgFiles[i].object)
-
-      formData.append('files_params['+i+'].parent_id', resProducts.data.id)
-      formData.append('files_params['+i+'].type', 'Products')
-      formData.append('files_params['+i+'].type_detail', 'poto')
-      formData.append('files_params['+i+'].ymd', Time.getYmd() )
-      formData.append('files_params['+i+'].origin_name', imgFiles[i].object.name.split('.')[0])
-      formData.append('files_params['+i+'].change_name', '')
-      formData.append('files_params['+i+'].file_type', imgFiles[i].object.name.split('.')[1])
-      formData.append('files_params['+i+'].size', String(imgFiles[i].object.size))
-    }
+      setLoading(true);
+      axios.post("/Products" , params).then(res=>{setLoading(false)}).then(res => navigate(String("/ProductsList"))).catch(err=>console.log(err))
 
 
-    axios.post('/fileService/upload/Products',formData ,config) // Products 타입은 테이블명. 이게 폴더명으로 변경 됨
-    .then(res=>{
-
-      let formData = new FormData();
-      for(let i  in subtitleFiles){
-        formData.append('files', subtitleFiles[i].object )
-
-        formData.append('files_params['+i+'].parent_id', resProducts.data.id)
-        formData.append('files_params['+i+'].type', 'Products')
-        formData.append('files_params['+i+'].type_detail', 'poto')
-        formData.append('files_params['+i+'].ymd', Time.getYmd() )
-        formData.append('files_params['+i+'].origin_name', subtitleFiles[i].object.name.split('.')[0])
-        formData.append('files_params['+i+'].change_name', '')
-        formData.append('files_params['+i+'].file_type', subtitleFiles[i].object.name.split('.')[1])
-        formData.append('files_params['+i+'].size', String(subtitleFiles[i].object.size))
-      }
-
-      axios.post('/fileService/upload/Products',formData ,config) // Products 타입은 테이블명. 이게 폴더명으로 변경 됨
-      .then(res=>{setLoading(false)})
-      .then(res => navigate(String("/ProductsList")))
-      .catch(err=>console.log(err))
-    }) .catch(err=>console.log(err)) // 영상등록
-
-  } catch (error) {
-      setLoading(false);
-      showModal({
-        modalType: "AlertModal",
-        modalProps: {
+    } catch (error) {
+        setLoading(false);
+        showModal({
+          modalType: "AlertModal",
+          modalProps: {
           message: "파일 등록에 실패했습니다."
         }
       });
-  }
+    }
+
   };
 
+
   return (
-      <Container component="main" maxWidth="lg">
+
+      <Container component="main" maxWidth="md">
       {loading ? <Loading/> : null}
-        <Box
-          sx={{
-            marginTop: 8,
-            display: 'flex',
-            flexDirection: 'column',
-            alignItems: 'center',
-          }}
-        >
+        <Box>
           <Box component="form" noValidate onSubmit={handleSubmit} sx={{ mt: 3 }}>
             <Grid container spacing={2}>
-              <Grid item xs={12}>
-                <TextField
-                    required
-                    fullWidth
-                    id="product_nm"
-                    label="상품명"
-                    name="product_nm"
-                />
-              </Grid>
-              <Grid item xs={12}>
-                <TextField
-                    required
-                    fullWidth
-                    id="product_type"
-                    label="상품 종류"
-                    name="product_type"
-                />
-              </Grid>
-              <Grid item xs={12}>
-                <TextField
-                    required
-                    fullWidth
-                    id="price"
-                    label="가격"
-                    name="price"
-                />
-              </Grid>
-              <Grid item xs={12}>
-                <TextField
-                  required
-                  fullWidth
-                  id="content"
-                  label="내용"
-                  name="content"
-                  variant="outlined"
-                  multiline
-                  minRows={10}
-                />
-              </Grid>
+              <Grid item xs={12} container justifyContent="center">
 
+                <div style={{ height : '300px' , textAlign:'center'}}>
+                  {
+                    imgFiles.length > 0
 
-              <Grid item xs={12} sm={8}>
-                <div className="FileUpload-Files">
-                    {imgFiles.length > 0 &&
-                      imgFiles.map((file: IFileTypes) => {
-                        const {
-                          id,
-                          object: { name }
-                        } = file;
+                        ? imgFiles.map((file: IFileTypes) => {
+                          const {id,object: { name }} = file;
 
-                        return (
-                          <div key={id}>
-                            <div>{name}</div>
-                            <div
-                              className="FileUpload-Files-Filter"
-                              onClick={() => productDelFilterFile(id)}
-                            >
-                              X
-                            </div>
-                          </div>
-                        );
-                      })}
+                          return (
+                              <div key={id}>
+                                <CardMedia
+                                    component="img"
+                                    image={titleImg}
+                                    style={{
+                                      left : '0'
+                                      ,right : '0'
+                                    }}
+                                    sx={{height : 280}}
+                                />
+                                <span style={{ cursor : 'pointer'}}
+
+                                    onClick={() => productDelFilterFile(id)}
+                                > X </span>
+                              </div>
+                          );
+                        })
+
+                        : <Button
+                            variant="outlined"
+                            sx={{ mr: 3 ,mt: 1 }}
+                            onClick={fileUploadModal}
+                            style={{ top : '110px' }}
+
+                        >
+                          대표 이미지
+                        </Button>
+
+                  }
                 </div>
+
+
+
               </Grid>
 
-              <Grid item xs={12} sm={4} container  justifyContent="flex-end">
-                  <Button
-                    variant="contained"
-                    sx={{ mr: 3 ,mt: 1 }}
-                    onClick={fileUploadModal}
-                    style={{height : '40px' }}
-                  >
-                    이미지
-                  </Button>
-              </Grid>
+                  <Grid item xs={12}>
+                    <TextField
+                        required
+                        fullWidth
+                        id="product_nm"
+                        label="상품명"
+                        name="product_nm"
+                    />
+                  </Grid>
+                  <Grid item xs={12}>
+                    <TextField
+                        required
+                        fullWidth
+                        id="product_type"
+                        label="상품 종류"
+                        name="product_type"
+                    />
+                  </Grid>
+                  <Grid item xs={12}>
+                    <TextField
+                        required
+                        fullWidth
+                        id="price"
+                        label="가격"
+                        name="price"
+                    />
+                  </Grid>
+                <Grid item xs={12}>
+                  <TextField
+                      required
+                      fullWidth
+                      id="cnt"
+                      label="갯수"
+                      name="cnt"
+                  />
+                </Grid>
 
 
               <Grid item xs={12}>
-                <TextField
-                  required
-                  fullWidth
-                  id="count"
-                  label="갯수"
-                  name="count"
+                <Editor
+                    initialValue=""
+                    previewStyle="vertical"
+                    height="600px"
+                    ref={editorRef}
+                    initialEditType="wysiwyg"
+                    useCommandShortcut={false}
+                    language="ko-KR"
+                    autofocus={false}
                 />
               </Grid>
 

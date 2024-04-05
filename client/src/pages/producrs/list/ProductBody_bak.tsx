@@ -18,32 +18,17 @@ import Typography from '@mui/material/Typography';
 import {Button, CardActionArea, CardActions, Grid} from '@mui/material';
 import axios from "axios";
 
-import { useNavigate } from 'react-router-dom';
 
 const ProductBody:React.FC<ProductProps> = (props) => {
 
-    let navigate = useNavigate();   //페이지 이동을 위해필요.
     const theme = createTheme();
-    const goProductsView = async (e : React.MouseEvent<HTMLSpanElement>) => {
-        if(!(e.target instanceof HTMLImageElement)){
-            return;
-        }
-        const id = e.target.dataset.id
-
-
-        await axios.patch('/Products/'+id ,{'visits++' : 1})
-        navigate(String("/ProductsView/"+ id))
-    }
-
 
 
     return (
 
-        <CardActionArea  >
+        <CardActionArea>
                 <CardMedia
                     component="img"
-                    onClick={goProductsView}
-                    data-id={props.id}
                     image={props.title_img}
                     alt="green iguana"
                     style={{
@@ -58,6 +43,9 @@ const ProductBody:React.FC<ProductProps> = (props) => {
                 <Typography gutterBottom variant="h5" >
                     {props.product_nm}
                 </Typography>
+
+                <div dangerouslySetInnerHTML={ {__html : props.content} }>
+                </div>
 
                 <Grid container spacing={2}>
                     <Grid item xs={6}>

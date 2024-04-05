@@ -19,5 +19,11 @@ git remote add origin https://github.com/shpark57/ssopark.git
 
 
 
-
 dpkg-reconfigure tzdata   // 타임존 설정
+
+
+
+
+강제로 최신본으로 pull
+git fetch --all  
+git reset --hard origin/master

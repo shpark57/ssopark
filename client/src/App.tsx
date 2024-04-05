@@ -21,6 +21,8 @@ import MovieAdd from './pages/movies/add/MovieAdd';           //영화 추가
 import MoviesView from  './pages/movies/view/MoviesView';     //영화 뷰
 import ProductsList from  './pages/producrs/list/ProductsList';     //상품 리스트
 import ProductsAdd from  './pages/producrs/add/ProductAdd';     //상품 상품 등록
+import ProductsView from  './pages/producrs/view/ProductsView';   //상품 상품 view
+import ProductsModify from './pages/producrs/modify/ProductsModify';   //상품 상품 수정
 
 import Sample from './pages/sample/Sample'
 
@@ -55,6 +57,8 @@ function App() {
                         <Route path="/moviesView/:id" element={ <MoviesView/> }/>
                         <Route path="/ProductsList" element={ <ProductsList/> }/>
                         <Route path="/ProductsAdd" element={ <ProductsAdd/> }/>
+                        <Route path="/ProductsView/:id" element={ <ProductsView/> }/>
+                        <Route path="/ProductsModify/:id" element={ <ProductsModify/> }/>
                         <Route path="/sample" element={ <Sample/> }/>
 
                        

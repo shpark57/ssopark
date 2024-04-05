@@ -16,14 +16,13 @@ import AddCircleIcon from '@mui/icons-material/AddCircle';
 import Typography from "@mui/material/Typography";
 import {SvgIconTypeMap} from "@mui/material/SvgIcon/SvgIcon";
 
-interface productsInterface {
-    id:number , grade : number , price : number, product_nm : string,rgstr_id:string,rgstr_time:string,content:string, use_yn:string,product_type:string, count : number
-}
+import {ProductProps} from 'src/pages/producrs/props/ProductProps'
+
 export default function ProductsList(){
     let navigate = useNavigate();   //페이지 이동을 위해필요.
     const { showModal } = useModal();
     const {loggedIn , user } = useContext(LoginContext);
-    const [products , setProducts] = useState<productsInterface[]>([])
+    const [products , setProducts] = useState<ProductProps[]>([])
     const [imgs , setImgs] = useState<string[]>([])
 
 
@@ -41,13 +40,14 @@ export default function ProductsList(){
     const fetchData = async () => {
         setIsLoading(true);
         try {
-            const response = await axios.get('/Products' , {params : {use_yn: 'Y',_sort:'id',_order:'DESC',_limit: 4,_page: page }})
+            const response = await axios.get('/Products' , {params : {use_yn: 'Y',_sort:'id',_order:'DESC',_limit: 3,_page: page }})
 
 
             const newData = response.data.map(
-                (product:productsInterface) => ({
+                (product:ProductProps) => ({
                     id :product.id
-                    , grade : product.grade
+                    , like : product.like
+                    , dis_like : product.dis_like
                     , price : product.price
                     , product_nm : product.product_nm
                     ,rgstr_id:product.rgstr_id
@@ -55,7 +55,9 @@ export default function ProductsList(){
                     ,content:product.content
                     ,use_yn:product.use_yn
                     ,product_type:product.product_type
-                    ,count:product.count
+                    ,cnt:product.cnt
+                    ,title_img : product.title_img
+                    ,visits : product.visits
                 })
             )
             // 불러온 데이터를 배열에 추가
@@ -101,7 +103,7 @@ export default function ProductsList(){
                 { products &&
                     products.map( (product, index ,array) => {
                         return(
-                            <ProductBody key={index} id={product.id} grade={product.grade} price={product.price} product_nm={product.product_nm} product_type={product.product_type} rgstr_id={product.rgstr_id} rgstr_time={product.rgstr_time} content={product.content} use_yn={product.use_yn} count={product.count} mdfr_id={product.rgstr_id} mdfr_time={product.rgstr_time} ></ProductBody>
+                            <ProductBody key={index} id={product.id} like={product.like} dis_like={product.dis_like} price={product.price} product_nm={product.product_nm} product_type={product.product_type} rgstr_id={product.rgstr_id} rgstr_time={product.rgstr_time} content={product.content} use_yn={product.use_yn} cnt={product.cnt} mdfr_id={product.rgstr_id} mdfr_time={product.rgstr_time }  title_img = {product.title_img} visits = {product.visits}></ProductBody>
 
                         )
                   })

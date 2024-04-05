@@ -7,12 +7,16 @@ export interface ProductProps {
     product_nm : string
     product_type :string
     price :number
-    content? :string
-    use_yn? : string
-    grade : number
+    content :string
+    use_yn : string
+    like : number
+    dis_like : number
     rgstr_id : string
     rgstr_time : string
     mdfr_id : string
     mdfr_time : string
-    count : number
+    cnt : number
+    title_img : string
+    visits : number
 }
+

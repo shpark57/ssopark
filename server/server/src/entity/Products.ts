@@ -20,14 +20,23 @@ export class Products {
     @Column("longtext")
     content: string;    //내용  not null
 
+    @Column("longtext")
+    title_img: string;  //타이틀에 들어가는 이미지
+
     @Column({nullable : false ,  default: 'Y'})
     use_yn: string;     //사용여부 , not null , 디폴트 Y
 
-    @Column({type : 'double' , nullable : false ,  default: 0})
-    grade:number        //평점 수  , not null , 디폴트 0
+    @Column({nullable : false ,  default: 0})
+    like:number         //좋아요 수  , not null , 디폴트 0
 
     @Column({nullable : false ,  default: 0})
-    count: number      //제품 가격  not null
+    dis_like:number     //싫어요 수  , not null , 디폴트 0
+
+    @Column({nullable : false ,  default: 0})
+    visits: number      //방문 수  , not null , 디폴트 0
+
+    @Column({nullable : false ,  default: 0})
+    cnt: number      //제품 보유 갯수  not null
 
 
     @Column({default: 'systemAdmin'})

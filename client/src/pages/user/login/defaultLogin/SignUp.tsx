@@ -62,7 +62,6 @@ export default function SignUp() {
       email : data.get('email'), 
       user_name : data.get('user_name'),
       phone_number : data.get('phone_number'),
-      avatar : data.get('avatar'),
       use_yn : 'Y',
       rgstr_id: data.get('user_id'),
       rgstr_time: Time.getTimeString() ,
@@ -71,10 +70,7 @@ export default function SignUp() {
       last_login: Time.getTimeString(),
       salt : salt                           //암호화시 키가 될값 저장
     }
-    
-    if(params.avatar == ''){
-      params.avatar = 'https://cdn.pixabay.com/photo/2017/11/10/05/48/user-2935527_960_720.png'
-    }
+
 
     axios.post("/Users" , params)
       .then( (response) => {
@@ -119,15 +115,7 @@ export default function SignUp() {
           </Typography>
           <Box component="form" noValidate onSubmit={handleSubmit} sx={{ mt: 3 }}>
             <Grid container spacing={2}>
-              <Grid item xs={12}>
-                <TextField
-                  
-                  fullWidth
-                  id="avatar"
-                  label="이미지 개발중 경로만 입력하세요"
-                  name="avatar"
-                />
-              </Grid>
+
               <Grid item xs={12}>
                 <TextField
                   required

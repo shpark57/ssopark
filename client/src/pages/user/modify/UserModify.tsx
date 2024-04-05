@@ -44,7 +44,6 @@ interface userInfo  {
     email: string;
     user_name: string;
     phone_number: string;
-    avatar: string;
     useYn: string;
     rgstr_id: string;
     rgstr_time: string;
@@ -69,7 +68,6 @@ export default function UserModify() {
                                         email : "", 
                                         user_name : "",
                                         phone_number :"",
-                                        avatar : "",
                                         useYn : "Y",
                                         rgstr_id: "",
                                         rgstr_time:"" ,
@@ -177,17 +175,7 @@ export default function UserModify() {
         >
           <Box component="form" noValidate onSubmit={handleModify} sx={{ mt: 3 }}>
             <Grid container spacing={2}>
-              <Grid item xs={12}>
-                <TextField
-                  
-                  fullWidth
-                  id="avatar"
-                  label="이미지 개발중 경로만 입력하세요"
-                  name="avatar"
-                  value={userParams.avatar}
-                  onChange={(e:React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => inputFromHandler(e)}
-                />
-              </Grid>
+
               <Grid item xs={12}>
                 <TextField
                   required

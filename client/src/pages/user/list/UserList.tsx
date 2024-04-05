@@ -63,7 +63,7 @@ export default function UserList(){
         {   field : 'user' , 
             headerName : 'User' , 
             width : 200 ,
-            renderCell: (params:any) =>{
+          /*  renderCell: (params:any) =>{
                 return(
                     <div className="userListUser">
                         <img 
@@ -74,7 +74,7 @@ export default function UserList(){
                         {params.row.user_name}
                     </div>
                 )
-            }
+            }*/
         
         },
         {   field : 'email' , headerName : '이메일' , width : 300},

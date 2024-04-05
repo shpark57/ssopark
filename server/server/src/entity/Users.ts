@@ -17,8 +17,6 @@ export class Users {
     @Column()
     user_name: string;
 
-    @Column()
-    avatar: string;
 
     @Column()
     email: string;

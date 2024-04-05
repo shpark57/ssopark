@@ -8,7 +8,7 @@ const query = require("./router/query")
 
 
 app.use(bodyParser.urlencoded({extended:true}))
-app.use(bodyParser.json())
+app.use(bodyParser.json({limit: '100mb'}))
 app.use("/fileService", file);
 app.use("/query", query);
 app.use("/:table", router);
