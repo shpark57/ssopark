@@ -69,12 +69,14 @@ function App() {
           </div>
         </Router>
             :
+        <Router>
             <Routes>
               <Route path="/" element={ <Login/>}/>
               <Route path="/login" element={ <Login/> }/>
               <Route path="/signUp" element={ <SignUp/> }/>
 
             </Routes>
+        </Router>
       }
     </LoginProvider>
   );

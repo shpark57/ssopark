@@ -48,7 +48,7 @@ export class Users {
     @Column()
     salt: string;
     
-    @Column()
+    @Column({default: ''})
     auth: string;   //권한
     
     

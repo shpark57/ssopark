@@ -14,8 +14,8 @@ import Slider from "react-slick";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 
-import Carousel from  "src/components/carousel/Carousel";
-import {ProductProps} from "../producrs/props/ProductProps";
+import Carousel from  "src/pages/home/Carousel";
+import {ProductProps} from "src/pages/producrs/props/ProductProps";
 import {useNavigate} from "react-router-dom";
 
 
