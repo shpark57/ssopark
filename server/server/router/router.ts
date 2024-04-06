@@ -136,7 +136,7 @@ createConnection().then(connection => {
     }  
 
     const saveRepository =  async (table : string , req: Request, res: Response)  => {
-        console.log(req.body)
+        //console.log(req.body)
         const entity = await  dinamicRepository(table).save(req.body)
         return entity
         
@@ -169,7 +169,7 @@ createConnection().then(connection => {
 
     const deleteOneByRepository =  async(table : string , req: Request, res: Response)  => {
         req.query['id'] = req.params.id
-        console.log(req.params)
+        //console.log(req.params)
         const remove = await dinamicRepository(table).findOneBy(req.query)
         for(let key in remove){
             if(remove[key] == null){
@@ -204,7 +204,7 @@ createConnection().then(connection => {
         let table = req.baseUrl.substr(1)
         findOneByRepository(table , req , res)
         .then(entity => {
-            console.log(entity)
+            //console.log(entity)
             res.send(entity);
         })
         .catch(err => {
@@ -220,7 +220,7 @@ createConnection().then(connection => {
         let table = req.baseUrl.substr(1)
         findByRepository(table , req , res)        
         .then(entity => {
-            console.log(entity)
+            //console.log(entity)
             res.send(entity);
         })
         .catch(err => {
@@ -235,7 +235,7 @@ createConnection().then(connection => {
         let table = req.baseUrl.substr(1)
         const entity =  saveRepository(table , req , res)
         .then(entity => {
-            console.log(entity)
+            //console.log(entity)
             res.send(entity);
         })
         .catch(err => {
@@ -254,7 +254,7 @@ createConnection().then(connection => {
         req.body['id'] = Number(req.params.id)
         const entity =  saveRepository(table , req , res)
         .then(entity => {
-            console.log(entity)
+            //console.log(entity)
             res.send(entity);
         })
         .catch(err => {
@@ -274,7 +274,7 @@ createConnection().then(connection => {
         req.body['id'] = Number(req.params.id)
         const entity =  patchRepository(table , req , res)
         .then(entity => {
-            console.log(entity)
+            //console.log(entity)
             res.send(entity);
         })
         .catch(err => {
@@ -291,7 +291,7 @@ createConnection().then(connection => {
         let table = req.baseUrl.substr(1)
         deleteOneByRepository(table , req , res)
         .then(entity => {
-            console.log(entity)
+            //console.log(entity)
             res.send(entity);
         })
         .catch(err => {
@@ -308,7 +308,7 @@ createConnection().then(connection => {
         let table = req.baseUrl.substr(1)
         deleteRepository(table , req , res)        
         .then(entity => {
-            console.log(entity)
+            //console.log(entity)
             res.send(entity);
         })
         .catch(err => {
@@ -341,9 +341,9 @@ createConnection().then(connection => {
                             id : response.id,
                             user_id : response.user_id,
                             user_name : response.user_name,
-                            avatar : response.avatar,
                             email : response.email,
-                            phone_number : response.phone_number
+                            phone_number : response.phone_number,
+                            auth : response.auth
                         }
                         res.send(params);
                     }else{
@@ -352,9 +352,9 @@ createConnection().then(connection => {
                             id : 0,
                             user_id : '',
                             user_name : '',
-                            avatar : '',
                             email : '',
-                            phone_number : ''
+                            phone_number : '',
+                            auth : ''
                         }
                         res.send(params);
                     }
@@ -375,7 +375,7 @@ createConnection().then(connection => {
             req.body['password'] = crypto.pbkdf2Sync(req.body.password, salt, 1, 32, 'sha512').toString('hex');
             const response = connection.getRepository(Users).save(req.body)
             .then(response => {
-                console.log(response)
+                //console.log(response)
                 res.send(response);
             })
             .catch(err => {

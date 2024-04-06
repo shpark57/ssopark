@@ -26,7 +26,7 @@ export default function ProductsList(){
     const [imgs , setImgs] = useState<string[]>([])
 
 
-    const [page, setPage] = useState(0);
+    const [page, setPage] = useState(1);
     const [isLoading, setIsLoading] = useState(false);
 
 

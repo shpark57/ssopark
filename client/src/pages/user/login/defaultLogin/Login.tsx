@@ -39,7 +39,9 @@ interface userInfo{
     user_id:string,
     user_name:string,
     email:string,
-    phone_number:string
+    phone_number:string,
+    auth : string
+
 }
 const theme = createTheme(); 
 export default function Login(){
@@ -72,7 +74,8 @@ export default function Login(){
                 user_id : res.data.user_id,
                 user_name : res.data.user_name,
                 email : res.data.email,
-                phone_number : res.data.phone_number
+                phone_number : res.data.phone_number,
+                auth : res.data.auth
             }
             await setLoggedUser(user,remember)
         }else{

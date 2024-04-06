@@ -4,9 +4,27 @@ import React from "react";
 import {CommentBodyProp} from "../comment/CommentComponent";
 
 import {NextTo,Prev} from './Arrow'
+import {useNavigate} from "react-router-dom";
+import axios from "axios";
+
+import {ProductProps} from "src/pages/producrs/props/ProductProps";
+import CardMedia from "@mui/material/CardMedia";
+import {CardActionArea} from "@mui/material";
+
+const Carousel:React.FC<{products:ProductProps[]}> = (props) => {
+
+    let navigate = useNavigate();   //페이지 이동을 위해필요.
+    const goProductsView = async (e : React.MouseEvent<HTMLSpanElement>) => {
+        if(!(e.target instanceof HTMLImageElement)){
+            return;
+        }
+        const id = e.target.dataset.id
 
 
-const Carousel:React.FC<{urls:string[]}> = (props) => {
+        await axios.patch('/Products/'+id ,{'visits++' : 1})
+        navigate(String("/ProductsView/"+ id))
+    }
+
 
 
     const settings = {
@@ -14,7 +32,7 @@ const Carousel:React.FC<{urls:string[]}> = (props) => {
         infinite  : true,
         speed : 500,
         arrows : true,
-        centerMode: true, // 현재 컨텐츠 가운데 정렬
+        centerMode: false, // 현재 컨텐츠 가운데 정렬
         nextArrow:  (<NextTo />),
         prevArrow: (<Prev />)
     }
@@ -22,10 +40,23 @@ const Carousel:React.FC<{urls:string[]}> = (props) => {
             <Slider {...settings}>
 
                 {
-                    props.urls.map((url,index , array) => {
+                    props.products.map((product,index , array) => {
                         return (
-                                <img  key={index} src={url}  />
-                        )
+
+                                <CardMedia
+                                    component="img"
+                                    onClick={goProductsView}
+                                    data-id={product.id}
+                                    image={product.title_img}
+                                    style={{
+                                        left : '0'
+                                        ,right : '0'
+                                        ,margin: '10px auto'
+                                    }}
+                                    sx={{height : 300}}
+                                />
+
+                    )
                     })
                 }
 

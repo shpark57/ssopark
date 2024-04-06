@@ -8,6 +8,7 @@ interface userInfo {      //공유되는 유저정보 타입
     user_name : string ,
     email : string ,
     phone_number : string ,
+    auth : string
   }
 const LoginContext = createContext({//로그인 시 공유할 유저 정보
     user : {
@@ -15,7 +16,8 @@ const LoginContext = createContext({//로그인 시 공유할 유저 정보
         user_id : '',
         user_name : '',
         email : '',
-        phone_number : '',      
+        phone_number : '',
+        auth : ''
     },
     loggedIn : false , 
     setLoggedUser: (user:userInfo,remember:boolean) => {},
@@ -33,9 +35,10 @@ const LoginProvider = ({ children }: Props): JSX.Element => { //App에서 LoginP
         id : Number(sessionStorage.getItem('id')) 
         ,user_id : String(sessionStorage.getItem('user_id')) 
         ,user_name : String(sessionStorage.getItem('user_name'))
-        ,email : String(sessionStorage.getItem('email')) 
-        ,phone_number : String(sessionStorage.getItem('phone_number'))  
-    });
+        ,email : String(sessionStorage.getItem('email'))
+        ,phone_number : String(sessionStorage.getItem('phone_number'))
+        ,auth : String(sessionStorage.getItem('auth'))
+  });
   const [loggedIn, setLoggedIn] = useState(false);
 
   const setLoggedUser = (user:userInfo,remember:boolean): void => {
@@ -46,6 +49,7 @@ const LoginProvider = ({ children }: Props): JSX.Element => { //App에서 LoginP
     sessionStorage.setItem('email' , user.email);
     sessionStorage.setItem('phone_number' , user.phone_number);
     sessionStorage.setItem('user_name' , user.user_name);
+    sessionStorage.setItem('auth' , user.auth);
 
     if(remember){
       localStorage.setItem('user_id',user.user_id)
@@ -65,7 +69,8 @@ const LoginProvider = ({ children }: Props): JSX.Element => { //App에서 LoginP
       user_id : '',
       user_name : '',
       email : '',
-      phone_number : '',      
+      phone_number : '',
+      auth :''
     });
     setLoggedIn(false)
     

@@ -91,7 +91,12 @@ const ProductsView = () =>{
         })
 
     }
+    let navigate = useNavigate();   //페이지 이동을 위해필요.
 
+    const goProductsModify = async (e : React.MouseEvent<any>) => {
+
+        navigate(String("/ProductsModify/"+ id))
+    }
     return (
       <Container component="main" maxWidth="lg" className='product' sx={{ mb: 8}} >
         
@@ -205,8 +210,9 @@ const ProductsView = () =>{
                   </Button>
               </div>
           </Grid>
-          <div style={{textAlign:"right",position: "sticky", bottom: "0", zIndex : '999', opacity : 0.5,  height : ''}}>
-              <EditIcon  sx={{fontSize : 70}}   style={{ cursor : 'pointer'}} />
+          <div
+              style={{textAlign:"right",position: "sticky", bottom: "0", zIndex : '999', opacity : 0.5,  height : ''}}>
+              <EditIcon  onClick={goProductsModify}  sx={{fontSize : 70}}   style={{ cursor : 'pointer'}} />
 
           </div>
 

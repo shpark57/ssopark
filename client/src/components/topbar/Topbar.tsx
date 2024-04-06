@@ -124,25 +124,15 @@ export default function Topbar(){
                         <MenuItem onClick={menuClick} data-url="/">
                             메인
                         </MenuItem>
-
-
-                        <MenuItem onClick={menuClick} data-url="/moviesList">
-                            샘플 리스트
-                        </MenuItem>
-
-                        <MenuItem onClick={menuClick} data-url="/movieAdd">
-                            샘플 등록
-                        </MenuItem>
-
-                        <MenuItem onClick={menuClick} data-url="/users">
-                            유저
-                        </MenuItem>
                         <MenuItem onClick={menuClick} data-url="/productsList">
                             제품 리스트
                         </MenuItem>
-                        <MenuItem onClick={menuClick} data-url="/productsAdd">
-                            제품 등록
-                        </MenuItem>
+                        {   user.auth == 'admin' ?
+                            <MenuItem onClick={menuClick} data-url="/users">
+                                유저
+                            </MenuItem>
+                            :''
+                        }
                     </Menu>
                 </div>
                 <div className='topRight'>

@@ -15,88 +15,35 @@ import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 
 import Carousel from  "src/components/carousel/Carousel";
+import {ProductProps} from "../producrs/props/ProductProps";
+import {useNavigate} from "react-router-dom";
 
 
 export default function Home(){
-
-
+  let navigate = useNavigate();   //페이지 이동을 위해필요.
+  const { showModal } = useModal();
   const {loggedIn , user } = useContext(LoginContext);
-    const { showModal } = useModal();   
-    const handleClickAlertModal = () => {
-      showModal({
-        modalType: "AlertModal",
-        modalProps: {
-          message: "Success!"
-        }
-      });
-    };
-  
-    const handleClickConfirmModal = () => {
-      showModal({
-        modalType: "ConfirmModal",
-        modalProps: {
-          message: "Yes or No",
-          confirmText: "Yes",
-          cancelText: "No",
-          title: "",
-          handleConfirm: () => {
-            alert("YES!")
-          },
-          handleClose: () => {
-            alert("NO!")
-          }
-        }
-      });
-    };
-  
-    const handleClickDefaultModal = () => {
-      showModal({
-        modalType: "ConfirmModal",
-        modalProps: {
-          message: "Yes or No",
-          confirmText: "Yes",
-          cancelText: "No",
-          title: "",
-          handleConfirm: () => {
-            alert("YES!")
-          },
-          handleClose: () => {
-            alert("NO!")
-          }
-        }
-      });
-    };
+  const [products , setProducts] = useState<ProductProps[]>([])
 
 
-    const handleClickTest1 = () => {
-      axios.post("/password/check",{user_id:'shpark8381',password:'123qwe!@#'}).then((res) => console.log(res.data)) 
-    };
+  useEffect(()=>{
+    fetchData();
+  } , []);
 
-    const handleClickTest2 = () => {
-      axios.get("/Menu").then((res) => console.log(res.data)) 
-    };
-
-    const handleClickTest3 = () => {
-      axios.patch("/Movies/1" , {dis_like : 1 , like : 3}).then((res) => console.log(res))
-    };
-
-    const handleClickTest4 = () => {
-      axios.get("/Files?parent_id=1&type=Movies")
-      .then((res) =>  {
-        console.log("영화의 파일조회") 
-        console.log(res)
-      })  //대댓글 조회
-    };
-    const handleClickTest5 = () => {
-      axios.get("/Comment?parent_id=1&_rel=children&parent_comment_id=null&type=Movies")
-      .then((res) =>  {
-        console.log("댓글조회") 
-        console.log(res)
-      })  //대댓글 조회
-    };
+  // API를 호출하는 부분
+  const fetchData = () => {
+    try {
+      axios.get('/Products' , {params : {use_yn: 'Y',_sort:'id',_order:'DESC',_limit: 5}})
+          .then(response=>{
+              setProducts(response.data);
+          })
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
 
-    return(
+  return(
         <div className='home'>
             <div className='homeWidgets'>
                 <div className="homeCard">
@@ -108,7 +55,7 @@ export default function Home(){
 
           <div className='homeWidgets'>
                 <div className="homeCard" >
-                  <Carousel urls={["https://www.kindacode.com/wp-content/uploads/2021/06/cute-dog.jpeg","https://www.kindacode.com/wp-content/uploads/2021/06/cute-dog.jpeg","https://www.kindacode.com/wp-content/uploads/2021/06/cute-dog.jpeg","https://www.kindacode.com/wp-content/uploads/2021/06/cute-dog.jpeg","https://www.kindacode.com/wp-content/uploads/2021/06/cute-dog.jpeg"]}/>
+                  <Carousel products={products}/>
                 </div>
             </div>
         </div>

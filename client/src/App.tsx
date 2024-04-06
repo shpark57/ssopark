@@ -43,38 +43,39 @@ function App() {
     <LoginProvider>
     <GlobalModal />
       {
-        loggedIn ?  //loggedIn 삼항연산자 true 부분
-                  <Router>
-                    <Topbar />
-                    <div className="container">
-                      <Routes>
-                        <Route path="/" element={ <Home/>}/>
-                        <Route path="/users" element={<UserList/>}/>
-                        <Route path="/moviesList" element={<MoviesList/>}/>
-                        <Route path="/movieAdd" element={<MovieAdd/>}/>
-                        <Route path="/dragAndDrop" element={<DagAndDrop/>}/>
-                        <Route path="/userModify/:id" element={ <UserModify/> }/>
-                        <Route path="/moviesView/:id" element={ <MoviesView/> }/>
-                        <Route path="/ProductsList" element={ <ProductsList/> }/>
-                        <Route path="/ProductsAdd" element={ <ProductsAdd/> }/>
-                        <Route path="/ProductsView/:id" element={ <ProductsView/> }/>
-                        <Route path="/ProductsModify/:id" element={ <ProductsModify/> }/>
-                        <Route path="/sample" element={ <Sample/> }/>
+        loggedIn ?
+        <Router>
+          <Topbar />
+          <div className="container">
+            <Routes>
+              <Route path="/" element={ <Home/>}/>
+              <Route path="/users" element={<UserList/>}/>
+              <Route path="/moviesList" element={<MoviesList/>}/>
+              <Route path="/movieAdd" element={<MovieAdd/>}/>
+              <Route path="/dragAndDrop" element={<DagAndDrop/>}/>
+              <Route path="/userModify/:id" element={ <UserModify/> }/>
+              <Route path="/moviesView/:id" element={ <MoviesView/> }/>
+              <Route path="/ProductsList" element={ <ProductsList/> }/>
+              <Route path="/ProductsAdd" element={ <ProductsAdd/> }/>
+              <Route path="/ProductsView/:id" element={ <ProductsView/> }/>
+              <Route path="/ProductsModify/:id" element={ <ProductsModify/> }/>
+              <Route path="/sample" element={ <Sample/> }/>
+              <Route path="/login" element={ <Login/> }/>
+              <Route path="/signUp" element={ <SignUp/> }/>
 
-                       
-                        
-                      </Routes>
-                    </div>  
-                  </Router>
-        :         //loggedIn 삼항연산자 false 부분
-                  <Router>
-                    <Routes>
-                      <Route path="/" element={ <Login/> }/>
-                      <Route path="/login" element={ <Login/> }/>
-                      <Route path="/signUp" element={ <SignUp/> }/>
-                    </Routes>
-                  </Router>
-      } 
+
+
+            </Routes>
+          </div>
+        </Router>
+            :
+            <Routes>
+              <Route path="/" element={ <Login/>}/>
+              <Route path="/login" element={ <Login/> }/>
+              <Route path="/signUp" element={ <SignUp/> }/>
+
+            </Routes>
+      }
     </LoginProvider>
   );
 }

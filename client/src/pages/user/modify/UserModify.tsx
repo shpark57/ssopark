@@ -51,6 +51,7 @@ interface userInfo  {
     mdfr_time: string;
     last_login: string;
     salt: string;
+    auth: string;
 }
 
 const theme = createTheme();
@@ -74,7 +75,8 @@ export default function UserModify() {
                                         mdfr_id: "",
                                         mdfr_time: "",      
                                         last_login: "",
-                                        salt : ""                           
+                                        salt : ""     ,
+                                        auth :""
                                     })
     
     useEffect(() => {
@@ -234,7 +236,20 @@ export default function UserModify() {
                   autoComplete="new-password"
                 />
               </Grid>
-              
+
+                {}
+              <Grid item xs={12} sm={8}>
+                    <TextField
+                        required
+                        fullWidth
+                        id="auth"
+                        label="권한"
+                        name="auth"
+                        autoComplete="auth"
+                        value={userParams.auth}
+                        onChange={(e:React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => inputFromHandler(e)}
+                    />
+              </Grid>
               <Grid item xs={12} sm={4}>
                 <Button
                   onClick={handleClickDefaultModal}
