@@ -23,20 +23,19 @@ export default function Home(){
   let navigate = useNavigate();   //페이지 이동을 위해필요.
   const { showModal } = useModal();
   const {loggedIn , user } = useContext(LoginContext);
-  const [products , setProducts] = useState<ProductProps[]>([])
-
+  const [products , setProducts] = useState<ProductProps[]>([]);
+  const [page, setPage] = useState(1);
 
   useEffect(()=>{
     fetchData();
-  } , []);
+  } , [page]);
 
   // API를 호출하는 부분
-  const fetchData = () => {
+  const fetchData = async () => {
     try {
-      axios.get('/Products' , {params : {use_yn: 'Y',_sort:'id',_order:'DESC',_limit: 5}})
-          .then(response=>{
-              setProducts(response.data);
-          })
+        var response = await axios.get('/Products' , {params : {use_yn: 'Y',_sort:'id',_order:'DESC',_limit: page}})
+        setProducts(response.data);
+        setPage(5)
     } catch (error) {
       console.log(error);
     }
@@ -51,7 +50,6 @@ export default function Home(){
 
                 </div>
             </div>
-
 
           <div className='homeWidgets'>
                 <div className="homeCard" >

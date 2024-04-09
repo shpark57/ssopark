@@ -27,13 +27,14 @@ const Carousel:React.FC<{products:ProductProps[]}> = (props) => {
 
 
     const settings = {
+
         dots : true,
-        infinite  : true,
+        infinite  : false,
         speed : 500,
         arrows : true,
         centerMode: false, // 현재 컨텐츠 가운데 정렬
         nextArrow:  (<NextTo />),
-        prevArrow: (<Prev />)
+        prevArrow: (<Prev />),
     }
     return(
             <Slider {...settings}>
@@ -43,6 +44,7 @@ const Carousel:React.FC<{products:ProductProps[]}> = (props) => {
                         return (
 
                                 <CardMedia
+                                    key ={index}
                                     component="img"
                                     onClick={goProductsView}
                                     data-id={product.id}
