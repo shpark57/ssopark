@@ -40,7 +40,7 @@ export default function ProductsList(){
     const fetchData = async () => {
         setIsLoading(true);
         try {
-            const response = await axios.get('/Products' , {params : {use_yn: 'Y',_sort:'id',_order:'DESC',_limit: 3,_page: 2 }})
+            const response = await axios.get('/Products' , {params : {use_yn: 'Y',_sort:'id',_order:'DESC',_limit: 3,_page: page }})
 
 
             const newData = response.data.map(
