@@ -43,7 +43,6 @@ function App() {
     <LoginProvider>
     <GlobalModal />
       {
-        loggedIn ?
         <Router>
           <Topbar />
           <div className="container">
@@ -67,15 +66,6 @@ function App() {
 
             </Routes>
           </div>
-        </Router>
-            :
-        <Router>
-            <Routes>
-              <Route path="/" element={ <Login/>}/>
-              <Route path="/login" element={ <Login/> }/>
-              <Route path="/signUp" element={ <SignUp/> }/>
-
-            </Routes>
         </Router>
       }
     </LoginProvider>

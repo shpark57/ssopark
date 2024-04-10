@@ -30,7 +30,7 @@ const ProductsView = () =>{
 
 
     const {id} = useParams();
-    const { user } = useContext(LoginContext);
+    const { loggedIn , user } = useContext(LoginContext);
     const { showModal } = useModal();   
     const [product , setProduct] = useState<ProductProps|null>(null)
     const [rerend,setRerend] = useState(false)
@@ -54,6 +54,16 @@ const ProductsView = () =>{
         return <button  id={type}   className={'productButton '+ type} onClick={likeClick}> {product &&  (type=='좋아요'? product.like : product.dis_like).toLocaleString()}<br/>{type}</button>
     }
     const likeClick = async  (event: React.FormEvent<HTMLButtonElement>) => {
+        if(!loggedIn){
+            showModal({
+                modalType: "AlertModal",
+                modalProps: {
+                    message: "로그인을 해야 좋아요 표현을 할 수 있습니다.."
+                }
+            });
+            return
+        }
+
         event.preventDefault();
         const target_type = event.currentTarget.getAttribute('id') == '좋아요' ?  'like':'dis_like' //좋아요, 싫어요 구분
 
@@ -210,11 +220,13 @@ const ProductsView = () =>{
                   </Button>
               </div>
           </Grid>
-          <div
+          { user.auth == 'admin' ?   <div
               style={{textAlign:"right",position: "sticky", bottom: "0", zIndex : '999', opacity : 0.5,  height : ''}}>
-              <EditIcon  onClick={goProductsModify}  sx={{fontSize : 70}}   style={{ cursor : 'pointer'}} />
+              <EditIcon  onClick={goProductsModify}  sx={{fontSize : 30}}   style={{ cursor : 'pointer'}} />
 
-          </div>
+          </div> : ''
+
+          }
 
       </Container>
     )

@@ -63,6 +63,7 @@ createConnection().then(connection => {
         let orderObj = {}
         let paramOrder= ''
         let paramSort= ''
+
         for(const [paramKey ,ParamValue] of Object.entries(req.query)){
             let key = `${paramKey}`.toLowerCase()
             let value = `${ParamValue}`.toLowerCase()
@@ -93,7 +94,10 @@ createConnection().then(connection => {
                     //미구현 고민중
             }else if(key.indexOf('_rel') !== -1 ){
                 params['relations'] =  value.split(',')
-            }else{
+            }else if(key.indexOf('_exceptcols') !== -1 ){
+                params['exceptcols'] = value
+            }
+            else{
                 if(value == 'null'){
                     whereObj[key] = IsNull()
                 }else{
@@ -116,6 +120,7 @@ createConnection().then(connection => {
             params['order'] =  orderObj
         }
 
+
         return params
     }
 
@@ -131,6 +136,17 @@ createConnection().then(connection => {
         const params = findObjectSetting(req)
         
         const entity = await dinamicRepository(table).find(params)
+
+
+        if(params['exceptcols']){
+            let exceptcol = params['exceptcols'].split(',')
+            for(var i in exceptcol){
+                entity.map(obj => {
+                    delete obj[exceptcol[i]]
+                })
+            }
+        }
+
         return entity
 
     }  

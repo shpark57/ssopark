@@ -24,20 +24,23 @@ export default function Home(){
   const { showModal } = useModal();
   const {loggedIn , user } = useContext(LoginContext);
   const [products , setProducts] = useState<ProductProps[]>([]);
-  const [page, setPage] = useState(1);
 
   useEffect(()=>{
     fetchData();
-  } , [page]);
+  } , []);
 
   // API를 호출하는 부분
-  const fetchData = async () => {
+  const fetchData = () => {
     try {
-        var response = await axios.get('/Products' , {params : {use_yn: 'Y',_sort:'id',_order:'DESC',_limit: page}})
-        setProducts(response.data);
-        setPage(5)
+        axios.get('/Products' , {params : {use_yn: 'Y',_sort:'id',_order:'DESC',_limit: 5,_exceptcols : 'content'}})
+            .then(response =>{
+                setProducts(response.data);
+            }).catch((error) =>  {
+                console.log(error);
+            })
+
     } catch (error) {
-      console.log(error);
+        console.log(error);
     }
   };
 

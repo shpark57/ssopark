@@ -40,6 +40,19 @@ const Carousel:React.FC<{products:ProductProps[]}> = (props) => {
             <Slider {...settings}>
 
                 {
+                    props.products.length == 0  ?
+                        <CardMedia
+                            component="img"
+                            onClick={goProductsView}
+                            style={{
+                                left : '0'
+                                ,right : '0'
+                                ,margin: '10px auto'
+                            }}
+                            sx={{height : 300}}
+                        />
+                        :
+
                     props.products.map((product,index , array) => {
                         return (
 

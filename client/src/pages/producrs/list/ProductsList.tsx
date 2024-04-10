@@ -26,7 +26,7 @@ export default function ProductsList(){
     const [imgs , setImgs] = useState<string[]>([])
 
 
-    const [page, setPage] = useState(2);
+    const [page, setPage] = useState(1);
     const [isLoading, setIsLoading] = useState(false);
 
 
@@ -40,7 +40,7 @@ export default function ProductsList(){
     const fetchData = async () => {
         setIsLoading(true);
         try {
-            const response = await axios.get('/Products' , {params : {use_yn: 'Y',_sort:'id',_order:'DESC',_limit: 3,_page: page }})
+            const response = await axios.get('/Products' , {params : {use_yn: 'Y',_sort:'id',_order:'DESC',_limit: 3,_page: page ,_exceptcols : 'content'}})
 
 
             const newData = response.data.map(
@@ -114,9 +114,14 @@ export default function ProductsList(){
                 {isLoading && <p>Loading...</p>}
 
                 <div id="observer" style={{ height: "10px" }}></div>
-                <div style={{textAlign:"right",position: "sticky", bottom: "20px",opacity : 0.5}}>
-                    <AddCircleIcon  sx={{fontSize : 70}}  onClick={productsAdd} style={{ cursor : 'pointer'}} />
-                </div>
+                {   user.auth == 'admin' ?
+                        <div style={{textAlign:"right",position: "sticky", bottom: "20px",opacity : 0.5}}>
+                        <AddCircleIcon  sx={{fontSize : 70}}  onClick={productsAdd} style={{ cursor : 'pointer'}} />
+                        </div>
+                    : ''
+
+
+                }
 
             </Container>
         </>
