@@ -24,18 +24,7 @@ import useModal from "../../../../components/modal/hooks/useModal";
 
 import SignUp from "src/pages/user/login/defaultLogin/SignUp";
 
-function Copyright(props: any) {
-    return (
-      <Typography variant="body2" color="text.secondary" align="center" {...props}>
-        {'Copyright © '}
-        <Link color="inherit" href="http://shpark91.iptime.org:3000/">
-          SsoPark
-        </Link>{' '}
-        {new Date().getFullYear()}
-        {'.'}
-      </Typography>
-    );
-  }
+
  
 interface userInfo{
     check:boolean,

@@ -48,17 +48,17 @@ function App() {
           <div className="container">
             <Routes>
               <Route path="/" element={ <Home/>}/>
-              <Route path="/users" element={<UserList/>}/>
               <Route path="/moviesList" element={<MoviesList/>}/>
               <Route path="/movieAdd" element={<MovieAdd/>}/>
               <Route path="/dragAndDrop" element={<DagAndDrop/>}/>
-              <Route path="/userModify/:id" element={ <UserModify/> }/>
               <Route path="/moviesView/:id" element={ <MoviesView/> }/>
               <Route path="/ProductsList" element={ <ProductsList/> }/>
               <Route path="/ProductsAdd" element={ <ProductsAdd/> }/>
               <Route path="/ProductsView/:id" element={ <ProductsView/> }/>
               <Route path="/ProductsModify/:id" element={ <ProductsModify/> }/>
               <Route path="/sample" element={ <Sample/> }/>
+              <Route path="/users" element={<UserList/>}/>
+              <Route path="/userModify"     element={ <UserModify/> }/>
               <Route path="/login" element={ <Login/> }/>
               <Route path="/signUp" element={ <SignUp/> }/>
 

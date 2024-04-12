@@ -220,8 +220,9 @@ export default function ProductsModify() {
 
 
     try {
+      window.scrollTo(0,0)
       setLoading(true);
-      axios.put("/Products/"+ id , params).then(res=>{setLoading(false)}).then(res => navigate(String("/ProductsList"))).catch(err=>console.log(err))
+      axios.put("/Products/"+ id , params).then(res=>{setLoading(false)}).then(res => navigate(String("/ProductsView/"+id))).catch(err=>console.log(err))
 
 
 

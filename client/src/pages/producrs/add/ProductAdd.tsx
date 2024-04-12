@@ -160,6 +160,7 @@ const [loading, setLoading] = useState(false);
 
 
     try {
+      window.scrollTo(0,0)
       setLoading(true);
       axios.post("/Products" , params).then(res=>{setLoading(false)}).then(res => navigate(String("/ProductsList"))).catch(err=>console.log(err))
 
