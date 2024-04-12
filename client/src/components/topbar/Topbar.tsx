@@ -22,14 +22,36 @@ import MenuItem from "@mui/material/MenuItem";
 
 
 import { LoginContext  } from 'src/contexts/login';
+import {Login} from "@mui/icons-material";
+import useModal from "../modal/hooks/useModal";
+
+import LoginPage from "src/pages/user/login/defaultLogin/Login";
 
 export default function Topbar(){
     
-    const {loggedIn , user , setLoggedOut} = useContext(LoginContext);
+    const {loggedIn,  user , setLoggedOut} = useContext(LoginContext);
 
+    const { showModal } = useModal();           //모달 사용
 
     const handleLogout  = (e:React.MouseEvent<HTMLImageElement | HTMLLIElement>) => { //임시로 로그아웃버튼을 탑바의 사진모양 클릭으로 만들어둠.
-        setLoggedOut() //로그아웃 처리
+        showModal({
+            modalType: "AlertModal",
+            modalProps: {
+                message:  "로그아웃 됐습니다.",
+                handleConfirm : arg => {setLoggedOut()}
+            }
+        });
+
+    }
+
+    const handleLogIn  = (e:React.MouseEvent<HTMLImageElement | HTMLLIElement>) => { //임시로 로그인버튼을 탑바의 사진모양 클릭으로 만들어둠.
+        showModal({
+            modalType: "IncludeModal",
+            modalProps: {
+                message:  <LoginPage/>
+            }
+        });
+       // navigate(String("/login"))
     }
 
     //좌측의 메뉴
@@ -202,12 +224,22 @@ export default function Topbar(){
                             </ListItemIcon>
                             Settings
                         </MenuItem>
-                        <MenuItem onClick={handleLogout}>
-                            <ListItemIcon>
-                                <Logout fontSize="small" />
-                            </ListItemIcon>
-                            Logout
-                        </MenuItem>
+                        {
+                            loggedIn  ?
+                                <MenuItem onClick={handleLogout}>
+                                    <ListItemIcon>
+                                        <Logout fontSize="small" />
+                                    </ListItemIcon>
+                                    Logout
+                                </MenuItem>
+                                :
+                                <MenuItem onClick={handleLogIn}>
+                                    <ListItemIcon>
+                                        <Login fontSize="small" />
+                                    </ListItemIcon>
+                                    LogIn
+                                </MenuItem>
+                        }
                     </Menu>
 
 

@@ -17,6 +17,8 @@ import "slick-carousel/slick/slick-theme.css";
 import Carousel from  "src/pages/home/Carousel";
 import {ProductProps} from "src/pages/producrs/props/ProductProps";
 import {useNavigate} from "react-router-dom";
+import CardMedia from "@mui/material/CardMedia";
+import Container from "@mui/material/Container";
 
 
 export default function Home(){
@@ -46,19 +48,20 @@ export default function Home(){
 
 
   return(
-        <div className='home'>
-            <div className='homeWidgets'>
-                <div className="homeCard">
-                    <img src="https://www.kindacode.com/wp-content/uploads/2021/06/cute-dog.jpeg" />
+        <Container component="main" maxWidth="md" sx={{textAlign:'center'}}>
+            <CardMedia
+                component="img"
+                image="https://www.kindacode.com/wp-content/uploads/2021/06/cute-dog.jpeg"
+                style={{
+                    left : '0'
+                    ,right : '0'
+                    ,margin: '10px auto'
+                }}
+                sx={{height : 200 }}
+            />
 
-                </div>
-            </div>
+            <Carousel products={products}/>
 
-          <div className='homeWidgets'>
-                <div className="homeCard" >
-                  <Carousel products={products}/>
-                </div>
-            </div>
-        </div>
+        </Container>
     )
 }

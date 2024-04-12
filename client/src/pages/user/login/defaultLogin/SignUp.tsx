@@ -18,6 +18,7 @@ import axios from 'axios';
 
 import * as crypto from 'src/types/crypto-browserify'
 
+import LoginPage from "src/pages/user/login/defaultLogin/Login";
 import useModal from "src/components/modal/hooks/useModal";
 function Copyright(props: any) {
   return (
@@ -38,17 +39,19 @@ export default function SignUp() {
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
-    
+
     if( data.get('password') != data.get('confirmPassword')){
-               
-        showModal({
-          modalType: "AlertModal",
-          modalProps: {
-            message: "비밀번호가 틀렸습니다!"
-          }
-        });
+
+      showModal({
+        modalType: "AlertModal",
+        modalProps: {
+          message: "비밀번호가 틀렸습니다!"
+        }
+      });
       return
     }
+
+
 
 
     const salt = crypto.randomBytes(32).toString('hex');
@@ -78,13 +81,19 @@ export default function SignUp() {
         showModal({
           modalType: "AlertModal",
           modalProps: {
-            message: "회원가입에 성공하셨습니다."
+            message: "회원가입에 성공하셨습니다.",
+            handleConfirm : arg => {
+              showModal({
+                modalType: "IncludeModal",
+                modalProps: {
+                  message:  <LoginPage/>
+                }
+              });
+            }
           }
-        });
+        })
       })
-      .then(()=> window.location.replace("/"))
-      .catch( (error) => { 
-        
+      .catch( (error) => {
         showModal({
           modalType: "AlertModal",
           modalProps: {
@@ -101,17 +110,13 @@ export default function SignUp() {
         <CssBaseline />
         <Box
           sx={{
-            marginTop: 8,
             display: 'flex',
             flexDirection: 'column',
             alignItems: 'center',
           }}
         >
-          <Avatar sx={{ m: 1, bgcolor: 'secondary.main' }}>
-            <LockOutlinedIcon />
-          </Avatar>
           <Typography component="h1" variant="h5">
-            Sign up
+            회원가입
           </Typography>
           <Box component="form" noValidate onSubmit={handleSubmit} sx={{ mt: 3 }}>
             <Grid container spacing={2}>
@@ -121,7 +126,7 @@ export default function SignUp() {
                   required
                   fullWidth
                   id="user_id"
-                  label="ID"
+                  label="아이디"
                   name="user_id"
                   autoComplete="id"
                 />
@@ -131,7 +136,7 @@ export default function SignUp() {
                   required
                   fullWidth
                   id="email"
-                  label="Email"
+                  label="이메일"
                   name="email"
                   autoComplete="email"
                 />
@@ -151,7 +156,7 @@ export default function SignUp() {
                   required
                   fullWidth
                   id="phone_number"
-                  label="Phone Number"
+                  label="전화번호"
                   name="phone_number"
                   autoComplete="phone_number"
                 />
@@ -161,7 +166,7 @@ export default function SignUp() {
                   required
                   fullWidth
                   name="password"
-                  label="Password"
+                  label="패스워드"
                   type="password"
                   id="password"
                   autoComplete="new-password"
@@ -172,16 +177,10 @@ export default function SignUp() {
                   required
                   fullWidth
                   name="confirmPassword"
-                  label="Confirm password"
+                  label="패스워드 확인"
                   type="password"
                   id="confirmPassword"
                   autoComplete="new-password"
-                />
-              </Grid>
-              <Grid item xs={12}>
-                <FormControlLabel
-                  control={<Checkbox value="allowExtraEmails" color="primary" />}
-                  label="I want to receive inspiration, marketing promotions and updates via email."
                 />
               </Grid>
             </Grid>
@@ -191,18 +190,10 @@ export default function SignUp() {
               variant="contained"
               sx={{ mt: 3, mb: 2 }}
             >
-              Sign Up
+              회원가입
             </Button>
-            <Grid container justifyContent="flex-end">
-              <Grid item>
-                <Link href="#" variant="body2">
-                  Already have an account? Sign in
-                </Link>
-              </Grid>
-            </Grid>
           </Box>
         </Box>
-        <Copyright sx={{ mt: 5 }} />
       </Container>
     </ThemeProvider>
   );

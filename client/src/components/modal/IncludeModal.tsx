@@ -1,45 +1,36 @@
-import React from "react";
+import React, {useEffect} from "react";
 
 import {
   Dialog,
   DialogActions,
   DialogContent,
   DialogContentText,
+  DialogTitle,
   Button
 } from "@mui/material";
 import useModal from "./hooks/useModal";
 
-export interface AlertModalProps {
+export interface IncludeModalProps {
+  title?: string;
   message: React.ReactNode;
-  confirmText?:  string;
   handleClose?: (...arg: any[]) => any;
-  handleConfirm?: (...arg: any[]) => any;
 }
 
-const AlertModal = ({
+const IncludeModal = ({
+  title,
   message,
-  confirmText = "Ok",
   handleClose,
-  handleConfirm
-}: AlertModalProps) => {
+
+}: IncludeModalProps) => {
   const { hideModal } = useModal();
 
   const onClose = () => {
     if (handleClose) {
       handleClose();
-    }else{
-      hideModal();
     }
-
+    hideModal();
   };
 
-  const onConfirm = async () => {
-    if (handleConfirm) {
-      await handleConfirm();
-    }else{
-      hideModal();
-    }
-  };
 
   return (
     <Dialog
@@ -51,16 +42,12 @@ const AlertModal = ({
       fullWidth
       sx={{ whiteSpace: "break-spaces" }}
     >
+      <DialogTitle id="confirm-dialog-title">{title}</DialogTitle>
       <DialogContent>
-        <DialogContentText>{message}</DialogContentText>
+        {message}
       </DialogContent>
-      <DialogActions>
-        <Button onClick={onConfirm} color="primary" autoFocus>
-          {confirmText}
-        </Button>
-      </DialogActions>
     </Dialog>
   );
 };
 
-export default AlertModal;
+export default IncludeModal;

@@ -56,6 +56,7 @@ const Carousel:React.FC<{products:ProductProps[]}> = (props) => {
                     props.products.map((product,index , array) => {
                         return (
 
+
                                 <CardMedia
                                     key ={index}
                                     component="img"

@@ -18,13 +18,17 @@ import { createTheme, ThemeProvider } from '@mui/material/styles';
 
 import { LoginContext } from 'src/contexts/login';
 import * as Time from 'src/types/time'
+import MenuItem from "@mui/material/MenuItem";
+import ListItemIcon from "@mui/material/ListItemIcon";
+import useModal from "../../../../components/modal/hooks/useModal";
 
+import SignUp from "src/pages/user/login/defaultLogin/SignUp";
 
 function Copyright(props: any) {
     return (
       <Typography variant="body2" color="text.secondary" align="center" {...props}>
         {'Copyright © '}
-        <Link color="inherit" href="http://localhost:3000/">
+        <Link color="inherit" href="http://shpark91.iptime.org:3000/">
           SsoPark
         </Link>{' '}
         {new Date().getFullYear()}
@@ -48,12 +52,22 @@ export default function Login(){
     const {setLoggedUser } = useContext(LoginContext);
     const [remember , setRemember] = useState(Boolean(window.localStorage.getItem('user_id')))
     const [userId , setUserId] = useState(window.localStorage.getItem('user_id') ? String(window.localStorage.getItem('user_id')) : '')
-    
+
+    const { showModal } = useModal();           //모달 사용
     const inputFromHandler = (e:React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) =>{
         setUserId(e.target.value) 
     }
 
 
+    const handleLogIn  = (e:React.MouseEvent<HTMLButtonElement >) => { //임시로 로그인버튼을 탑바의 사진모양 클릭으로 만들어둠.
+        showModal({
+            modalType: "IncludeModal",
+            modalProps: {
+                message:  <SignUp/>
+            }
+        });
+        // navigate(String("/login"))
+    }
     const handleSubmit = async(event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
         const data = new FormData(event.currentTarget);
@@ -93,21 +107,16 @@ export default function Login(){
     const [errMsg , setErrMsg] = useState("")
     return(
         <ThemeProvider theme={theme}>
-        <Container component="main" maxWidth="xs">
-        <CssBaseline />
+        <Container component="main" maxWidth="md">
         <Box
             sx={{
-            marginTop: 25,
             display: 'flex',
             flexDirection: 'column',
             alignItems: 'center',
             }}
         >
-            <Avatar sx={{ m: 1, bgcolor: 'secondary.main' }}>
-            <LockOutlinedIcon />
-            </Avatar>
             <Typography component="h1" variant="h5">
-            Sign in
+            로그인
             </Typography>
             <Box component="form" onSubmit={handleSubmit} noValidate sx={{ mt: 1 }}>
             <TextField
@@ -143,23 +152,30 @@ export default function Login(){
                 variant="contained"
                 sx={{ mt: 3, mb: 2 }}
             >
-                Sign In
+                로그인
             </Button>
             <Grid container>
                 <Grid item xs>
+                {/*}
                 <Link href="#" variant="body2">
-                    Forgot password?
+                    패스워드 분실
                 </Link>
+                {*/}
                 </Grid>
                 <Grid item>
-                <Link href="signUp" variant="body2">
-                    {"Don't have an account? Sign Up"}
-                </Link>
+
+                        <Button
+                            onClick={handleLogIn}
+                            fullWidth
+                            variant="text"
+                            sx={{ mt: 1, mb: 2 }}
+                        >
+                        회원가입
+                        </Button>
                 </Grid>
             </Grid>
             </Box>
         </Box>
-        <Copyright sx={{ mt: 8, mb: 4 }} />
         </Container>
         </ThemeProvider>
     )

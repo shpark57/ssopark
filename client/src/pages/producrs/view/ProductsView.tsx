@@ -140,7 +140,6 @@ const ProductsView = () =>{
                 <CardMedia
                     component="img"
                     image={product?.title_img}
-                    alt="green iguana"
                     style={{
                         left : '0'
                         ,right : '0'

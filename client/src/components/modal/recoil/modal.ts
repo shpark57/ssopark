@@ -18,7 +18,12 @@ export interface DefaultModalType {
   modalProps: DefaultModalProps;
 }
 
-export type ModalType = ConfirmModalType | AlertModalType | DefaultModalType;
+export interface IncludeModalType {
+  modalType: typeof MODAL_TYPES.IncludeModal;
+  modalProps: DefaultModalProps;
+}
+
+export type ModalType = ConfirmModalType | AlertModalType | DefaultModalType | IncludeModalType;
 
 export const modalState = atom<ModalType | null>({
   key: "modalState",

@@ -19,7 +19,7 @@ const LoginContext = createContext({//로그인 시 공유할 유저 정보
         phone_number : '',
         auth : ''
     },
-    loggedIn : false , 
+    loggedIn :false ,
     setLoggedUser: (user:userInfo,remember:boolean) => {},
     setLoggedOut: () => {}
 });
@@ -39,11 +39,11 @@ const LoginProvider = ({ children }: Props): JSX.Element => { //App에서 LoginP
         ,phone_number : String(sessionStorage.getItem('phone_number'))
         ,auth : String(sessionStorage.getItem('auth'))
   });
-  const [loggedIn, setLoggedIn] = useState(false);
+  const [loggedIn, setLoggedIn] = useState( Boolean(sessionStorage.getItem('loggedIn')));
 
   const setLoggedUser = (user:userInfo,remember:boolean): void => {
     //로그인 처리
-    sessionStorage.setItem('loggedIn' , 'true');
+    sessionStorage.setItem('loggedIn' ,'true');
     sessionStorage.setItem('id' , String(user.id));
     sessionStorage.setItem('user_id' , user.user_id);
     sessionStorage.setItem('email' , user.email);
@@ -57,8 +57,9 @@ const LoginProvider = ({ children }: Props): JSX.Element => { //App에서 LoginP
       localStorage.clear()
     }
     setUser(user);
-    setLoggedIn(true)
-    window.location.replace("/")     
+    setLoggedIn(true);
+    window.location.replace(window.location.href );
+
   };  
 
   const setLoggedOut = (): void => {
@@ -72,9 +73,10 @@ const LoginProvider = ({ children }: Props): JSX.Element => { //App에서 LoginP
       phone_number : '',
       auth :''
     });
-    setLoggedIn(false)
-    
-    window.location.replace("/")       
+    setLoggedIn(false);
+    window.location.replace(window.location.href );
+
+    //window.location.replace("/")
   };
   return (
     <LoginContext.Provider
