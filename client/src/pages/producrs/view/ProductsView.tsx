@@ -29,6 +29,7 @@ import EditIcon from '@mui/icons-material/Edit';
 const ProductsView = () =>{
 
 
+    window.scrollTo(0,0)
     const {id} = useParams();
     const { loggedIn , user } = useContext(LoginContext);
     const { showModal } = useModal();   
@@ -145,7 +146,7 @@ const ProductsView = () =>{
                         ,right : '0'
                         ,margin: '10px auto'
                     }}
-                    sx={{height : 300}}
+                    sx={{height : 300 , objectFit: 'scale-down'}}
                 />
 
                 <CardContent >

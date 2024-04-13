@@ -68,7 +68,7 @@ const Carousel:React.FC<{products:ProductProps[]}> = (props) => {
                                         ,right : '0'
                                         ,margin: '10px auto'
                                     }}
-                                    sx={{height : 300}}
+                                    sx={{height : 300 , objectFit: 'scale-down'}}
                                 />
 
                     )

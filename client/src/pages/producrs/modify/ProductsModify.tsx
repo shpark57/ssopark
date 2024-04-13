@@ -31,6 +31,7 @@ import TuiViewer from "../../../components/Tui/TuiViewer";
 
 export default function ProductsModify() {
 
+  window.scrollTo(0,0)
 
   const [loading, setLoading] = useState(false);
 

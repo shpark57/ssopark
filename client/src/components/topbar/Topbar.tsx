@@ -216,9 +216,15 @@ export default function Topbar(){
                         transformOrigin={{ horizontal: "right", vertical: "top" }}
                         anchorOrigin={{ horizontal: "right", vertical: "bottom" }}
                     >
-                        <MenuItem onClick={handleModify}>
-                            <Avatar /> 내정보
-                        </MenuItem>
+
+                        {
+                            loggedIn  ?
+                                <MenuItem onClick={handleModify}>
+                                    <Avatar /> 내정보
+                                </MenuItem>
+                                : <></>
+                        }
+
                         <Divider />
                         <MenuItem onClick={handleClose2}>
                             <ListItemIcon >

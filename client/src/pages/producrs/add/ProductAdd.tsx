@@ -27,6 +27,7 @@ import CardMedia from "@mui/material/CardMedia";
 import {CardActionArea} from "@mui/material";
 
 const ProductAdd = () => {
+  window.scrollTo(0,0)
 
 
 const [loading, setLoading] = useState(false);

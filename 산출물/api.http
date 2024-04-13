@@ -1,0 +1,15 @@
+POST http://localhost:6000/Query/direct
+Content-Type: application/json
+
+{
+  "params": {
+  "query" : "select * from users"
+  }
+}
+
+###
+GET http://localhost:6000/query=
+Accept: application/json
+
+###
+
