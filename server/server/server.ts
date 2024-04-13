@@ -1,7 +1,7 @@
 import express from 'express';
 
 const createError = require('http-errors');
-const logger = require('morgan');
+//const logger = require('morgan');
 
 
 const bodyParser = require('body-parser')
@@ -10,7 +10,7 @@ const router = require("./router/router");
 const file = require("./router/file")
 
 
-app.use(logger('dev'));
+//app.use(logger('dev'));
 app.use(bodyParser.urlencoded({extended:true}))
 app.use(bodyParser.json({limit: '100mb'}))
 app.use("/fileService", file);
