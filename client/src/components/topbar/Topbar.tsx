@@ -27,7 +27,10 @@ import useModal from "../modal/hooks/useModal";
 
 import LoginPage from "src/pages/user/login/defaultLogin/Login";
 import UserModify from "../../pages/user/modify/UserModify";
-
+import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
+import LibraryBooksIcon from '@mui/icons-material/LibraryBooks';
+import LogoutIcon from '@mui/icons-material/Logout';
+import LoginIcon from '@mui/icons-material/Login';
 export default function Topbar(){
 
     let navigate = useNavigate();   //페이지 이동을 위해필요.
@@ -216,41 +219,36 @@ export default function Topbar(){
                         <MenuItem onClick={handleModify}>
                             <Avatar /> 내정보
                         </MenuItem>
-                        <MenuItem onClick={handleClose2}>
-                            <Avatar /> My account
-                        </MenuItem>
                         <Divider />
                         <MenuItem onClick={handleClose2}>
-                            <ListItemIcon>
-                                <PersonAdd fontSize="small" />
-                            </ListItemIcon>
-                            Add another account
+                            <ListItemIcon >
+                                <ShoppingCartIcon fontSize="small" />
+                            </ListItemIcon >
+                            장바구니
                         </MenuItem>
                         <MenuItem onClick={handleClose2}>
-                            <ListItemIcon>
-                                <Settings fontSize="small" />
-                            </ListItemIcon>
-                            Settings
+                            <ListItemIcon >
+                                <LibraryBooksIcon fontSize="small" />
+                            </ListItemIcon >
+                            주문내역
                         </MenuItem>
                         {
                             loggedIn  ?
                                 <MenuItem onClick={handleLogout}>
-                                    <ListItemIcon>
-                                        <Logout fontSize="small" />
+                                    <ListItemIcon >
+                                        <LogoutIcon fontSize="small" />
                                     </ListItemIcon>
                                     Logout
                                 </MenuItem>
                                 :
                                 <MenuItem onClick={handleLogIn}>
                                     <ListItemIcon>
-                                        <Login fontSize="small" />
+                                        <LoginIcon fontSize="small" />
                                     </ListItemIcon>
                                     LogIn
                                 </MenuItem>
                         }
                     </Menu>
-
-
                 </div>
             </div>
         </div>
