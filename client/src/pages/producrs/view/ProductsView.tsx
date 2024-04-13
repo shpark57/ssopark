@@ -189,7 +189,7 @@ const ProductsView = () =>{
                 >
                     
                     <Grid item xs={12}>
-                        <LikeButton type='좋아요' /> <LikeButton type='싫어요'/><br/>
+                        <LikeButton type='좋아요' />
                     </Grid>
                    
                 </Box>

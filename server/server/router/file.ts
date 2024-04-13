@@ -109,4 +109,106 @@ router.post("/upload/:type", fileUpload.array('files',10) , async function(req: 
 });
 
 
+router.post("/tuiHook/:type", fileUpload.single('file') , async function(req: Request, res: Response) {
+    try {
+
+
+        let params = {
+            parent_id       : ''
+            ,type           : req.body['type']
+            ,type_detail    : req.body['type_detail']
+            ,ymd            : req.body['ymd']
+            ,origin_name    : req.body['origin_name']
+            ,change_name    : req.file.filename.replace('.'+req.body['file_type' ] , '')
+            ,file_type      : req.body['file_type' ]
+            ,size           : req.body['size' ]
+        }
+
+        let origin = req.headers.origin
+        origin = origin.charAt(origin.length - 1) == '/' ? origin : origin+'/'
+
+        axios.post( origin +'Files',params)
+            .then(entity =>{
+                res.status(201).send({
+                    message: '/fileService/read/' + entity.data.id
+                })
+            })
+
+    } catch (error) {
+        res.status(500).send({
+            message: "파일저장 실패"
+        })
+    }
+
+
+});
+
+router.post('/reallyChange', async function(req: Request, res: Response) {
+    try {
+
+    let regex = /\/fileService\/read\/(\d+)/g;
+    let text = req.body['text'];
+    let ids = [];
+    let match;
+    let origin = req.headers.origin
+    origin = origin.charAt(origin.length - 1) == '/' ? origin : origin+'/'
+
+
+    while ((match = regex.exec(text)) !== null) {
+        ids.push(match[1]);
+    }
+
+
+    for(let i in ids){
+        axios.get(origin +"Files/"+  ids[i] ).then(res =>{
+            const sourceFolder = dir +res.data.type+'/'+ res.data.ymd + res.data.change_name + '.' +res.data.file_type
+            const destinationFolder = dir +req.body['type']+'/'+ res.data.ymd + res.data.change_name + '.' +res.data.file_type
+
+            // 폴더 내 파일 목록 가져오기
+            fs.readdir(sourceFolder, (err, files) => {
+                if (err) {
+                    console.error('Error reading directory:', err);
+                    return;
+                }
+
+                // 각 파일에 대해 복사 및 삭제 작업 수행
+                files.forEach(file => {
+                    const sourceFile = path.join(sourceFolder, file);
+                    const destinationFile = path.join(destinationFolder, file);
+
+                    // 파일 복사
+                    fs.copyFile(sourceFile, destinationFile, err => {
+                        if (err) {
+                            console.error('Error copying file:', err);
+                        } else {
+                            console.log('File copied successfully:', file);
+
+                            // 복사가 완료된 경우, 원본 파일 삭제
+                            fs.unlink(sourceFile, err => {
+                                if (err) {
+                                    console.error('Error deleting file:', err);
+                                } else {
+                                    console.log('File deleted successfully:', file);
+                                }
+                            });
+                        }
+                    });
+                });
+            })
+
+        }).then(res=>{
+            axios.patch(origin +"Files/"+  ids[i]  ,  { type :req.body['type'] } )
+        })
+
+        res.status(201).send({
+            message: "파일복제 성공"
+        })
+    }} catch (error) {
+        res.status(500).send({
+            message: "복제 실패"
+        })
+    }
+});
+
+
 module.exports = router;

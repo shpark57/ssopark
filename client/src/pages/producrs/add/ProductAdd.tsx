@@ -26,6 +26,8 @@ import '@toast-ui/editor/dist/i18n/ko-kr';
 import CardMedia from "@mui/material/CardMedia";
 import {CardActionArea} from "@mui/material";
 
+import { v4 as uuidv4 } from "uuid";
+
 const ProductAdd = () => {
 
 
@@ -74,39 +76,15 @@ const [loading, setLoading] = useState(false);
     setImgFiles(files)
   }
 
+
   const productDelFilterFile = useCallback(
-    (id: number): void => {
+      (id: number): void => {
 
-      setTitleImg("");
-      setImgFiles(imgFiles.filter((file: IFileTypes) => file.id !== id));
-    },
-    [imgFiles]
+        setTitleImg("");
+        setImgFiles(imgFiles.filter((file: IFileTypes) => file.id !== id));
+      },
+      [imgFiles]
   );
-
-  const [subtitleFiles, setSubtitleFiles] = useState<IFileTypes[]>([]);   //file 변수
-
-  const subtitleUploadModal = (event: React.MouseEvent<HTMLButtonElement>) => {
-    event.preventDefault();
-    showModal({
-      modalType: "DefaultModal",
-      modalProps: {
-        message : ( <FileUpload  mulit ={false} parentCallBack={subtitleParentCallBack}  accept={"image/*"}/>),
-        title: "",
-
-      }
-    });
-  };
-  function subtitleParentCallBack(files:IFileTypes[]){
-    setSubtitleFiles(files)
-  }
-
-  const SubtitleDelFilterFile = useCallback(
-    (id: number): void => {
-      setSubtitleFiles(subtitleFiles.filter((file: IFileTypes) => file.id !== id));
-    },
-    [subtitleFiles]
-  );
-
 
   const editorRef =  useRef<Editor>(null);
 
@@ -146,23 +124,60 @@ const [loading, setLoading] = useState(false);
     }
 
 
-    const params = {
-      product_nm     : data.get('product_nm'),
-      product_type   : data.get('product_type'),
-      price     : data.get('price'),
-      content   : editorRef.current?.getInstance().getHTML(),
-      cnt       : data.get('cnt'),
-      rgstr_id  : user.user_id,
-      mdfr_id   : user.user_id,
-      title_img : titleImg
-    }
 
 
 
     try {
       window.scrollTo(0,0)
       setLoading(true);
-      axios.post("/Products" , params).then(res=>{setLoading(false)}).then(res => navigate(String("/ProductsList"))).catch(err=>console.log(err))
+
+
+
+      let formData = new FormData();
+      const config = {
+        headers: {
+          "content-type": "multipart/form-data"
+        }
+      };
+
+      formData.append('file', imgFiles[0].object)
+      formData.append('type', 'Products')
+      formData.append('type_detail', 'image')
+      formData.append('ymd', Time.getYmd() )
+      formData.append('origin_name', imgFiles[0].object.name)
+      formData.append('file_type',  imgFiles[0].object.name.split('.')[1] )
+      formData.append('size', String(imgFiles[0].object.size))
+
+
+      axios.post('/fileService/tuiHook/Products',formData ,config)
+          .then(res => {
+
+
+            const params = {
+              product_nm      : data.get('product_nm'),
+              product_type    : data.get('product_type'),
+              price           : data.get('price'),
+              content         : editorRef.current?.getInstance().getHTML(),
+              cnt             : data.get('cnt'),
+              rgstr_id        : user.user_id,
+              mdfr_id         : user.user_id,
+              title_img       : res.data.message
+            }
+
+
+            axios.post("/Products" , params)
+                .then(res=>{setLoading(false)})
+               /* .then(res => {
+
+                  axios.post("/fileService/reallyChange" ,{
+                    text : params.title_img+ params.content   //text 에는 이미지 전부 텍스트로 합쳐서 보낸다.
+                    ,type : 'Products'
+
+                  } )
+                }) //tmp로 생성해둔 파일을 Products 로 변경하면서 파일위치도 변경해야함.*/
+                .then(res => navigate(String("/ProductsList"))).catch(err=>console.log(err))
+          })
+
 
 
     } catch (error) {
@@ -177,6 +192,31 @@ const [loading, setLoading] = useState(false);
 
   };
 
+
+  const onUploadImage = async (blob:any, callback:any) => {
+    let formData = new FormData();
+    const config = {
+      headers: {
+        "content-type": "multipart/form-data"
+      }
+    };
+
+    formData.append('file', blob)
+    formData.append('type', 'Products')
+    formData.append('type_detail', 'image')
+    formData.append('ymd', Time.getYmd() )
+    formData.append('origin_name', blob.name)
+    formData.append('file_type',  blob.name.split('.')[1] )
+    formData.append('size', String(blob.size))
+
+
+    axios.post('/fileService/tuiHook/Products',formData ,config)
+        .then(res => {
+          callback(res.data.message ,'img')
+        })
+
+    return false;
+  };
 
   return (
 
@@ -278,6 +318,16 @@ const [loading, setLoading] = useState(false);
                     useCommandShortcut={false}
                     language="ko-KR"
                     autofocus={false}
+                    toolbarItems={[
+                      ['heading', 'bold', 'strike','image'],
+                      ['hr', 'quote'],
+                      ['ul', 'ol', 'task'],
+                      ['table',  'link'],
+                      ['code', 'codeblock'],
+                    ]}
+                    hooks={{
+                      addImageBlobHook : onUploadImage
+                    }}
                 />
               </Grid>
 

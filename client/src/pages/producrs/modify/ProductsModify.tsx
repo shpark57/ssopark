@@ -169,7 +169,7 @@ export default function ProductsModify() {
   }, [editorRef.current]);
 
 
-  const handleSubmit = (event: React.FormEvent<HTMLFormElement>)  => {
+  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>)  => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
     if( data.get('title') == ''){
@@ -205,6 +205,7 @@ export default function ProductsModify() {
     }
 
 
+
     const params = {
       id              : id,
       product_nm      : data.get('product_nm'),
@@ -217,13 +218,37 @@ export default function ProductsModify() {
       title_img       : product.title_img
     }
 
-
-
     try {
       window.scrollTo(0,0)
       setLoading(true);
-      axios.put("/Products/"+ id , params).then(res=>{setLoading(false)}).then(res => navigate(String("/ProductsView/"+id))).catch(err=>console.log(err))
 
+      if(imgFiles.length > 0){
+        let formData = new FormData();
+        const config = {
+          headers: {
+            "content-type": "multipart/form-data"
+          }
+        };
+
+        formData.append('file', imgFiles[0].object)
+        formData.append('type', 'Products')
+        formData.append('type_detail', 'image')
+        formData.append('ymd', Time.getYmd() )
+        formData.append('origin_name', imgFiles[0].object.name)
+        formData.append('file_type',  imgFiles[0].object.name.split('.')[1] )
+        formData.append('size', String(imgFiles[0].object.size))
+
+
+
+
+         let res = await axios.post('/fileService/tuiHook/Products',formData ,config)
+         params.title_img =res.data.message
+
+
+      }
+
+      await axios.put("/Products/"+ id , params)
+          .then(res=>{setLoading(false)}).then(res => navigate(String("/ProductsView/"+id))).catch(err=>console.log(err))
 
 
     } catch (error) {
@@ -245,6 +270,33 @@ export default function ProductsModify() {
     }))
 
   }
+
+
+  const onUploadImage = async (blob:any, callback:any) => {
+    let formData = new FormData();
+    const config = {
+      headers: {
+        "content-type": "multipart/form-data"
+      }
+    };
+
+    formData.append('file', blob)
+    formData.append('type', 'Products')
+    formData.append('type_detail', 'image')
+    formData.append('ymd', Time.getYmd() )
+    formData.append('origin_name', blob.name)
+    formData.append('file_type',  blob.name.split('.')[1] )
+    formData.append('size', String(blob.size))
+
+
+    axios.post('/fileService/tuiHook/Products',formData ,config)
+        .then(res => {
+          callback(res.data.message ,'img')
+        })
+
+    return false;
+  };
+
   return (
 
       <Container component="main" maxWidth="md">
@@ -347,6 +399,16 @@ export default function ProductsModify() {
                     useCommandShortcut={false}
                     language="ko-KR"
                     autofocus={false}
+                    toolbarItems={[
+                      ['heading', 'bold', 'strike','image'],
+                      ['hr', 'quote'],
+                      ['ul', 'ol', 'task'],
+                      ['table',  'link'],
+                      ['code', 'codeblock'],
+                    ]}
+                    hooks={{
+                      addImageBlobHook : onUploadImage
+                    }}
                 />
 
               </Grid>
