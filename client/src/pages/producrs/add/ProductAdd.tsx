@@ -26,8 +26,6 @@ import '@toast-ui/editor/dist/i18n/ko-kr';
 import CardMedia from "@mui/material/CardMedia";
 import {CardActionArea} from "@mui/material";
 
-import { v4 as uuidv4 } from "uuid";
-
 const ProductAdd = () => {
 
 
