@@ -26,9 +26,11 @@ import {Login} from "@mui/icons-material";
 import useModal from "../modal/hooks/useModal";
 
 import LoginPage from "src/pages/user/login/defaultLogin/Login";
+import UserModify from "../../pages/user/modify/UserModify";
 
 export default function Topbar(){
-    
+
+    let navigate = useNavigate();   //페이지 이동을 위해필요.
     const {loggedIn,  user , setLoggedOut} = useContext(LoginContext);
 
     const { showModal } = useModal();           //모달 사용
@@ -41,7 +43,7 @@ export default function Topbar(){
                 handleConfirm : arg => {setLoggedOut()}
             }
         });
-
+        navigate(String("/"))
     }
 
     const handleLogIn  = (e:React.MouseEvent<HTMLImageElement | HTMLLIElement>) => { //임시로 로그인버튼을 탑바의 사진모양 클릭으로 만들어둠.
@@ -76,7 +78,6 @@ export default function Topbar(){
     };
 
 
-    let navigate = useNavigate();   //페이지 이동을 위해필요.
     const menuClick = (e:React.MouseEvent<HTMLLIElement>) => {  //li클릭 이벤트
         if(!(e.target instanceof HTMLLIElement)){
             return;
@@ -99,7 +100,14 @@ export default function Topbar(){
         }
 
     }
-
+    const handleModify = () => {
+        showModal({
+            modalType: "IncludeModal",
+            modalProps: {
+                message: <UserModify id={user.id}/>
+            }
+        });
+    }
 
     return(
         <div className='topbar'>
@@ -205,8 +213,8 @@ export default function Topbar(){
                         transformOrigin={{ horizontal: "right", vertical: "top" }}
                         anchorOrigin={{ horizontal: "right", vertical: "bottom" }}
                     >
-                        <MenuItem onClick={handleClose2}>
-                            <Avatar /> Profile
+                        <MenuItem onClick={handleModify}>
+                            <Avatar /> 내정보
                         </MenuItem>
                         <MenuItem onClick={handleClose2}>
                             <Avatar /> My account

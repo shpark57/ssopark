@@ -82,14 +82,6 @@ export default function UserList(){
 
     }
     const handleModify = (id:number) => () => {
-        /* json-server 데이터 삭제 */
-        /*
-        axios.delete("/Users/" + row.id )
-            .then( (response) => { alert("삭제 성공") })
-            .catch( (error) => { alert("삭제 실패") });
-        */
-        /* useYn N 처리 업데이트 논리삭제*/
-
         showModal({
             modalType: "IncludeModal",
             modalProps: {
@@ -97,9 +89,6 @@ export default function UserList(){
                 message: <UserModify id={id}/>
             }
         });
-
-
-
     }
 
     const columns =[

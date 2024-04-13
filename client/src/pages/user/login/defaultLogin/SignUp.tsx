@@ -1,4 +1,4 @@
-import React , {useState} from 'react';
+import React, {ChangeEvent, useEffect, useState} from 'react';
 import Avatar from '@mui/material/Avatar';
 import Button from '@mui/material/Button';
 import CssBaseline from '@mui/material/CssBaseline';
@@ -20,6 +20,11 @@ import * as crypto from 'src/types/crypto-browserify'
 
 import LoginPage from "src/pages/user/login/defaultLogin/Login";
 import useModal from "src/components/modal/hooks/useModal";
+
+
+import { IAddr } from 'src/types/iddr'
+import {Alert} from "@mui/material";
+
 function Copyright(props: any) {
   return (
     <Typography variant="body2" color="text.secondary" align="center" {...props}>
@@ -35,21 +40,19 @@ function Copyright(props: any) {
 
 const theme = createTheme();
 export default function SignUp() {
+
+
+  const [alertMessage, setAlertMessage] = useState(''); //알림 메시지
   const { showModal } = useModal();   
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
 
     if( data.get('password') != data.get('confirmPassword')){
-
-      showModal({
-        modalType: "AlertModal",
-        modalProps: {
-          message: "비밀번호가 틀렸습니다!"
-        }
-      });
+      setAlertMessage("비밀번호가 틀렸습니다!")
       return
     }
+
 
 
 
@@ -57,6 +60,7 @@ export default function SignUp() {
     const salt = crypto.randomBytes(32).toString('hex');
     const password = String(data.get('password'))
     const hashPassword = crypto.pbkdf2Sync(password, salt, 1, 32, 'sha512').toString('hex');
+
 
 
     const params = {
@@ -71,7 +75,10 @@ export default function SignUp() {
       mdfr_id: data.get('user_id'),
       mdfr_time: Time.getTimeString(),      
       last_login: Time.getTimeString(),
-      salt : salt                           //암호화시 키가 될값 저장
+      salt : salt,                           //암호화시 키가 될값 저장
+      addr : addrValue,
+      addrDetail : addrDetailValue,
+      zipNo : zipNoValue
     }
 
 
@@ -93,15 +100,43 @@ export default function SignUp() {
           }
         })
       })
+
       .catch( (error) => {
-        showModal({
-          modalType: "AlertModal",
-          modalProps: {
-            message: "회원가입에 실패하셨습니다."
-          }
-        });
+
+
+        if(error.response.status == 500 ){
+          setAlertMessage('동일한 아이디가 존재합니다.')
+        }else{
+          setAlertMessage("회원가입에 실패하셨습니다.")
+        }
+
       });
-    
+
+  };
+
+
+
+
+
+  const [addrValue, setAddrValue] = useState(''); // 도로명주소
+  const [zipNoValue, setZipNoValue] = useState(''); // 우편번호
+  const [addrDetailValue, setAddrDetailValue] = useState(''); // 상세주소
+
+
+
+  const handleAddrDetail = (event: ChangeEvent<HTMLInputElement>) => {
+    setAddrDetailValue(event.target.value);
+  };
+
+  const onClickAddr = (event: React.MouseEvent<HTMLInputElement>) => {
+    new window.daum.Postcode({
+      oncomplete: function (data: IAddr) {
+        setAddrValue(data.address);
+        setZipNoValue(data.zonecode);
+        setAddrDetailValue('');
+        document.getElementById('addrDetail')?.focus();
+      }
+    }).open();
   };
 
   return (
@@ -118,6 +153,9 @@ export default function SignUp() {
           <Typography component="h1" variant="h5">
             회원가입
           </Typography>
+
+
+
           <Box component="form" noValidate onSubmit={handleSubmit} sx={{ mt: 3 }}>
             <Grid container spacing={2}>
 
@@ -183,6 +221,44 @@ export default function SignUp() {
                   autoComplete="new-password"
                 />
               </Grid>
+
+              <Grid item xs={12} sm={4}>
+                <TextField
+                    required
+                    fullWidth
+                    id="zipNo"
+                    label="우편주소"
+                    name="zipNo"
+                    autoComplete="zipNo"
+                    value={zipNoValue}
+                    onClick={onClickAddr}
+                />
+              </Grid>
+              <Grid item xs={12} sm={8}>
+                <TextField
+                    required
+                    fullWidth
+                    id="addr"
+                    label="도로명주소"
+                    name="addr"
+                    autoComplete="addr"
+                    value={addrValue}
+                />
+              </Grid>
+
+              <Grid item xs={12}>
+                <TextField
+                    required
+                    fullWidth
+                    id="addrDetail"
+                    label="상세주소"
+                    name="addrDetail"
+                    autoComplete="addrDetail"
+                    value={addrDetailValue}
+                    onChange={handleAddrDetail}
+                />
+              </Grid>
+
             </Grid>
             <Button
               type="submit"
@@ -192,6 +268,13 @@ export default function SignUp() {
             >
               회원가입
             </Button>
+
+            {
+              alertMessage != '' ? <Alert severity="error">{alertMessage}</Alert> : ''
+            }
+
+
+
           </Box>
         </Box>
       </Container>

@@ -1,4 +1,4 @@
-import React , {useState, useEffect,useContext} from 'react';
+import React, {useState, useEffect, useContext, ChangeEvent} from 'react';
 import Avatar from '@mui/material/Avatar';
 import Button from '@mui/material/Button';
 import CssBaseline from '@mui/material/CssBaseline';
@@ -14,7 +14,7 @@ import Container from '@mui/material/Container';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import axios from 'axios';
 import { useParams ,useNavigate} from 'react-router-dom';
-import { Hidden, Paper } from "@mui/material";
+import {Alert, Hidden, Paper} from "@mui/material";
 
 
 import { LoginContext } from 'src/contexts/login'
@@ -24,6 +24,7 @@ import useModal from "src/components/modal/hooks/useModal";
 
 import PasswordModifyModal from './Modals/PasswordModifyModal'
 import {CommentBodyProp, CommentInputProp} from "../../../components/comment/CommentComponent";
+import {IAddr} from "../../../types/iddr";
 
 interface userInfo  {
     id: number;
@@ -40,6 +41,9 @@ interface userInfo  {
     last_login: string;
     salt: string;
     auth: string;
+    addr : string,
+    addrDetail : string,
+    zipNo : string
 }
 
 interface Interface {
@@ -55,6 +59,7 @@ const UserModify:React.FC<Interface> =  (props) => {
         const {loggedIn , user } = useContext(LoginContext);
 
 
+        const [alertMessage, setAlertMessage] = useState(''); //알림 메시지
         //let navigate = useNavigate();   //페이지 이동을 위해필요.
         const [userParams , setUserParams] = useState({
             id : 0,
@@ -70,7 +75,10 @@ const UserModify:React.FC<Interface> =  (props) => {
             mdfr_time: "",
             last_login: "",
             salt : ""     ,
-            auth :""
+            auth :"" ,
+            addr : "",
+            addrDetail : "",
+            zipNo : ""
         })
 
         useEffect(() => {
@@ -96,27 +104,19 @@ const UserModify:React.FC<Interface> =  (props) => {
             const input_id = String(data.get('user_id'))
             const input_password = String(data.get('password'))
             const res = await axios.post("/password/check",{user_id:input_id,password:input_password})
-            if(!res.data.check){
-                showModal({
-                    modalType: "AlertModal",
-                    modalProps: {
-                        message : '비밀번호가 다릅니다,'
-                    }
-                });
+            if( data.get('password') == '' ){
+                setAlertMessage('비밀번호를 입력해주세요,')
                 return
             }
-            if( data.get('password') == '' ){
-                showModal({
-                    modalType: "AlertModal",
-                    modalProps: {
-                        message : '비밀번호를 입력해주세요,'
-                    }
-                });
+            if(!res.data.check){
+                setAlertMessage('비밀번호가 다릅니다,')
                 return
             }
 
+
             axios.put("/Users/"+ userParams.id , userParams )
                 .then((response) => {
+
                     showModal({
                         modalType: "AlertModal",
                         modalProps: {
@@ -126,12 +126,7 @@ const UserModify:React.FC<Interface> =  (props) => {
                 })
                 //.then(()=> navigate(String("/Users")))
                 .catch((error) =>  {
-                    showModal({
-                        modalType: "AlertModal",
-                        modalProps: {
-                            message : '수정에 실패했습니다.'
-                        }
-                    });
+                    setAlertMessage('수정에 실패했습니다.')
                 });
 
         };
@@ -156,6 +151,31 @@ const UserModify:React.FC<Interface> =  (props) => {
                 }
             });
         };
+
+
+
+
+
+    const handleAddrDetail = (event: ChangeEvent<HTMLInputElement>) => {
+        setUserParams((prevUser:userInfo ) => ({
+            ...prevUser ,
+            addrDetail: event.target.value
+        }))
+    };
+
+    const onClickAddr = (event: React.MouseEvent<HTMLInputElement>) => {
+        new window.daum.Postcode({
+            oncomplete: function (data: IAddr) {
+                setUserParams((prevUser:userInfo ) => ({
+                    ...prevUser ,
+                    addrDetail:'',
+                    addr: data.address,
+                    zipNo:data.zonecode
+                }))
+                document.getElementById('addrDetail')?.focus();
+            }
+        }).open();
+    };
 
         return (
 
@@ -236,7 +256,7 @@ const UserModify:React.FC<Interface> =  (props) => {
                                     :''
 
                                 }
-                                <Grid item xs={12} sm={8}>
+                                <Grid item xs={8}>
                                     <TextField
                                         required
                                         fullWidth
@@ -247,7 +267,7 @@ const UserModify:React.FC<Interface> =  (props) => {
                                         autoComplete="new-password"
                                     />
                                 </Grid>
-                                <Grid item xs={12} sm={4}>
+                                <Grid item  xs={4}>
                                     <Button
                                         onClick={handleClickDefaultModal}
                                         fullWidth
@@ -256,6 +276,44 @@ const UserModify:React.FC<Interface> =  (props) => {
                                     >
                                         변경
                                     </Button>
+                                </Grid>
+
+                                <Grid item xs={12} sm={4}>
+                                    <TextField
+                                        required
+                                        fullWidth
+                                        id="zipNo"
+                                        label="우편주소"
+                                        name="zipNo"
+                                        autoComplete="zipNo"
+                                        value={userParams.zipNo}
+                                        onClick={onClickAddr}
+                                    />
+                                </Grid>
+                                <Grid item  xs={12} sm={8}>
+                                    <TextField
+                                        required
+                                        fullWidth
+                                        id="addr"
+                                        label="도로명주소"
+                                        name="addr"
+                                        autoComplete="addr"
+                                        value={userParams.addr}
+                                        onClick={onClickAddr}
+                                    />
+                                </Grid>
+
+                                <Grid item xs={12}>
+                                    <TextField
+                                        required
+                                        fullWidth
+                                        id="addrDetail"
+                                        label="상세주소"
+                                        name="addrDetail"
+                                        autoComplete="addrDetail"
+                                        value={userParams.addrDetail}
+                                        onChange={handleAddrDetail}
+                                    />
                                 </Grid>
                             </Grid>
                             <Button
@@ -268,6 +326,11 @@ const UserModify:React.FC<Interface> =  (props) => {
                             </Button>
                         </Box>
                     </Box>
+                    {
+                        alertMessage != '' ? <Alert severity="error">{alertMessage}</Alert> : ''
+                    }
+
+
                 </Container>
             </ThemeProvider>
 

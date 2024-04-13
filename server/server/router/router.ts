@@ -152,7 +152,6 @@ createConnection().then(connection => {
     }  
 
     const saveRepository =  async (table : string , req: Request, res: Response)  => {
-        //console.log(req.body)
         const entity = await  dinamicRepository(table).save(req.body)
         return entity
         
@@ -185,7 +184,6 @@ createConnection().then(connection => {
 
     const deleteOneByRepository =  async(table : string , req: Request, res: Response)  => {
         req.query['id'] = req.params.id
-        //console.log(req.params)
         const remove = await dinamicRepository(table).findOneBy(req.query)
         for(let key in remove){
             if(remove[key] == null){
@@ -220,7 +218,6 @@ createConnection().then(connection => {
         let table = req.baseUrl.substr(1)
         findOneByRepository(table , req , res)
         .then(entity => {
-            //console.log(entity)
             res.send(entity);
         })
         .catch(err => {
@@ -236,7 +233,6 @@ createConnection().then(connection => {
         let table = req.baseUrl.substr(1)
         findByRepository(table , req , res)        
         .then(entity => {
-            //console.log(entity)
             res.send(entity);
         })
         .catch(err => {
@@ -251,7 +247,6 @@ createConnection().then(connection => {
         let table = req.baseUrl.substr(1)
         const entity =  saveRepository(table , req , res)
         .then(entity => {
-            //console.log(entity)
             res.send(entity);
         })
         .catch(err => {
@@ -270,7 +265,6 @@ createConnection().then(connection => {
         req.body['id'] = Number(req.params.id)
         const entity =  saveRepository(table , req , res)
         .then(entity => {
-            //console.log(entity)
             res.send(entity);
         })
         .catch(err => {
@@ -290,7 +284,6 @@ createConnection().then(connection => {
         req.body['id'] = Number(req.params.id)
         const entity =  patchRepository(table , req , res)
         .then(entity => {
-            //console.log(entity)
             res.send(entity);
         })
         .catch(err => {
@@ -307,7 +300,6 @@ createConnection().then(connection => {
         let table = req.baseUrl.substr(1)
         deleteOneByRepository(table , req , res)
         .then(entity => {
-            //console.log(entity)
             res.send(entity);
         })
         .catch(err => {
@@ -391,7 +383,6 @@ createConnection().then(connection => {
             req.body['password'] = crypto.pbkdf2Sync(req.body.password, salt, 1, 32, 'sha512').toString('hex');
             const response = connection.getRepository(Users).save(req.body)
             .then(response => {
-                //console.log(response)
                 res.send(response);
             })
             .catch(err => {
@@ -401,7 +392,21 @@ createConnection().then(connection => {
         });
 
 
+        router.post("/direct",   function(req: Request, res: Response) {
+            let query = req.body.params.query
+            const queryRunner = connection.createQueryRunner();
 
+            // 직접 SQL 쿼리 실행
+            queryRunner.query(query)
+                .then(entity => {
+                    res.send(entity);
+                })
+                .catch(err => {
+                    console.log(`query error : ${err}`);
+                    res.status(500).send(err);
+                });
+
+        });
 
 
 

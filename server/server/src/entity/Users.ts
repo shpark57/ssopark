@@ -47,9 +47,18 @@ export class Users {
 
     @Column()
     salt: string;
-    
+
     @Column({default: ''})
-    auth: string;   //권한
-    
-    
+    auth: string;   //도로명주소
+
+    @Column({default: ''})
+    addr: string;   //권한
+
+    @Column({default: ''})
+    zipNo: string;   //우편주소
+
+    @Column({default: ''})
+    addrDetail: string;   //상세주소
+
+
 }

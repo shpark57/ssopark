@@ -153,14 +153,14 @@ export default function Login(){
                 </Grid>
                 <Grid item>
 
-                        <Button
-                            onClick={handleLogIn}
-                            fullWidth
-                            variant="text"
-                            sx={{ mt: 1, mb: 2 }}
-                        >
-                        회원가입
-                        </Button>
+                    <Button
+                        onClick={handleLogIn}
+                        fullWidth
+                        variant="text"
+                        sx={{ mt: 1, mb: 2 }}
+                    >
+                    회원가입
+                    </Button>
                 </Grid>
             </Grid>
             </Box>

@@ -30,7 +30,7 @@
   ],
   "paths": {
     "crypto": [
-      "node_modules/crypto-browserify"
+      "./src/types/crypto-browserify"
     ]
   }
 }

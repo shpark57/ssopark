@@ -8,6 +8,7 @@ export const init = () => {
       pool = createPool({
         host: 'shpark91.iptime.org',
         user: 'shpark',
+        port: 3307,
         password: 'SILV@Rs5ul',
         database: 'shpark_farm',
         connectionLimit: 4,
