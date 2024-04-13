@@ -3,10 +3,10 @@ FROM node:18.18.1
 WORKDIR /usr/app
 
 COPY package*.json ./
-RUN npm install
+RUN yarn
 
 COPY . .
 
 EXPOSE 6000
 
-CMD ["npm", "run" , "server"]
+CMD ["yarn", "run" , "server"]

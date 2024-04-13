@@ -7,4 +7,9 @@ npm i --save nodemon            // 개발 시 변경사항을 실시간으로 �
 npm i --save concurrently       // 리액트 서버와 노드 서버를 동시에 실행 시키기 위한 모듈
 npm install --save mysql
 npm install --save-dev @types/mysql
-npm i --save body-parser        //body 값읽기위해 
+npm i --save body-parser        //body 값읽기위해
+
+
+
+yarn add http-errors
+yarn add morgan

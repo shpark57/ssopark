@@ -1,11 +1,10 @@
 import express from 'express';
-import * as db from './mariaDB'
 
-var createError = require('http-errors');
-var logger = require('morgan');
+const createError = require('http-errors');
+const logger = require('morgan');
 
 
-var bodyParser = require('body-parser')
+const bodyParser = require('body-parser')
 const app = express();
 const router = require("./router/router");
 const file = require("./router/file")

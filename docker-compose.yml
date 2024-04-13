@@ -3,7 +3,7 @@ services:
   server:
     build:
       context: ./server/
-    command:  npm run server
+    command:  yarn run server
     volumes:
       - ./server/:/usr/app
       - /usr/app/node_modules
@@ -16,7 +16,7 @@ services:
   client:
     build:
       context: ./client/
-    command: npm run client
+    command: yarn run client
     volumes:
       - ./client/:/usr/app
       - /usr/app/node_modules
