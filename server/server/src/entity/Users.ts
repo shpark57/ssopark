@@ -1,4 +1,6 @@
-import {Entity, Column, PrimaryGeneratedColumn , Index , Unique } from "typeorm";
+import {Entity, Column, PrimaryGeneratedColumn, Index, Unique, OneToMany, ManyToMany, JoinTable} from "typeorm";
+import {Cart} from "./Cart";
+import {Products} from "./Products";
 
 @Entity()
 @Unique('my_unique_constraint', ['user_id']) 
@@ -60,5 +62,15 @@ export class Users {
     @Column({default: ''})
     addrDetail: string;   //상세주소
 
+    @OneToMany(type => Cart , cart => cart.user)
+    carts : Cart[];
 
+
+    @ManyToMany(() => Products, products => products.users)
+    @JoinTable({
+        name: 'product_user_bridge',
+        joinColumn: { name: 'user_id', referencedColumnName: 'id' },
+        inverseJoinColumn: { name: 'product_id', referencedColumnName: 'id' },
+    })
+    products: Products[];
 }

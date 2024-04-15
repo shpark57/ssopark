@@ -29,6 +29,7 @@ import Sample from './pages/sample/Sample'
 import {BrowserRouter as Router, Routes, Route  } from 'react-router-dom'
 
 import GlobalModal from "./components/modal/GlobalModal";
+import CartList from "./pages/cart/list/CartList";
 
 
 function App() {
@@ -58,6 +59,7 @@ function App() {
               <Route path="/ProductsModify/:id" element={ <ProductsModify/> }/>
               <Route path="/sample" element={ <Sample/> }/>
               <Route path="/users" element={<UserList/>}/>
+              <Route path="/carts" element={<CartList/>}/>
               <Route path="/userModify"     element={ <UserModify/> }/>
               <Route path="/login" element={ <Login/> }/>
               <Route path="/signUp" element={ <SignUp/> }/>

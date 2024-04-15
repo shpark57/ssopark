@@ -1,5 +1,17 @@
-import {Entity, Column, PrimaryGeneratedColumn, Index, Unique, ManyToOne, JoinColumn, OneToMany} from "typeorm";
+import {
+    Entity,
+    Column,
+    PrimaryGeneratedColumn,
+    Index,
+    Unique,
+    ManyToOne,
+    JoinColumn,
+    OneToMany,
+    ManyToMany, JoinTable
+} from "typeorm";
 import {Files} from "./Files";
+import {Users} from "./Users";
+import {Cart} from "./Cart";
 
 @Entity()
 export class Products {
@@ -53,4 +65,16 @@ export class Products {
     @Column({ type: 'timestamp' ,default: () => "CURRENT_TIMESTAMP"})
     mdfr_time: Date;
 
+
+
+    @OneToMany(type => Cart , cart => cart.product)
+    carts : Cart[];
+
+    @ManyToMany(() => Users, users => users.products)
+    @JoinTable({
+        name: 'product_user_bridge_entity',
+        joinColumn: { name: 'product_id', referencedColumnName: 'id' },
+        inverseJoinColumn: { name: 'user_id', referencedColumnName: 'id' },
+    })
+    users: Users[];
 }

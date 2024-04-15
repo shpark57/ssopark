@@ -112,6 +112,11 @@ export default function Topbar(){
         });
     }
 
+    const goCarts =() =>{
+
+        navigate(String("/carts"))
+    }
+
     return(
         <div className='topbar'>
             <div className='topbarWrapper'>
@@ -226,7 +231,7 @@ export default function Topbar(){
                         }
 
                         <Divider />
-                        <MenuItem onClick={handleClose2}>
+                        <MenuItem onClick={goCarts}>
                             <ListItemIcon >
                                 <ShoppingCartIcon fontSize="small" />
                             </ListItemIcon >

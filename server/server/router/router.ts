@@ -13,6 +13,7 @@ import { Comment } from "../src/entity/Comment";
 import { Movies } from "../src/entity/Movies";
 import { Likes } from "../src/entity/Likes";
 import { Products } from "../src/entity/Products";
+import { Cart } from "../src/entity/Cart";
 
 
 
@@ -35,6 +36,8 @@ createConnection().then(connection => {
             repository =  connection.getRepository(Likes)
         }else if(table == 'products'){
             repository =  connection.getRepository(Products)
+        }else if(table == 'cart'){
+            repository =  connection.getRepository(Cart)
         }
         
         return repository;
