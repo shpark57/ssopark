@@ -1,8 +1,6 @@
 .cartList{
-    flex:5;
-    height: 500px;
+    flex:2;
 }
-
 .numeric-input-container {
     align-items: center;
     width: 150px;

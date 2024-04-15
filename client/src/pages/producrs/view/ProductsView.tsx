@@ -29,7 +29,6 @@ import EditIcon from '@mui/icons-material/Edit';
 const ProductsView = () =>{
 
 
-    window.scrollTo(0,0)
     const {id} = useParams();
     const { loggedIn , user } = useContext(LoginContext);
     const { showModal } = useModal();   
@@ -107,6 +106,24 @@ const ProductsView = () =>{
     const goProductsModify = async (e : React.MouseEvent<any>) => {
 
         navigate(String("/ProductsModify/"+ id))
+    }
+
+    const addCart = () =>{
+
+        let params ={
+            user_id : user.id,
+            product_id : product?.id,
+            cnt : 1,
+            rgstr_id : user.user_id,
+            rgstr_time : Time.getTimeString() ,
+            mdfr_id : user.user_id,
+            mdfr_time : Time.getTimeString()
+
+        }
+        axios.post("/Cart", params)
+            .then(res=>{
+                console.log(res)
+            })
     }
     return (
       <Container component="main" maxWidth="lg" className='product' sx={{ mb: 8}} >
@@ -206,7 +223,7 @@ const ProductsView = () =>{
                       variant="contained"
                       sx={{fontSize : 20}}
                       style={{ height : '50px' , margin : '10px'}}
-
+                      onClick={addCart}
                   >
                       장바구니
                   </Button>

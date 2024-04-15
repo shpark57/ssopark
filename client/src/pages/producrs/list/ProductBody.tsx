@@ -28,6 +28,7 @@ const ProductBody:React.FC<ProductProps> = (props) => {
         if(!(e.target instanceof HTMLImageElement)){
             return;
         }
+        window.scrollTo(0,0)
         const id = e.target.dataset.id
 
 

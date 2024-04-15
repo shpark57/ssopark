@@ -11,7 +11,7 @@ import { LoginContext } from 'src/contexts/login'
 
 import useModal from "src/components/modal/hooks/useModal";
 import UserModify from 'src/pages/user/modify/UserModify';        //유저 정보 수정
-import {Button, CardActionArea} from "@mui/material";
+import {Button, CardActionArea, Container} from "@mui/material";
 import Grid from "@mui/material/Grid";
 import TextField from "@mui/material/TextField";
 import CardMedia from "@mui/material/CardMedia";
@@ -19,7 +19,6 @@ import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
 import {ProductProps} from "src/pages/producrs/props/ProductProps";
 
-import { Unstable_NumberInput as NumberInput } from '@mui/base';
 
 interface Interface {
     id : number
@@ -65,7 +64,7 @@ export default function CartList(){
         // 해당 인덱스의 객체를 새로운 객체로 교체합니다.
         updatedItems[ Number( row.id )] = { ...updatedItems[ Number( row.id)], cnt: updatedItems[  row.id ].cnt + add < 1 ? 1 : updatedItems[  row.id ].cnt + add   };
         // 변경된 배열을 설정합니다.
-        setTableData(updatedItems);
+        setTableData([...tableData,...updatedItems]);
 
     }
 
@@ -108,20 +107,33 @@ export default function CartList(){
             }
         }
     ]
-
-
     return(
             <div className="cartList">
                 <DataGrid
+                    className={"cartGrid"}
                     rowHeight={100}
+                    autoHeight
                     rows = {tableData}
                     disableSelectionOnClick
                     columns={columns}
                     pageSize={50}
                     rowsPerPageOptions={[5]}
                     checkboxSelection
-
+                    hideFooter
                 />
+                <Grid item xs={12} sx={{textAlign:"center",position: "sticky", bottom: "0"  , zIndex : '999' , height : '100' , background:'white'}}>
+                    <div  style={{textAlign:"right"}}>
+                        총 금액 : 땡땡원
+                        <Button
+                            variant="contained"
+                            sx={{fontSize : 20}}
+                            style={{ height : '50px'  , margin : '10px'}}
+
+                        >
+                            구매하기
+                        </Button>
+                    </div>
+                </Grid>
             </div>
 
     )
