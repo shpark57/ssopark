@@ -3,25 +3,40 @@
     height: 500px;
 }
 
-.cartListImg{
-    width:32px;
-    height:32px;
-    border-radius:50%;
-    object-fit:cover;
-    margin-right:10px;
+.numeric-input-container {
+    align-items: center;
+    width: 150px;
+
+    border-radius: 4px;
+    overflow: hidden;
+}
+.numeric-input::-webkit-outer-spin-button,
+.numeric-input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+.numeric-input{
+    border: 1px solid #ccc;
+    -webkit-appearance: none;
+    margin: 0;
+}
+.numeric-input-container button {
+    padding: 8px 12px;
+    font-size: 16px;
+    border: none;
+    cursor: pointer;
+    background-color: #f0f0f0;
 }
 
-.cartListEdit{
-    border:none;
-    border-radius:10px;
-    padding:5px 10px;
-    background-color: #3bb077;
-    color : white;
-    cursor:pointer;
-    margin-right: 15px;
+.numeric-input-container button:hover {
+    background-color: #e0e0e0;
 }
 
-.cartListDelete{
-    color:red;
-    cursor:pointer;
+.numeric-input-container input {
+    padding: 8px;
+    font-size: 16px;
+    border: none;
+    outline: none;
+    width: 60px;
+    text-align: center;
 }

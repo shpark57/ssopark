@@ -48,16 +48,14 @@ export default function Home(){
 
 
   return(
-        <Container component="main" maxWidth="md" sx={{textAlign:'center'}}>
+        <Container component="main" maxWidth="xs" sx={{textAlign:'center'}}>
             <CardMedia
                 component="img"
                 image="https://www.kindacode.com/wp-content/uploads/2021/06/cute-dog.jpeg"
                 style={{
-                    left : '0'
-                    ,right : '0'
-                    ,margin: '10px auto'
+                    margin: '10px auto'
                 }}
-                sx={{height : 200 }}
+                sx={{height : 200 , objectFit: 'scale-down'}}
             />
 
             <Carousel products={products}/>

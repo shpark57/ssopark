@@ -227,7 +227,7 @@ export default function Topbar(){
                                 <MenuItem onClick={handleModify}>
                                     <Avatar /> 내정보
                                 </MenuItem>
-                                : <></>
+                                : <MenuItem></MenuItem>
                         }
 
                         <Divider />
