@@ -64,7 +64,7 @@ export default function CartList(){
         // 해당 인덱스의 객체를 새로운 객체로 교체합니다.
         updatedItems[ Number( row.id )] = { ...updatedItems[ Number( row.id)], cnt: updatedItems[  row.id ].cnt + add < 1 ? 1 : updatedItems[  row.id ].cnt + add   };
         // 변경된 배열을 설정합니다.
-        setTableData([...tableData,...updatedItems]);
+        setTableData(updatedItems);
 
     }
 

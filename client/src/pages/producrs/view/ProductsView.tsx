@@ -113,7 +113,7 @@ const ProductsView = () =>{
         let params ={
             user_id : user.id,
             product_id : product?.id,
-            cnt : 1,
+            cnt : 1  ,
             rgstr_id : user.user_id,
             rgstr_time : Time.getTimeString() ,
             mdfr_id : user.user_id,
@@ -122,7 +122,12 @@ const ProductsView = () =>{
         }
         axios.post("/Cart", params)
             .then(res=>{
-                console.log(res)
+                showModal({
+                    modalType: "AlertModal",
+                    modalProps: {
+                        message: "상품이 장바구니에 등록됐습니다."
+                    }
+                });
             })
     }
     return (
