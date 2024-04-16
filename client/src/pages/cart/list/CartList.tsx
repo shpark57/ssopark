@@ -1,7 +1,7 @@
 import React, {useState, useEffect, useContext, ChangeEvent} from "react";
 import './cartList.css'
 
-import {DataGrid} from '@mui/x-data-grid'
+import {DataGrid, GridSelectionModel} from '@mui/x-data-grid'
 import { DeleteOutline } from "@mui/icons-material";
 import axios from 'axios';
 import {Link} from 'react-router-dom'
@@ -38,8 +38,18 @@ export default function CartList(){
     const { showModal } = useModal();
     const {loggedIn , user } = useContext(LoginContext);
     const [tableData , setTableData] = useState<Interface[]>([])
-    
+    const [selectIds , setSelectIds] = useState<GridSelectionModel>([])
+    const [totalPrice , setTotalPrice] = useState(0)
+
+    const [selectChk , setSelectChk]= useState(0)
     useEffect(() => {
+        if(selectChk == 0){
+            ontSelect()
+        }
+        fatchData()
+    },[selectIds ,tableData])
+
+    const ontSelect = () => {
         axios.get('/cart' , {params : {user_id: /*user.id*/ '1' , _rel : 'product' }})
             .then(res =>  {
                 res.data.map((obj:Interface,index:number)=>{
@@ -48,7 +58,18 @@ export default function CartList(){
                 })
                 setTableData(res.data)
             })
-    },[0])
+        setSelectChk(1)
+    }
+
+    const fatchData = () =>{
+
+        let total = 0
+        const selectedIDs = new Set(selectIds)
+        tableData.filter((row:Interface ) => selectedIDs.has(row.id) ).forEach((obj)=> {
+            total = total + (obj.product.price * obj.cnt)
+        })
+        setTotalPrice(total)
+    }
     const handleCntChange = (event: ChangeEvent<HTMLInputElement>)=> {
         const updatedItems = [...tableData];
         // 해당 인덱스의 객체를 새로운 객체로 교체합니다.
@@ -65,7 +86,6 @@ export default function CartList(){
         updatedItems[ Number( row.id )] = { ...updatedItems[ Number( row.id)], cnt: updatedItems[  row.id ].cnt + add < 1 ? 1 : updatedItems[  row.id ].cnt + add   };
         // 변경된 배열을 설정합니다.
         setTableData(updatedItems);
-
     }
 
 
@@ -107,6 +127,8 @@ export default function CartList(){
             }
         }
     ]
+
+
     return(
             <div className="cartList">
                 <DataGrid
@@ -120,10 +142,13 @@ export default function CartList(){
                     rowsPerPageOptions={[5]}
                     checkboxSelection
                     hideFooter
+                    onSelectionModelChange={(ids) => {
+                        setSelectIds(ids)
+                    }}
                 />
                 <Grid item xs={12} sx={{textAlign:"center",position: "sticky", bottom: "0"  , zIndex : '999' , height : '100' , background:'white'}}>
                     <div  style={{textAlign:"right"}}>
-                        총 금액 : 땡땡원
+                        총 금액 : {totalPrice.toLocaleString('ko-KR')}원
                         <Button
                             variant="contained"
                             sx={{fontSize : 20}}

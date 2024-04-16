@@ -108,26 +108,33 @@ const ProductsView = () =>{
         navigate(String("/ProductsModify/"+ id))
     }
 
-    const addCart = () =>{
+    const addCart = async () =>{
 
-        let params ={
-            user_id : user.id,
-            product_id : product?.id,
-            cnt : 1  ,
-            rgstr_id : user.user_id,
-            rgstr_time : Time.getTimeString() ,
-            mdfr_id : user.user_id,
-            mdfr_time : Time.getTimeString()
+        axios.get("/Cart?user_id="+user.id+"&product_id="+product?.id)
+            .then(res =>{
+                let params ={
+                    user_id : user.id,
+                    product_id : product?.id,
+                    cnt : 1  ,
+                    rgstr_id : user.user_id,
+                    rgstr_time : Time.getTimeString() ,
+                    mdfr_id : user.user_id,
+                    mdfr_time : Time.getTimeString()
 
-        }
-        axios.post("/Cart", params)
-            .then(res=>{
-                showModal({
-                    modalType: "AlertModal",
-                    modalProps: {
-                        message: "상품이 장바구니에 등록됐습니다."
-                    }
-                });
+                }
+                if(res.data.length > 0){
+                    params.cnt  = res.data[0].cnt + 1
+                }
+
+                axios.post("/Cart", params)
+                    .then(res=>{
+                        showModal({
+                            modalType: "AlertModal",
+                            modalProps: {
+                                message: "상품이 장바구니에 등록됐습니다."
+                            }
+                        });
+                    })
             })
     }
     return (
