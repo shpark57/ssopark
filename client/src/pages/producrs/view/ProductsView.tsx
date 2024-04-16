@@ -26,6 +26,10 @@ import TuiViewer from "src/components//Tui/TuiViewer";
 import AddCircleIcon from "@mui/icons-material/AddCircle";
 import {Editor} from "@toast-ui/react-editor";
 import EditIcon from '@mui/icons-material/Edit';
+
+// @ts-ignore
+import Session from 'react-session-api';
+
 const ProductsView = () =>{
 
 
@@ -109,33 +113,69 @@ const ProductsView = () =>{
     }
 
     const addCart = async () =>{
+        if(loggedIn){
+            axios.get("/Cart?user_id="+user.id+"&product_id="+product?.id)
+                .then(res =>{
+                    let params ={
+                        user_id : user.id,
+                        product_id : product?.id,
+                        cnt : 1  ,
+                        rgstr_id : user.user_id,
+                        rgstr_time : Time.getTimeString() ,
+                        mdfr_id : user.user_id,
+                        mdfr_time : Time.getTimeString()
 
-        axios.get("/Cart?user_id="+user.id+"&product_id="+product?.id)
-            .then(res =>{
-                let params ={
-                    user_id : user.id,
-                    product_id : product?.id,
-                    cnt : 1  ,
-                    rgstr_id : user.user_id,
-                    rgstr_time : Time.getTimeString() ,
-                    mdfr_id : user.user_id,
-                    mdfr_time : Time.getTimeString()
+                    }
+                    if(res.data.length > 0){
+                        params.cnt  = res.data[0].cnt + 1
+                    }
 
+                    axios.post("/Cart", params)
+                        .then(res=>{
+                            showModal({
+                                modalType: "AlertModal",
+                                modalProps: {
+                                    message: "상품이 장바구니에 등록됐습니다."
+                                }
+                            });
+                        })
+                })
+        }else{
+
+            let params ={
+                user_id : '',
+                product_id : product?.id,
+                cnt : 1  ,
+                product : product ,
+                rgstr_id : 'system',
+                rgstr_time : Time.getTimeString() ,
+                mdfr_id : 'system',
+                mdfr_time : Time.getTimeString() ,
+                id : 0
+            }
+            // 2. 객체
+
+            let cartSession = Session.get("cartSession")
+            if(cartSession){
+                var findIndex = cartSession.findIndex((obj:any, index:number) => obj['product_id'] === product?.id)
+                if(findIndex != -1){
+                    cartSession[findIndex].cnt = cartSession[findIndex].cnt + 1
+                }else{
+                    params.id = cartSession.length
+                    cartSession = [...cartSession , params]
                 }
-                if(res.data.length > 0){
-                    params.cnt  = res.data[0].cnt + 1
-                }
+            }else{
+                cartSession = [params]
+            }
+            Session.set("cartSession", cartSession);
 
-                axios.post("/Cart", params)
-                    .then(res=>{
-                        showModal({
-                            modalType: "AlertModal",
-                            modalProps: {
-                                message: "상품이 장바구니에 등록됐습니다."
-                            }
-                        });
-                    })
-            })
+            showModal({
+                modalType: "AlertModal",
+                modalProps: {
+                    message: "상품이 장바구니에 등록됐습니다."
+                }
+            });
+        }
     }
     return (
       <Container component="main" maxWidth="lg" className='product' sx={{ mb: 8}} >

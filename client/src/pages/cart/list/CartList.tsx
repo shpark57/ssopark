@@ -18,7 +18,8 @@ import CardMedia from "@mui/material/CardMedia";
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
 import {ProductProps} from "src/pages/producrs/props/ProductProps";
-
+// @ts-ignore
+import Session from 'react-session-api';
 
 interface Interface {
     id : number
@@ -50,15 +51,45 @@ export default function CartList(){
     },[selectIds ,tableData])
 
     const ontSelect = () => {
-        axios.get('/cart' , {params : {user_id: /*user.id*/ '1' , _rel : 'product' }})
-            .then(res =>  {
-                res.data.map((obj:Interface,index:number)=>{
-                    obj.id = index
-                    obj.product_nm = obj.product.product_nm
+
+        if(loggedIn){
+            axios.get('/cart' , {params : {user_id: user.id , _rel : 'product' }})
+                .then(res =>  {
+                    res.data.map((obj:Interface,index:number)=>{
+                        obj.id = index
+                        obj.product_nm = obj.product.product_nm
+                    })
+
+                    let cartSession = Session.get("cartSession")
+                    if(cartSession){
+
+                        cartSession.forEach( (row:Interface,index:number) =>{
+                            row.user_id = user.id
+
+                            var findIndex = res.data.findIndex((obj:any, index:number) => obj['product_id'] === row.product_id)
+                            if(findIndex != -1){
+                                res.data[findIndex].cnt = res.data[findIndex].cnt + cartSession[index].cnt
+                            }else{
+                                res.data = [...res.data , cartSession[index]]
+                            }
+                        })
+
+                        setTableData(res.data)
+
+                    }else{
+
+                        setTableData(res.data)
+                    }
+
                 })
-                setTableData(res.data)
-            })
-        setSelectChk(1)
+            setSelectChk(1)
+        }else{
+            let cartSession = Session.get("cartSession")
+            if(cartSession){
+                setTableData(cartSession)
+                setSelectChk(1)
+            }
+        }
     }
 
     const fatchData = () =>{
