@@ -7,6 +7,7 @@ services:
     volumes:
       - ./server/:/usr/app
       - /usr/app/node_modules
+    image : shpark57/ssopark-server:1.0.1
     ports:
       - "6000:6000"
     # env_file: ./server/.env # TODO - uncomment this to auto-load your .env file!
@@ -22,5 +23,6 @@ services:
       - /usr/app/node_modules
     depends_on:
       - server
+    image: shpark57/ssopark-client:1.0.1
     ports:
       - "3000:3000"

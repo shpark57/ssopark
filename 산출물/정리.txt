@@ -37,3 +37,31 @@ const {$1} = require('$2');
 
 import\s+\{([^}]+)\}\s+from\s+['\"]([^'\"]+)['\"];?
 const {$1} = require('$2');
+
+
+
+
+
+
+1. 도커 커밋
+    docker commit ssopark-client-1 client:1.0.1
+
+2. 도커 이미지 확인
+    docker images
+
+3. docker-compose.yml 에
+   image: ssopark-client:1.0.1 와같은 형식으로 이미지 추가가
+
+
+
+4. sudo docker push shpark57/ssopark-server:1.0.1
+   sudo docker push shpark57/ssopark-client:1.0.1
+   sudo docker push shpark57/shpark_farm:1.0.1
+   shpark_farm
+
+-- 도커로는 db 만 유지해도 될것 같음.
+   docker commit linuxserver-mariadb-1 shpark57/shpark_farm:1.0.1
+
+
+5. 도커 pull
+sudo docker pull shpark57/shpark_farm:1.0.1
