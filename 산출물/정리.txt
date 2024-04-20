@@ -65,3 +65,39 @@ const {$1} = require('$2');
 
 5. 도커 pull
 sudo docker pull shpark57/shpark_farm:1.0.1
+
+
+
+
+
+
+사용중 포트 죽이기
+ lsof -i :3000
+  kill -9 pid
+
+
+docker exec -t -i shpark57/shpark_farm /bin/bash
+ :
+
+
+ config
+ app
+
+ 마리아디비 볼륨설정
+    docker/mariadb/config > /config
+    /docker/mariadb/data > /var/lib/mysql
+
+
+ 마리아디비 데이터베이스 생성
+ CREATE DATABASE shpark_farm;
+
+ 마리아 디비 계정 생성
+ CREATE USER 'shpark'@'%' IDENTIFIED BY 'SILV@Rs5ul';
+
+ GRANT ALL PRIVILEGES ON shpark_farm.* TO 'shpark'@'%';
+
+ FLUSH PRIVILEGES;
+
+
+  show global variables like "PORT";
+  마이sql 포트확인

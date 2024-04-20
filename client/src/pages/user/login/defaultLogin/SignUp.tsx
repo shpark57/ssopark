@@ -53,7 +53,16 @@ export default function SignUp() {
       return
     }
 
-
+    const regPhone = /^01([0|1|6|7|8|9])-?([0-9]{3,4})-?([0-9]{4})$/
+    const emailRegEx = /^[A-Za-z0-9]([-_.]?[A-Za-z0-9])*@[A-Za-z0-9]([-_.]?[A-Za-z0-9])*\.[A-Za-z]{2,3}$/i;
+    if( String(data.get('email')).match(emailRegEx) === null ){
+      setAlertMessage("이메일 형식을 확인해주세요.")
+      return
+    }
+    if( String(data.get('phone_number')).match(regPhone) === null  ){
+      setAlertMessage("전화번호를 확인해주세요.")
+      return
+    }
 
 
 
@@ -80,6 +89,7 @@ export default function SignUp() {
       addrDetail : addrDetailValue,
       zipNo : zipNoValue
     }
+
 
 
     axios.post("/Users" , params)
@@ -138,7 +148,6 @@ export default function SignUp() {
       }
     }).open();
   };
-
   return (
     <ThemeProvider theme={theme}>
       <Container component="main" maxWidth="xs">
@@ -194,7 +203,7 @@ export default function SignUp() {
                   required
                   fullWidth
                   id="phone_number"
-                  label="전화번호"
+                  label="휴대번호"
                   name="phone_number"
                   autoComplete="phone_number"
                 />

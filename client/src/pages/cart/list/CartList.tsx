@@ -60,33 +60,40 @@ export default function CartList(){
                         obj.product_nm = obj.product.product_nm
                     })
 
-                    let cartSession = Session.get("cartSession")
-                    if(cartSession){
+                    let cartLocalStorage = window.localStorage;
+                    let localCartList =  cartLocalStorage.getItem("localCartList")
 
-                        cartSession.forEach( (row:Interface,index:number) =>{
+                    let cartList: Interface[] = []
+                    if(localCartList){
+                        cartList = JSON.parse(localCartList)
+                        cartList.forEach( (row:Interface,index:number) =>{
                             row.user_id = user.id
 
                             var findIndex = res.data.findIndex((obj:any, index:number) => obj['product_id'] === row.product_id)
                             if(findIndex != -1){
-                                res.data[findIndex].cnt = res.data[findIndex].cnt + cartSession[index].cnt
+                                res.data[findIndex].cnt = res.data[findIndex].cnt + cartList[index].cnt
+                                axios.post("/Cart", res.data[findIndex])
+                                    .catch((error) =>  {console.log("장바구니 수정 오류")});
                             }else{
-                                res.data = [...res.data , cartSession[index]]
+                                res.data = [...res.data , cartList[index]]
+                                axios.post("/Cart", cartList[index])
+                                    .catch((error) =>  {console.log("장바구니 수정 오류")});
                             }
                         })
-
                         setTableData(res.data)
-
+                        cartLocalStorage.removeItem("localCartList" )
                     }else{
-
                         setTableData(res.data)
                     }
 
                 })
             setSelectChk(1)
         }else{
-            let cartSession = Session.get("cartSession")
-            if(cartSession){
-                setTableData(cartSession)
+            let cartLocalStorage = window.localStorage;
+            let localCartList =  cartLocalStorage.getItem("localCartList")
+            if(localCartList){
+                let cartList = JSON.parse(localCartList)
+                setTableData(cartList)
                 setSelectChk(1)
             }
         }
@@ -107,16 +114,85 @@ export default function CartList(){
         updatedItems[ Number(event.target.name)] = { ...updatedItems[ Number(event.target.name)], cnt: Number( Number(event.target.value) < 1 ? 1 :  event.target.value ) };
         // 변경된 배열을 설정합니다.
         setTableData(updatedItems);
+        if(loggedIn){
+            axios.post("/Cart", updatedItems[  Number(event.target.name) ])
+                .catch((error) =>  {console.log("장바구니 수정 오류")});
+        }else{
+            let cartLocalStorage = window.localStorage;
+            let localCartList =  cartLocalStorage.getItem("localCartList")
+            if(localCartList){
+                let cartList = JSON.parse(localCartList)
+                var findIndex = cartList.findIndex((obj:any, index:number) => obj['product_id'] === updatedItems[ Number(event.target.name)].product_id )
+                if(findIndex != -1){
+                    cartList[findIndex].cnt = cartList[findIndex].cnt + 1
+                }
+                cartLocalStorage.setItem("localCartList",JSON.stringify(cartList))
+            }
+        }
 
     }
 
     const handleCntClick = (row:any,add:number) => () => {
-        console.log("?")
         const updatedItems = [...tableData];
         // 해당 인덱스의 객체를 새로운 객체로 교체합니다.
         updatedItems[ Number( row.id )] = { ...updatedItems[ Number( row.id)], cnt: updatedItems[  row.id ].cnt + add < 1 ? 1 : updatedItems[  row.id ].cnt + add   };
         // 변경된 배열을 설정합니다.
         setTableData(updatedItems);
+        if(loggedIn){
+            axios.post("/Cart", updatedItems[  Number( row.id) ])
+                .catch((error) =>  {console.log("장바구니 수정 오류")});
+        }else{
+            let cartLocalStorage = window.localStorage;
+            let localCartList =  cartLocalStorage.getItem("localCartList")
+            if(localCartList){
+                let cartList = JSON.parse(localCartList)
+                var findIndex = cartList.findIndex((obj:any, index:number) => obj['product_id'] === updatedItems[Number( row.id)].product_id )
+                if(findIndex != -1){
+                    cartList[findIndex].cnt = cartList[findIndex].cnt + 1
+                }
+                cartLocalStorage.setItem("localCartList",JSON.stringify(cartList))
+            }
+        }
+    }
+
+
+    const handleCartDel = (row:any) => () => {
+
+        showModal({
+            modalType: "ConfirmModal",
+            modalProps: {
+                message: "삭제하시겠습니까?",
+                confirmText: "Yes",
+                cancelText: "No",
+                title: "",
+                handleConfirm: () => {
+                    const updatedItems = [...tableData];
+                    const delItems = row
+
+                    let tmpArr = updatedItems.filter((obj:Interface , index:number) => obj['product_id'] !== updatedItems[Number( row.id)].product_id )
+                    tmpArr.forEach((obj:Interface , index) => {
+                        obj.id = index
+                    })
+                    setTableData(tmpArr);
+                    if(loggedIn){
+                        axios.delete("/Cart?product_id="+row.product_id +"&user_id="+user.id )
+                            .catch( (error) => { alert("장바구니 삭제 오류") });
+                    }else{
+                        let cartLocalStorage = window.localStorage;
+                        let localCartList =  cartLocalStorage.getItem("localCartList")
+                        if(localCartList){
+                            let cartList = JSON.parse(localCartList)
+                            let tmpArr = updatedItems.filter((obj:Interface , index:number) => obj['product_id'] !== updatedItems[Number( row.id)].product_id )
+                            cartLocalStorage.setItem("localCartList",JSON.stringify(tmpArr))
+                        }
+                    }
+                },
+                handleClose: () => {
+
+                }
+            }
+        });
+
     }
 
 
@@ -140,6 +216,7 @@ export default function CartList(){
                         <Grid item xs={7} sx={{textAlign:'center'}}>
                             <Grid item xs={12} sx={{ mt: 2 }} >
                                 {params.row.product.product_nm }
+                                <span className={"closeBtn"} onClick={handleCartDel(params.row)} >X</span>
                             </Grid>
                             <Grid item xs={12} sx={{ mt: 1 }} >
                                 {params.row.product.price.toLocaleString('ko-KR') } 원
@@ -147,7 +224,7 @@ export default function CartList(){
                             <Grid item xs={12} sx={{ mt: 1 ,textAlign:'center'}}>
                                 <span className="numeric-input-container">
                                     <button  onClick={handleCntClick(params.row , -1)}>-</button>
-                                    <input type="number" name={String(params.row.id)} value= {tableData[params.row.id].cnt } className="numeric-input" onChange={handleCntChange}></input>
+                                    <input type="number" name={String(params.row.id)} value= {tableData[params.row.id]?.cnt } className="numeric-input" onChange={handleCntChange}></input>
                                     <button  onClick={handleCntClick(params.row , 1)}>+</button>
                                 </span>
                             </Grid>

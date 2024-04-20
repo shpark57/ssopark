@@ -5,3 +5,12 @@ npm i --save http-proxy-middleware //리액트 서버와 노드서버간의 데�
 npm install --save @types/react-slick
 npm install --save react-slick
 npm install --save slick-carousel
+
+
+
+yarn add @mui/system
+yarn add @mui/base
+
+
+
+yarn add  @types/nodemailer

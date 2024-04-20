@@ -23,6 +23,8 @@ import ListItemIcon from "@mui/material/ListItemIcon";
 import useModal from "../../../../components/modal/hooks/useModal";
 
 import SignUp from "src/pages/user/login/defaultLogin/SignUp";
+import PasswordModifyModal from "../../modify/Modals/PasswordModifyModal";
+import ForgotPassword from "./Modals/ForgotPassword";
 
 
  
@@ -91,7 +93,16 @@ export default function Login(){
 
         setRemember(event.currentTarget.checked)
       };
-    
+
+    const handleClickForgotPassword = () => {
+        showModal({
+            modalType: "DefaultModal",
+            modalProps: {
+                message : ( <ForgotPassword/>),
+                title: "",
+            }
+        });
+    };
 
     const [errMsg , setErrMsg] = useState("")
     return(
@@ -145,17 +156,19 @@ export default function Login(){
             </Button>
             <Grid container>
                 <Grid item xs>
-                {/*}
-                <Link href="#" variant="body2">
-                    패스워드 분실
-                </Link>
-                {*/}
+                    <Button
+                        onClick={handleClickForgotPassword}
+                        variant="text"
+                        sx={{ mt: 1, mb: 2 }}
+                    >
+                        ID / PW 찾기
+                    </Button>
                 </Grid>
                 <Grid item>
 
                     <Button
                         onClick={handleLogIn}
-                        fullWidth
+
                         variant="text"
                         sx={{ mt: 1, mb: 2 }}
                     >

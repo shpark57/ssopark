@@ -113,6 +113,18 @@ const UserModify:React.FC<Interface> =  (props) => {
                 return
             }
 
+            const regPhone = /^01([0|1|6|7|8|9])-?([0-9]{3,4})-?([0-9]{4})$/
+            const emailRegEx = /^[A-Za-z0-9]([-_.]?[A-Za-z0-9])*@[A-Za-z0-9]([-_.]?[A-Za-z0-9])*\.[A-Za-z]{2,3}$/i;
+            if( String(data.get('email')).match(emailRegEx) === null ){
+                setAlertMessage("이메일 형식을 확인해주세요.")
+                return
+            }
+            if( String(data.get('phone_number')).match(regPhone) === null  ){
+                setAlertMessage("전화번호를 확인해주세요.")
+                return
+            }
+
+
 
             axios.put("/Users/"+ userParams.id , userParams )
                 .then((response) => {
@@ -232,10 +244,10 @@ const UserModify:React.FC<Interface> =  (props) => {
                                         required
                                         fullWidth
                                         id="phone_number"
-                                        label="Phone Number"
+                                        label="휴대번호"
                                         name="phone_number"
                                         autoComplete="phone_number"
-                                        value={userParams.phone_number}
+                                        value={userParams.phone_number }
                                         onChange={(e:React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => inputFromHandler(e)}
                                     />
                                 </Grid>

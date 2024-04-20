@@ -154,20 +154,24 @@ const ProductsView = () =>{
                 id : 0
             }
             // 2. 객체
+            let cartLocalStorage = window.localStorage;
+            let localCartList =  cartLocalStorage.getItem("localCartList")
 
-            let cartSession = Session.get("cartSession")
-            if(cartSession){
-                var findIndex = cartSession.findIndex((obj:any, index:number) => obj['product_id'] === product?.id)
+            let cartList
+            if(localCartList){
+                cartList = JSON.parse(localCartList)
+                var findIndex = cartList.findIndex((obj:any, index:number) => obj['product_id'] === product?.id)
                 if(findIndex != -1){
-                    cartSession[findIndex].cnt = cartSession[findIndex].cnt + 1
+                    cartList[findIndex].cnt = cartList[findIndex].cnt + 1
                 }else{
-                    params.id = cartSession.length
-                    cartSession = [...cartSession , params]
+                    params.id = cartList.length
+                    cartList = [...cartList , params]
                 }
+
             }else{
-                cartSession = [params]
+                cartList = [params]
             }
-            Session.set("cartSession", cartSession);
+            cartLocalStorage.setItem("localCartList" , JSON.stringify(cartList))
 
             showModal({
                 modalType: "AlertModal",

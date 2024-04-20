@@ -38,3 +38,10 @@
     width: 60px;
     text-align: center;
 }
+
+.closeBtn{
+    float: right;
+    margin-right: 10px;
+    font-size: 20px;
+    cursor: pointer;
+}
