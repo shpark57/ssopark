@@ -1,6 +1,7 @@
 import {Entity, Column, PrimaryGeneratedColumn, Index, Unique, OneToMany, ManyToMany, JoinTable} from "typeorm";
 import {Cart} from "./Cart";
 import {Products} from "./Products";
+import {Orders} from "./Orders";
 
 @Entity()
 @Unique('my_unique_constraint', ['user_id']) 
@@ -51,10 +52,10 @@ export class Users {
     salt: string;
 
     @Column({default: ''})
-    auth: string;   //도로명주소
+    auth: string;    //권한
 
     @Column({default: ''})
-    addr: string;   //권한
+    addr: string;  //도로명주소
 
     @Column({default: ''})
     zipNo: string;   //우편주소
@@ -73,4 +74,8 @@ export class Users {
         inverseJoinColumn: { name: 'product_id', referencedColumnName: 'id' },
     })
     products: Products[];
+
+
+    @OneToMany(type => Orders , orders => orders.user)
+    orders : Orders[];
 }

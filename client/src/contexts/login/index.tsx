@@ -8,7 +8,10 @@ interface userInfo {      //공유되는 유저정보 타입
     user_name : string ,
     email : string ,
     phone_number : string ,
-    auth : string
+    auth : string,
+    addr : string,
+    addrDetail: string,
+    zipNo: string
   }
 const LoginContext = createContext({//로그인 시 공유할 유저 정보
     user : {
@@ -17,7 +20,10 @@ const LoginContext = createContext({//로그인 시 공유할 유저 정보
         user_name : '',
         email : '',
         phone_number : '',
-        auth : ''
+        auth : '',
+        addr : '',
+        addrDetail: '',
+        zipNo: ''
     },
     loggedIn :false ,
     setLoggedUser: (user:userInfo,remember:boolean) => {},
@@ -38,6 +44,9 @@ const LoginProvider = ({ children }: Props): JSX.Element => { //App에서 LoginP
         ,email : String(sessionStorage.getItem('email'))
         ,phone_number : String(sessionStorage.getItem('phone_number'))
         ,auth : String(sessionStorage.getItem('auth'))
+        ,addr :  String(sessionStorage.getItem('addr'))
+        ,addrDetail:  String(sessionStorage.getItem('addrDetail'))
+        ,zipNo:  String(sessionStorage.getItem('zipNo'))
   });
   const [loggedIn, setLoggedIn] = useState( Boolean(sessionStorage.getItem('loggedIn')));
 
@@ -50,6 +59,9 @@ const LoginProvider = ({ children }: Props): JSX.Element => { //App에서 LoginP
     sessionStorage.setItem('phone_number' , user.phone_number);
     sessionStorage.setItem('user_name' , user.user_name);
     sessionStorage.setItem('auth' , user.auth);
+    sessionStorage.setItem('addr' , user.addr);
+    sessionStorage.setItem('addrDetail' , user.addrDetail);
+    sessionStorage.setItem('zipNo' , user.zipNo);
 
     if(remember){
       localStorage.setItem('user_id',user.user_id)
@@ -71,7 +83,10 @@ const LoginProvider = ({ children }: Props): JSX.Element => { //App에서 LoginP
       user_name : '',
       email : '',
       phone_number : '',
-      auth :''
+      auth :'',
+      addr : '',
+      addrDetail: '',
+      zipNo: ''
     });
     setLoggedIn(false);
     window.location.replace(window.location.href );

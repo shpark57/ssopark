@@ -1,7 +1,7 @@
 
 
 import axios from 'axios';
-import React, {useEffect, useState, useContext, useRef} from 'react';
+import React, {useEffect, useState, useContext, useRef, Fragment} from 'react';
 import { useParams ,useNavigate} from 'react-router-dom';
 import ReactPlayer from 'react-player/lazy';    //비디오플레이어
 import Plyr from 'react-plyr';
@@ -29,14 +29,37 @@ import EditIcon from '@mui/icons-material/Edit';
 
 // @ts-ignore
 import Session from 'react-session-api';
+import UserModify from "../../user/modify/UserModify";
+import OrderAdd from "src/pages/order/add/OrderAdd";
 
 const ProductsView = () =>{
 
 
     const {id} = useParams();
     const { loggedIn , user } = useContext(LoginContext);
-    const { showModal } = useModal();   
-    const [product , setProduct] = useState<ProductProps|null>(null)
+    const { showModal } = useModal();
+
+
+    let ProductInit =  {
+        id : 0,
+        product_nm : "",
+        product_type :"",
+        price :0,
+        content :"",
+        use_yn : "",
+        like : 0,
+        dis_like : 0,
+        rgstr_id : "",
+        rgstr_time : "",
+        mdfr_id : "",
+        mdfr_time : "",
+        cnt : 0,
+        title_img : "",
+        visits : 0
+    }
+
+
+    const [product , setProduct] = useState<ProductProps>(ProductInit)
     const [rerend,setRerend] = useState(false)
     const getProduct = () => {
         axios.get('/Products/'+id+'?use_yn=Y')
@@ -48,10 +71,6 @@ const ProductsView = () =>{
         getProduct()
     },[])  
 
-    
-    const handleVideo = () => {
-        console.log("끝")
-    }
 
 
     const LikeButton = ( {type} : any ) =>{
@@ -112,6 +131,16 @@ const ProductsView = () =>{
         navigate(String("/ProductsModify/"+ id))
     }
 
+    const addOrder = async () =>{
+        if(loggedIn){
+            showModal({
+                modalType: "IncludeModal",
+                modalProps: {
+                    message: <OrderAdd product={product} orderCnt={productCnt} totalPrice={totalPrice?totalPrice:product.price }/>
+                }
+            });
+        }
+    }
     const addCart = async () =>{
         if(loggedIn){
             axios.get("/Cart?user_id="+user.id+"&product_id="+product?.id)
@@ -119,7 +148,7 @@ const ProductsView = () =>{
                     let params ={
                         user_id : user.id,
                         product_id : product?.id,
-                        cnt : 1  ,
+                        cnt : productCnt  ,
                         rgstr_id : user.user_id,
                         rgstr_time : Time.getTimeString() ,
                         mdfr_id : user.user_id,
@@ -127,7 +156,7 @@ const ProductsView = () =>{
 
                     }
                     if(res.data.length > 0){
-                        params.cnt  = res.data[0].cnt + 1
+                        params.cnt  = res.data[0].cnt + productCnt
                     }
 
                     axios.post("/Cart", params)
@@ -145,7 +174,7 @@ const ProductsView = () =>{
             let params ={
                 user_id : '',
                 product_id : product?.id,
-                cnt : 1  ,
+                cnt : productCnt  ,
                 product : product ,
                 rgstr_id : 'system',
                 rgstr_time : Time.getTimeString() ,
@@ -162,7 +191,7 @@ const ProductsView = () =>{
                 cartList = JSON.parse(localCartList)
                 var findIndex = cartList.findIndex((obj:any, index:number) => obj['product_id'] === product?.id)
                 if(findIndex != -1){
-                    cartList[findIndex].cnt = cartList[findIndex].cnt + 1
+                    cartList[findIndex].cnt = cartList[findIndex].cnt + productCnt
                 }else{
                     params.id = cartList.length
                     cartList = [...cartList , params]
@@ -181,15 +210,28 @@ const ProductsView = () =>{
             });
         }
     }
+
+
+    const [productCnt,setProductCnt] = useState(1);
+    const [totalPrice,setTotalPrice] = useState( product.price );
+
+    const handleCntClick = (add:number) => () => {
+        if(productCnt + add < 1){
+            return
+        }
+        setProductCnt(productCnt + add )
+        setTotalPrice( (productCnt + add) * product.price )
+    }
+
     return (
       <Container component="main" maxWidth="lg" className='product' sx={{ mb: 8}} >
-        
+
         <Grid container spacing={3} sx={{ mb: 5}} >
-            <Grid item xs={5} container justifyContent="flex-start" sx={{ mt: 3}}>
+            <Grid item xs={8} container justifyContent="flex-start" sx={{ mt: 3}}>
                 <h3 className="productTitle">{product?.product_nm}</h3>   <h6 style={{color : 'silver'}}>{product?.product_type}</h6>
             </Grid>
 
-            <Grid item xs={6}  container  justifyContent="flex-end" sx={{ mt: 7 }}>
+            <Grid item xs={4}  container  justifyContent="flex-end" sx={{ mt: 7 }}>
                방문자 수 : {product?.visits}
             </Grid>
 
@@ -251,7 +293,7 @@ const ProductsView = () =>{
                 }
             </Grid>
 
-            
+
             <Grid item xs={12}>
                 <Box
                     sx={{
@@ -261,11 +303,11 @@ const ProductsView = () =>{
                     alignItems: 'center',
                     }}
                 >
-                    
+
                     <Grid item xs={12}>
                         <LikeButton type='좋아요' />
                     </Grid>
-                   
+
                 </Box>
             </Grid>
         </Grid>
@@ -274,10 +316,23 @@ const ProductsView = () =>{
         <CommentComponent parent_id={Number(id)} type={'Products'} />
 
           <Grid item xs={12} style={{textAlign:"center",position: "sticky", bottom: "0"  , zIndex : '999' , height : ''}}>
+              { user.auth == 'admin' ?   <div
+                  style={{textAlign:"right", zIndex : '999', opacity : 0.5,  height : ''}}>
+                  <EditIcon  onClick={goProductsModify}  sx={{fontSize : 30}}   style={{ cursor : 'pointer'}} />
+
+              </div> : ''
+
+              }
               <div  >
+                <span  className="numeric-input-container">
+                    <button  onClick={handleCntClick(-1)}>-</button>
+                    <input type="number" value={productCnt} className="numeric-input"/>
+                    <button  onClick={handleCntClick(1)}>+</button>
+                </span>
+
                   <Button
                       variant="contained"
-                      sx={{fontSize : 20}}
+                      sx={{fontSize : 15}}
                       style={{ height : '50px' , margin : '10px'}}
                       onClick={addCart}
                   >
@@ -285,21 +340,15 @@ const ProductsView = () =>{
                   </Button>
                   <Button
                       variant="contained"
-                      sx={{fontSize : 20}}
+                      sx={{fontSize : 15}}
                       style={{ height : '50px'  , margin : '10px'}}
-
+                      onClick ={addOrder}
                   >
                       구매하기
                   </Button>
               </div>
           </Grid>
-          { user.auth == 'admin' ?   <div
-              style={{textAlign:"right",position: "sticky", bottom: "0", zIndex : '999', opacity : 0.5,  height : ''}}>
-              <EditIcon  onClick={goProductsModify}  sx={{fontSize : 30}}   style={{ cursor : 'pointer'}} />
 
-          </div> : ''
-
-          }
 
       </Container>
     )

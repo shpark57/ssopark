@@ -35,7 +35,10 @@ interface userInfo{
     user_name:string,
     email:string,
     phone_number:string,
-    auth : string
+    auth : string,
+    addr : string,
+    addrDetail: string,
+    zipNo: string
 
 }
 const theme = createTheme(); 
@@ -67,20 +70,23 @@ export default function Login(){
         const input_id = String(data.get('input_id'))
         const input_password = String(data.get('input_password'))
         const res = await axios.post("/password/check",{user_id:input_id,password:input_password})
-        
+
         if(res.data.check){
             //로그인 시 로그인 시간 저장
             await axios.patch("/Users/"+ res.data.id , {  last_login : Time.getTimeString() } )  
             .then((response) => { console.log("마지막 로그인 시간 수정 완료")})
             .catch((error) =>  {console.log("마지막 로그인 시간 수정 실패")});    
-            
+
             let user = {
                 id : res.data.id,
                 user_id : res.data.user_id,
                 user_name : res.data.user_name,
                 email : res.data.email,
                 phone_number : res.data.phone_number,
-                auth : res.data.auth
+                auth : res.data.auth,
+                addr : res.data.addr,
+                addrDetail: res.data.addrDetail,
+                zipNo: res.data.zipNo,
             }
             await setLoggedUser(user,remember)
         }else{

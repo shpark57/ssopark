@@ -18,27 +18,14 @@ import CardMedia from "@mui/material/CardMedia";
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
 import {ProductProps} from "src/pages/producrs/props/ProductProps";
+import {CartProps} from "../props/CartProps"
 // @ts-ignore
 import Session from 'react-session-api';
-
-interface Interface {
-    id : number
-    cnt : number
-    title_img : string
-    product_id : number
-    user_id : number
-    product : ProductProps
-    product_nm : string
-    rgstr_id : string
-    rgstr_time : string
-    mdfr_id : string
-    mdfr_time : string
-}
 
 export default function CartList(){
     const { showModal } = useModal();
     const {loggedIn , user } = useContext(LoginContext);
-    const [tableData , setTableData] = useState<Interface[]>([])
+    const [tableData , setTableData] = useState<CartProps[]>([])
     const [selectIds , setSelectIds] = useState<GridSelectionModel>([])
     const [totalPrice , setTotalPrice] = useState(0)
 
@@ -55,7 +42,7 @@ export default function CartList(){
         if(loggedIn){
             axios.get('/cart' , {params : {user_id: user.id , _rel : 'product' }})
                 .then(res =>  {
-                    res.data.map((obj:Interface,index:number)=>{
+                    res.data.map((obj:CartProps,index:number)=>{
                         obj.id = index
                         obj.product_nm = obj.product.product_nm
                     })
@@ -63,10 +50,10 @@ export default function CartList(){
                     let cartLocalStorage = window.localStorage;
                     let localCartList =  cartLocalStorage.getItem("localCartList")
 
-                    let cartList: Interface[] = []
+                    let cartList: CartProps[] = []
                     if(localCartList){
                         cartList = JSON.parse(localCartList)
-                        cartList.forEach( (row:Interface,index:number) =>{
+                        cartList.forEach( (row:CartProps,index:number) =>{
                             row.user_id = user.id
 
                             var findIndex = res.data.findIndex((obj:any, index:number) => obj['product_id'] === row.product_id)
@@ -103,7 +90,7 @@ export default function CartList(){
 
         let total = 0
         const selectedIDs = new Set(selectIds)
-        tableData.filter((row:Interface ) => selectedIDs.has(row.id) ).forEach((obj)=> {
+        tableData.filter((row:CartProps ) => selectedIDs.has(row.id) ).forEach((obj)=> {
             total = total + (obj.product.price * obj.cnt)
         })
         setTotalPrice(total)
@@ -169,8 +156,8 @@ export default function CartList(){
                     const updatedItems = [...tableData];
                     const delItems = row
 
-                    let tmpArr = updatedItems.filter((obj:Interface , index:number) => obj['product_id'] !== updatedItems[Number( row.id)].product_id )
-                    tmpArr.forEach((obj:Interface , index) => {
+                    let tmpArr = updatedItems.filter((obj:CartProps , index:number) => obj['product_id'] !== updatedItems[Number( row.id)].product_id )
+                    tmpArr.forEach((obj:CartProps , index) => {
                         obj.id = index
                     })
                     setTableData(tmpArr);
@@ -182,7 +169,7 @@ export default function CartList(){
                         let localCartList =  cartLocalStorage.getItem("localCartList")
                         if(localCartList){
                             let cartList = JSON.parse(localCartList)
-                            let tmpArr = updatedItems.filter((obj:Interface , index:number) => obj['product_id'] !== updatedItems[Number( row.id)].product_id )
+                            let tmpArr = updatedItems.filter((obj:CartProps , index:number) => obj['product_id'] !== updatedItems[Number( row.id)].product_id )
                             cartLocalStorage.setItem("localCartList",JSON.stringify(tmpArr))
                         }
                     }

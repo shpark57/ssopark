@@ -30,6 +30,7 @@ import {BrowserRouter as Router, Routes, Route  } from 'react-router-dom'
 
 import GlobalModal from "./components/modal/GlobalModal";
 import CartList from "./pages/cart/list/CartList";
+import OrderAdd from "./pages/order/add/OrderAdd";
 
 
 function App() {
@@ -63,6 +64,7 @@ function App() {
               <Route path="/userModify"     element={ <UserModify/> }/>
               <Route path="/login" element={ <Login/> }/>
               <Route path="/signUp" element={ <SignUp/> }/>
+              <Route path="/orderAdd" element={ <OrderAdd/> }/>
 
 
 

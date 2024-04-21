@@ -14,6 +14,8 @@ import { Movies } from "../src/entity/Movies";
 import { Likes } from "../src/entity/Likes";
 import { Products } from "../src/entity/Products";
 import { Cart } from "../src/entity/Cart";
+import {Orders} from "../src/entity/Orders";
+import {OrderDetails} from "../src/entity/OrderDetails";
 
 
 
@@ -38,6 +40,10 @@ createConnection().then(connection => {
             repository =  connection.getRepository(Products)
         }else if(table == 'cart'){
             repository =  connection.getRepository(Cart)
+        }else if(table == 'orders'){
+            repository =  connection.getRepository(Orders)
+        }else if(table == 'orderdetails'){
+            repository =  connection.getRepository(OrderDetails)
         }
         
         return repository;
@@ -354,7 +360,10 @@ createConnection().then(connection => {
                             user_name : response.user_name,
                             email : response.email,
                             phone_number : response.phone_number,
-                            auth : response.auth
+                            auth : response.auth,
+                            addr : response.addr,
+                            addrDetail : response.addrDetail,
+                            zipNo : response.zipNo
                         }
                         res.send(params);
                     }else{
@@ -365,7 +374,10 @@ createConnection().then(connection => {
                             user_name : '',
                             email : '',
                             phone_number : '',
-                            auth : ''
+                            auth : '',
+                            addr : '',
+                            addrDetail : '',
+                            zipNo : ''
                         }
                         res.send(params);
                     }

@@ -50,7 +50,6 @@ export class Products {
     @Column({nullable : false ,  default: 0})
     cnt: number      //제품 보유 갯수  not null
 
-
     @Column({default: 'systemAdmin'})
     rgstr_id: string;
 
