@@ -326,7 +326,7 @@ const ProductsView = () =>{
               <div  >
                 <span  className="numeric-input-container">
                     <button  onClick={handleCntClick(-1)}>-</button>
-                    <input type="number" value={productCnt} className="numeric-input"/>
+                    <input type="number" value={productCnt} readOnly className="numeric-input"/>
                     <button  onClick={handleCntClick(1)}>+</button>
                 </span>
 

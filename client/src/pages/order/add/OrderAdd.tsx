@@ -377,7 +377,7 @@ const OrderAdd:React.FC<type> = (props) => {
                 name="radio-buttons-group"
             >
               <FormControlLabel value="html5_inicis"    control={<Radio />}       label="KG이니시스" />
-              <FormControlLabel value="kakaopay"        control={<Radio />}       label="카카오페이" />
+              <FormControlLabel className="mobileHide" value="kakaopay"        control={<Radio />}       label="카카오페이" />
             </RadioGroup>
           </Grid>
         </Grid>

@@ -31,6 +31,8 @@ import {BrowserRouter as Router, Routes, Route  } from 'react-router-dom'
 import GlobalModal from "./components/modal/GlobalModal";
 import CartList from "./pages/cart/list/CartList";
 import OrderAdd from "./pages/order/add/OrderAdd";
+import Footer from "./components/footer/Footer";
+import Nav from "./components/nav/Nav";
 
 
 function App() {
@@ -44,7 +46,6 @@ function App() {
   return (
     <LoginProvider>
     <GlobalModal />
-      {
         <Router>
           <Topbar />
           <div className="container">
@@ -70,8 +71,9 @@ function App() {
 
             </Routes>
           </div>
+
+          <Footer />
         </Router>
-      }
     </LoginProvider>
   );
 }

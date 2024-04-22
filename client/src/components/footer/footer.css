@@ -1,0 +1,11 @@
+.footer{
+    background-color: #333; /* 배경색 지정 */
+    color: #fff; /* 글자색 지정 */
+    padding: 20px; /* 내부 여백 지정 */
+    text-align: left; /* 텍스트 가운데 정렬 */
+    position: relative; /* 화면 하단에 고정 */
+    left: 0; /* 왼쪽 정렬 */
+    bottom: 0; /* 아래쪽 정렬 */
+    width: 100%; /* 전체 너비 지정 */
+    font-size: 10px;
+}
