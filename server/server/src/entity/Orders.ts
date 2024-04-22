@@ -17,11 +17,12 @@ import {OrderDetails} from "./OrderDetails";
 @Entity()
 export class Orders {
 
-    @PrimaryGeneratedColumn()
-    id: number;
+    @Index()
+    @PrimaryColumn()
+    id: string;
 
     @Index()
-    @Column({nullable : false})
+    @Column({nullable : true})
     user_id: number;
 
     @Index()

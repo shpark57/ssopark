@@ -25,7 +25,7 @@ import '@toast-ui/editor/dist/toastui-editor.css';
 import {Editor,  EditorProps} from '@toast-ui/react-editor';
 import '@toast-ui/editor/dist/i18n/ko-kr';
 import CardMedia from "@mui/material/CardMedia";
-import {CardActionArea, Divider, List, ListItem, ListItemText, Radio, RadioGroup} from "@mui/material";
+import {Alert, CardActionArea, Divider, List, ListItem, ListItemText, Radio, RadioGroup} from "@mui/material";
 import CardContent from "@mui/material/CardContent";
 import Typography from "@mui/material/Typography";
 import CommentComponent from "../../../components/comment/CommentComponent";
@@ -52,6 +52,7 @@ const OrderAdd:React.FC<type> = (props) => {
 
   const {loggedIn , user } = useContext(LoginContext);
 
+  const [alertMessage, setAlertMessage] = useState(''); //알림 메시지
   const [name, setName] = React.useState("");
   const [phone_number, setPhone_number] = React.useState("");
   const [email, setEmail] = React.useState("");
@@ -67,25 +68,19 @@ const OrderAdd:React.FC<type> = (props) => {
     if(props.product){
       //단건 구매
 
-      // @ts-ignore
-      document.getElementById("name").value = user.user_name
-      // @ts-ignore
-      document.getElementById("phone_number").value = user.phone_number
-      // @ts-ignore
-      document.getElementById("email").value = user.email
+    if(loggedIn){
+      setName(user.user_name)
+      setPhone_number(user.phone_number)
+      setEmail(user.email)
 
-      // @ts-ignore
-      document.getElementById("recipient_name").value = user.user_name
-      // @ts-ignore
-      document.getElementById("recipient_phone_number").value = user.phone_number
-      // @ts-ignore
-      document.getElementById("recipient_email").value = user.email
+      setRecipient_name(user.user_name)
+      setRecipient_phone_number(user.phone_number)
+      setRecipient_email(user.email)
+
 
       setAddr(user.addr)
       setAddrDetail(user.addrDetail)
       setZipNo(user.zipNo)
-    if(loggedIn){
-      //로그인 일경우 기본정보 세팅 해주고 변경 readonly
     }else{
       //비로그인 시 입력 가능하게
     }
@@ -137,83 +132,136 @@ const OrderAdd:React.FC<type> = (props) => {
     const { IMP }:any = window;
     IMP.init(`${process.env.REACT_APP_IMP}`);
 
+    if(name == '' || name == null){
+      setAlertMessage('이름을 입력해주세요,')
+      return
+    }else if(phone_number == '' || phone_number == null){
+      setAlertMessage('휴대번호를 입력해주세요,')
+      return
+    }else if(email == '' || email == null){
+      setAlertMessage('이메일을 입력해주세요,')
+      return
+    }else if(recipient_name == '' || recipient_name == null){
+      setAlertMessage('받는사람 이름을 입력해주세요,')
+      return
+    }else if(recipient_phone_number == '' || recipient_phone_number == null){
+      setAlertMessage('받는사람 휴대번호를 입력해주세요,')
+      return
+    }else if(recipient_email == '' || recipient_email == null){
+      setAlertMessage('받는사람 이메일을 입력해주세요,')
+      return
+    }else if(addr == '' || addr == null){
+      setAlertMessage('주소를 입력해주세요,')
+      return
+    }else if(addrDetail == '' || addrDetail == null){
+      setAlertMessage('상세주소를 입력해주세요,')
+      return
+    }else if(zipNo == '' || zipNo == null){
+      setAlertMessage('우편번호를 입력해주세요,')
+      return
+    }
+
+    console.log("?")
+
     const data = {
       pg: PG, // PG사
       pay_method: payMethod, // 결제수단
-      merchant_uid: props.product?.id + '_' +Time.getTimeString(), // 주문번호
+      merchant_uid: props.product?.id + '_' +Time.toDateStringNum(), // 주문번호
       amount: props.totalPrice, // 결제금액
       name: props.product?.product_nm, // 주문명
-      buyer_name: user.user_name, // 구매자 이름
-      buyer_tel: user.phone_number, // 구매자 전화번호
-      buyer_email: user.email, // 구매자 이메일
-      buyer_addr: user.addr + ' ' +user.addrDetail, // 구매자 주소
-      buyer_postcode: user.zipNo, // 구매자 우편번호
+      buyer_name: name, // 구매자 이름
+      buyer_tel: phone_number, // 구매자 전화번호
+      buyer_email: email, // 구매자 이메일
+      buyer_addr: addr + ' ' +addrDetail, // 구매자 주소
+      buyer_postcode: zipNo, // 구매자 우편번호
     };
     IMP.request_pay(data, callback);
 
 
   };
-  const callback = (response:any) => {
-    const { success, error_msg } = response;
+  const callback = (response: any) => {
+    const {success, error_msg} = response;
     if (success) {
-
-      // @ts-ignore
-      let recipient_name = document.getElementById("recipient_name").value
-      // @ts-ignore
-      let recipient_phone_number = document.getElementById("recipient_phone_number").value
-
-      if(loggedIn){
-        let ordersParm = {
-          user_id : user.id,
-          order_date : Time.getTimeString(),
-          order_state : '결제완료',
-          order_title : props.product? props.product.product_nm : '',
-          order_price : props.totalPrice,  //배송비 무료
-          rgstr_id : user.user_id,
-          rgstr_time : Time.getTimeString(),
-          mdfr_id : user.user_id,
-          mdfr_time : Time.getTimeString(),
-          addr : addr,
-          addrDetail : addrDetail,
-          zipNo : zipNo,
-          recipient_name : recipient_name,
-          recipient_phone_number : recipient_phone_number
-        }
-        axios.post('/Orders' , ordersParm)
-            .then(res=>{
-              let ordersDetailParm = {
-                order_id : res.data.id,
-                product_nm : props.product?.product_nm,
-                product_type : props.product?.product_type,
-                cnt : props.orderCnt,
-                price : props.product?.price,
-                totalPrice : props.totalPrice,
-                title_img : props.product?.title_img,
-                rgstr_id : user.user_id,
-                rgstr_time : Time.getTimeString(),
-                mdfr_id : user.user_id,
-                mdfr_time : Time.getTimeString(),
-              }
+      let ordersParm = {
+        id: props.product?.id + '_' +Time.toDateStringNum(),
+        user_id: user.id != 0 ? user.id : null,
+        order_date: Time.getTimeString(),
+        order_state: '결제완료',
+        order_title: props.product ? props.product.product_nm : '',
+        order_price: props.totalPrice,  //배송비 무료
+        rgstr_id: user.user_id != 'null' ? user.user_id : 'system',
+        rgstr_time: Time.getTimeString(),
+        mdfr_id:  user.user_id != 'null' ? user.user_id : 'system',
+        mdfr_time: Time.getTimeString(),
+        addr: addr,
+        addrDetail: addrDetail,
+        zipNo: zipNo,
+        recipient_name: recipient_name,
+        recipient_phone_number: recipient_phone_number
+      }
+      axios.post('/Orders', ordersParm)
+          .then(res => {
+            let ordersDetailParm = {
+              order_id: res.data.id,
+              product_nm: props.product?.product_nm,
+              product_type: props.product?.product_type,
+              cnt: props.orderCnt,
+              price: props.product?.price,
+              totalPrice: props.totalPrice,
+              title_img: props.product?.title_img,
+              rgstr_id: user.user_id != 'null' ? user.user_id : 'system',
+              rgstr_time: Time.getTimeString(),
+              mdfr_id: user.user_id != 'null' ? user.user_id : 'system',
+              mdfr_time: Time.getTimeString(),
+            }
 
 
-              axios.post('/OrderDetails' , ordersDetailParm)
-                  .then(res=>{
+            axios.post('/OrderDetails', ordersDetailParm)
+                .then(res => {
 
-                    showModal({
-                      modalType: "AlertModal",
-                      modalProps: {
-                        message: "결제가 완료됐습니다."
-                      }
-                    });
-                  })
-            })
-            .catch((error) =>  {console.log(error)});
+                  showModal({
+                    modalType: "AlertModal",
+                    modalProps: {
+                      message: "결제가 완료됐습니다."
+                    }
+                  });
+                })
+          })
+          .catch((error) => {
+            console.log(error)
+          });
+
     } else {
       alert(`결제 실패: ${error_msg}`);
     }
-  };
+    ;
+  }
+
+ const copyDefaultInfo = () =>{
+   setRecipient_name(name)
+   setRecipient_phone_number(phone_number)
+   setRecipient_email(email)
  }
 
+  const input_name_Handler = (e:React.ChangeEvent<HTMLInputElement>) =>{
+    setName(e.target.value)
+  }
+  const input_phone_number_Handler = (e:React.ChangeEvent<HTMLInputElement>) =>{
+    setPhone_number(e.target.value)
+  }
+  const input_email_Handler = (e:React.ChangeEvent<HTMLInputElement>) =>{
+    setEmail(e.target.value)
+  }
+
+  const input_recipient_name_Handler = (e:React.ChangeEvent<HTMLInputElement>) =>{
+    setRecipient_name(e.target.value)
+  }
+  const input_recipient_phone_number_Handler = (e:React.ChangeEvent<HTMLInputElement>) =>{
+    setRecipient_phone_number(e.target.value)
+  }
+  const input_recipient_email_Handler = (e:React.ChangeEvent<HTMLInputElement>) =>{
+    setRecipient_email(e.target.value)
+  }
 
   return (
 
@@ -223,9 +271,11 @@ const OrderAdd:React.FC<type> = (props) => {
           <Grid item xs={12} container justifyContent="flex-start" >
             <h3 className="productTitle">주문/결제</h3>
           </Grid>
-          
+
+
+
           <Grid item xs={12} container  justifyContent="flex-start" sx={{ mt: -5 }}>
-            <h4>기본 정보</h4>
+              <h4>기본 정보</h4>
           </Grid>
           <Grid item xs={5} sx={{ mt: -4 }}>
             <TextField
@@ -236,6 +286,8 @@ const OrderAdd:React.FC<type> = (props) => {
                 type="text"
                 id="name"
                 autoComplete="name"
+                value={name}
+                onChange={(e:React.ChangeEvent<HTMLInputElement>) => input_name_Handler(e)}
             />
           </Grid>
           <Grid item  xs={7} sx={{ mt: -4 }}>
@@ -247,6 +299,8 @@ const OrderAdd:React.FC<type> = (props) => {
                 type="text"
                 id="phone_number"
                 autoComplete="phone_number"
+                value={phone_number}
+                onChange={(e:React.ChangeEvent<HTMLInputElement>) => input_phone_number_Handler(e)}
             />
           </Grid>
           <Grid item  xs={12}>
@@ -258,11 +312,26 @@ const OrderAdd:React.FC<type> = (props) => {
                 type="email"
                 id="email"
                 autoComplete="email"
+                value={email}
+                onChange={(e:React.ChangeEvent<HTMLInputElement>) => input_email_Handler(e)}
             />
           </Grid>
 
           <Grid item xs={12} container  justifyContent="flex-start" >
-            <h4>받는사람정보</h4>
+            <Grid item xs={5} >
+              <h4>받는사람정보</h4>          
+            </Grid>
+
+            <Grid item xs={7} sx={{ textAlign : "right"}}>
+              <Button
+                  variant="contained"
+                  sx={{ height : '30px' , top:20}}
+                  onClick ={copyDefaultInfo}
+              >
+                기본정보 복사
+              </Button>
+            </Grid>
+
           </Grid>
           <Grid item xs={5} sx={{ mt: -4 }}>
             <TextField
@@ -273,6 +342,8 @@ const OrderAdd:React.FC<type> = (props) => {
                 type="text"
                 id="recipient_name"
                 autoComplete="recipient_name"
+                value={recipient_name}
+                onChange={(e:React.ChangeEvent<HTMLInputElement>) => input_recipient_name_Handler(e)}
             />
           </Grid>
           <Grid item  xs={7} sx={{ mt: -4 }}>
@@ -284,6 +355,8 @@ const OrderAdd:React.FC<type> = (props) => {
                 type="text"
                 id="recipient_phone_number"
                 autoComplete="recipient_phone_number"
+                value={recipient_phone_number}
+                onChange={(e:React.ChangeEvent<HTMLInputElement>) => input_recipient_phone_number_Handler(e)}
             />
           </Grid>
           <Grid item  xs={12}>
@@ -295,6 +368,8 @@ const OrderAdd:React.FC<type> = (props) => {
                 type="recipient_email"
                 id="recipient_email"
                 autoComplete="recipient_email"
+                value={recipient_email}
+                onChange={(e:React.ChangeEvent<HTMLInputElement>) => input_recipient_email_Handler(e)}
             />
           </Grid>
           <Grid item xs={12} sm={4}>
@@ -382,6 +457,9 @@ const OrderAdd:React.FC<type> = (props) => {
           </Grid>
         </Grid>
         <Grid item xs={12} sx={{ textAlign : "right" , mt : 3 }}>
+          {
+            alertMessage != '' ? <Alert severity="error" sx={{height:'30px'}}>{alertMessage}</Alert> : ''
+          }
             <Button
                 variant="contained"
                 sx={{fontSize : 20}}
