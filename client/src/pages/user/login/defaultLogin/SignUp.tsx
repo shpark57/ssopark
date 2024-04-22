@@ -92,7 +92,7 @@ export default function SignUp() {
 
 
 
-    axios.post("/Users" , params)
+    axios.post( "/api//Users" , params)
       .then( (response) => {
         
         showModal({

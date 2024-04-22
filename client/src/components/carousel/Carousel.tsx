@@ -21,7 +21,7 @@ const Carousel:React.FC<{products:ProductProps[]}> = (props) => {
         const id = e.target.dataset.id
 
 
-        await axios.patch('/Products/'+id ,{'visits++' : 1})
+        await axios.patch( '/api//Products/'+id ,{'visits++' : 1})
         navigate(String("/ProductsView/"+ id))
     }
 

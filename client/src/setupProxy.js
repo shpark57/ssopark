@@ -4,7 +4,7 @@ const { createProxyMiddleware } = require("http-proxy-middleware");
 module.exports = function (app) {
     app.use("/api" ,
         createProxyMiddleware({
-            target: "http://localhost:6000", //운영
+            target: process.env.REACT_APP_SERVER_HOST,
             pathRewrite: { '^/api': '' },
             changeOrigin: true,
         })
