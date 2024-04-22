@@ -251,6 +251,7 @@ export default function SignUp() {
                     label="도로명주소"
                     name="addr"
                     autoComplete="addr"
+                    onClick={onClickAddr}
                     value={addrValue}
                 />
               </Grid>
