@@ -16,6 +16,7 @@ import useModal from "src/components/modal/hooks/useModal";
 
 import Loading from 'src/components/loding/Loding';
 
+import {OrdersDetailParm} from '../props/OrdersDetailParm'
 
 import './OrderAdd.css'
 
@@ -124,9 +125,39 @@ const OrderAdd:React.FC<type> = (props) => {
   };
 
 
+  const onClickPayment = () => {
+
+    const { IMP }:any = window;
+    IMP.init(`${process.env.REACT_APP_IMP}`);
+
+    const data = {
+      pg: 'payco', // PG사
+      pay_method: "PARTNERTEST", // 결제수단
+      merchant_uid: `mid_${new Date().getTime()}`, // 주문번호
+      amount: props.totalPrice, // 결제금액
+      name: props.product?.product_nm, // 주문명
+      buyer_name: user.user_name, // 구매자 이름
+      buyer_tel: user.phone_number, // 구매자 전화번호
+      buyer_email: user.email, // 구매자 이메일
+      buyer_addr: user.addr + ' ' +user.addrDetail, // 구매자 주소
+      buyer_postcode: user.zipNo, // 구매자 우편번호
+    };
+    IMP.request_pay(data, callback);
 
 
- const handleOrder = () => {
+  };
+  const callback = (response:any) => {
+    const { success, error_msg } = response;
+    if (success) {
+      alert("결제 성공");
+    } else {
+      alert(`결제 실패: ${error_msg}`);
+    }
+  };
+
+
+
+  const handleOrder = () => {
 
    // @ts-ignore
    let recipient_name = document.getElementById("recipient_name").value
@@ -139,7 +170,7 @@ const OrderAdd:React.FC<type> = (props) => {
        order_date : Time.getTimeString(),
        order_state : '미결제',
        order_title : props.product? props.product.product_nm : '',
-       order_price : 5000 + (props.totalPrice?props.totalPrice:0),  //배송비 5000원
+       order_price : props.totalPrice,  //배송비 무료
        rgstr_id : user.user_id,
        rgstr_time : Time.getTimeString(),
        mdfr_id : user.user_id,
@@ -150,6 +181,9 @@ const OrderAdd:React.FC<type> = (props) => {
        recipient_name : recipient_name,
        recipient_phone_number : recipient_phone_number
      }
+
+
+     /*
 
      axios.post('/Orders' , ordersParm)
          .then(res=>{
@@ -180,6 +214,7 @@ const OrderAdd:React.FC<type> = (props) => {
                })
          })
          .catch((error) =>  {console.log(error)});
+     */
    }
 
  }
@@ -326,13 +361,13 @@ const OrderAdd:React.FC<type> = (props) => {
             배송비 :
           </Grid>
           <Grid item  xs={7} >
-            5,000 원
+             무료
           </Grid>
           <Grid item  xs={5} >
             결제 금액 :
           </Grid>
           <Grid item  xs={7} >
-            {props.totalPrice?  (props.totalPrice+5000).toLocaleString('ko-KR') + '원':''}
+            {props.totalPrice?  props.totalPrice.toLocaleString('ko-KR') + '원':''}
           </Grid>
 
           <Grid item xs={12} sm={5}>
@@ -356,7 +391,7 @@ const OrderAdd:React.FC<type> = (props) => {
                 variant="contained"
                 sx={{fontSize : 20}}
                 style={{ height : '50px'  , margin : '10px'}}
-                onClick ={handleOrder}
+                onClick ={onClickPayment}
             >
               결제하기
             </Button>
