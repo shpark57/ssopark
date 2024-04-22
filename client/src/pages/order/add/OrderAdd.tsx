@@ -118,10 +118,17 @@ const OrderAdd:React.FC<type> = (props) => {
 
 
 
-  const [radioValue, setRadioValue] = React.useState('bankTransfer');
+  const [PG, setPG] = React.useState('html5_inicis');
+  const [payMethod, setPayMethod] = React.useState('card');
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    let value = (event.target as HTMLInputElement).value
+    setPG((event.target as HTMLInputElement).value);
 
-    setRadioValue((event.target as HTMLInputElement).value);
+    if(value == 'html5_inicis'){
+      setPayMethod('card')
+    }else if(value == 'kakaopay'){
+      setPayMethod('card')
+    }
   };
 
 
@@ -131,9 +138,9 @@ const OrderAdd:React.FC<type> = (props) => {
     IMP.init(`${process.env.REACT_APP_IMP}`);
 
     const data = {
-      pg: 'payco', // PG사
-      pay_method: "PARTNERTEST", // 결제수단
-      merchant_uid: `mid_${new Date().getTime()}`, // 주문번호
+      pg: PG, // PG사
+      pay_method: payMethod, // 결제수단
+      merchant_uid: props.product?.id + '_' +Time.getTimeString(), // 주문번호
       amount: props.totalPrice, // 결제금액
       name: props.product?.product_nm, // 주문명
       buyer_name: user.user_name, // 구매자 이름
@@ -149,74 +156,62 @@ const OrderAdd:React.FC<type> = (props) => {
   const callback = (response:any) => {
     const { success, error_msg } = response;
     if (success) {
-      alert("결제 성공");
+
+      // @ts-ignore
+      let recipient_name = document.getElementById("recipient_name").value
+      // @ts-ignore
+      let recipient_phone_number = document.getElementById("recipient_phone_number").value
+
+      if(loggedIn){
+        let ordersParm = {
+          user_id : user.id,
+          order_date : Time.getTimeString(),
+          order_state : '결제완료',
+          order_title : props.product? props.product.product_nm : '',
+          order_price : props.totalPrice,  //배송비 무료
+          rgstr_id : user.user_id,
+          rgstr_time : Time.getTimeString(),
+          mdfr_id : user.user_id,
+          mdfr_time : Time.getTimeString(),
+          addr : addr,
+          addrDetail : addrDetail,
+          zipNo : zipNo,
+          recipient_name : recipient_name,
+          recipient_phone_number : recipient_phone_number
+        }
+        axios.post('/Orders' , ordersParm)
+            .then(res=>{
+              let ordersDetailParm = {
+                order_id : res.data.id,
+                product_nm : props.product?.product_nm,
+                product_type : props.product?.product_type,
+                cnt : props.orderCnt,
+                price : props.product?.price,
+                totalPrice : props.totalPrice,
+                title_img : props.product?.title_img,
+                rgstr_id : user.user_id,
+                rgstr_time : Time.getTimeString(),
+                mdfr_id : user.user_id,
+                mdfr_time : Time.getTimeString(),
+              }
+
+
+              axios.post('/OrderDetails' , ordersDetailParm)
+                  .then(res=>{
+
+                    showModal({
+                      modalType: "AlertModal",
+                      modalProps: {
+                        message: "결제가 완료됐습니다."
+                      }
+                    });
+                  })
+            })
+            .catch((error) =>  {console.log(error)});
     } else {
       alert(`결제 실패: ${error_msg}`);
     }
   };
-
-
-
-  const handleOrder = () => {
-
-   // @ts-ignore
-   let recipient_name = document.getElementById("recipient_name").value
-   // @ts-ignore
-   let recipient_phone_number = document.getElementById("recipient_phone_number").value
-
-   if(loggedIn){
-     let ordersParm = {
-       user_id : user.id,
-       order_date : Time.getTimeString(),
-       order_state : '미결제',
-       order_title : props.product? props.product.product_nm : '',
-       order_price : props.totalPrice,  //배송비 무료
-       rgstr_id : user.user_id,
-       rgstr_time : Time.getTimeString(),
-       mdfr_id : user.user_id,
-       mdfr_time : Time.getTimeString(),
-       addr : addr,
-       addrDetail : addrDetail,
-       zipNo : zipNo,
-       recipient_name : recipient_name,
-       recipient_phone_number : recipient_phone_number
-     }
-
-
-     /*
-
-     axios.post('/Orders' , ordersParm)
-         .then(res=>{
-           let ordersDetailParm = {
-             order_id : res.data.id,
-             product_nm : props.product?.product_nm,
-             product_type : props.product?.product_type,
-             cnt : props.orderCnt,
-             price : props.product?.price,
-             totalPrice : props.totalPrice,
-             title_img : props.product?.title_img,
-             rgstr_id : user.user_id,
-             rgstr_time : Time.getTimeString(),
-             mdfr_id : user.user_id,
-             mdfr_time : Time.getTimeString(),
-           }
-
-
-           axios.post('/OrderDetails' , ordersDetailParm)
-               .then(res=>{
-
-                 showModal({
-                   modalType: "AlertModal",
-                   modalProps: {
-                     message: "결제가 완료됐습니다."
-                   }
-                 });
-               })
-         })
-         .catch((error) =>  {console.log(error)});
-     */
-   }
-
  }
 
 
@@ -377,12 +372,12 @@ const OrderAdd:React.FC<type> = (props) => {
             <RadioGroup
                 row
                 aria-labelledby="demo-radio-buttons-group-label"
-                value={radioValue}
+                value={PG}
                 onChange={handleChange}
                 name="radio-buttons-group"
             >
-              <FormControlLabel value="bankTransfer" control={<Radio />} label="계좌이체" />
-              <FormControlLabel value="virtualAccount" control={<Radio />} label="무통장입금" />
+              <FormControlLabel value="html5_inicis"    control={<Radio />}       label="KG이니시스" />
+              <FormControlLabel value="kakaopay"        control={<Radio />}       label="카카오페이" />
             </RadioGroup>
           </Grid>
         </Grid>
