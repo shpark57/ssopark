@@ -242,7 +242,7 @@ export default function ProductsModify() {
 
 
 
-         let res = await axios.post( process.env.REACT_APP_SERVER_HOST + '/api//fileService/tuiHook/Products',formData ,config)
+         let res = await axios.post( process.env.REACT_APP_SERVER_HOST + '/api/fileService/tuiHook/Products',formData ,config)
          params.title_img =res.data.message
 
 
@@ -290,7 +290,7 @@ export default function ProductsModify() {
     formData.append('size', String(blob.size))
 
 
-    axios.post( process.env.REACT_APP_SERVER_HOST + '/api//fileService/tuiHook/Products',formData ,config)
+    axios.post( process.env.REACT_APP_SERVER_HOST + '/api/fileService/tuiHook/Products',formData ,config)
         .then(res => {
           callback(res.data.message ,'img')
         })

@@ -94,7 +94,7 @@ const ProductsView = () =>{
         const likeCheck =  await axios.get( process.env.REACT_APP_SERVER_HOST + '/api/Likes?parent_id='+id+'&type=Products&rgstr_id='+user.user_id)       // 중복 등록인지 체크
 
         if(likeCheck.data.length ==0) {
-            const saveLike =  await axios.post( process.env.REACT_APP_SERVER_HOST + '/api//Likes',{parent_id:id ,type:'Products' ,rgstr_id : user.user_id, like_type:target_type }) //좋아요 , 싫어요 등록
+            const saveLike =  await axios.post( process.env.REACT_APP_SERVER_HOST + '/api/Likes',{parent_id:id ,type:'Products' ,rgstr_id : user.user_id, like_type:target_type }) //좋아요 , 싫어요 등록
         
 
         }else if(likeCheck.data.length > 0){
@@ -118,7 +118,7 @@ const ProductsView = () =>{
         const getLikeCnt =  await axios.get( process.env.REACT_APP_SERVER_HOST + '/api/Likes?parent_id='+id+'&type=Products&like_type='+target_type)
         let params:any ={}
         params[target_type] = getLikeCnt.data.length
-        axios.patch( process.env.REACT_APP_SERVER_HOST + '/api//Products/'+id,params).then(res=>{
+        axios.patch( process.env.REACT_APP_SERVER_HOST + '/api/Products/'+id,params).then(res=>{
             getProduct()
 
         })

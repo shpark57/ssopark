@@ -148,7 +148,7 @@ const [loading, setLoading] = useState(false);
       formData.append('size', String(imgFiles[0].object.size))
 
 
-      axios.post( process.env.REACT_APP_SERVER_HOST + '/api//fileService/tuiHook/Products',formData ,config)
+      axios.post( process.env.REACT_APP_SERVER_HOST + '/api/fileService/tuiHook/Products',formData ,config)
           .then(res => {
 
 
@@ -209,7 +209,7 @@ const [loading, setLoading] = useState(false);
     formData.append('size', String(blob.size))
 
 
-    axios.post( process.env.REACT_APP_SERVER_HOST + '/api//fileService/tuiHook/Products',formData ,config)
+    axios.post( process.env.REACT_APP_SERVER_HOST + '/api/fileService/tuiHook/Products',formData ,config)
         .then(res => {
           callback(res.data.message ,'img')
         })

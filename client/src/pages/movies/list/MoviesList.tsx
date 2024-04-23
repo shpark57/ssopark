@@ -67,7 +67,7 @@ export default function UserList(){
         const id = e.target.dataset.id    
         
 
-        await axios.patch( process.env.REACT_APP_SERVER_HOST + '/api//Movies/'+id ,{'visits++' : 1})
+        await axios.patch( process.env.REACT_APP_SERVER_HOST + '/api/Movies/'+id ,{'visits++' : 1})
         navigate(String("/moviesView/"+ id))
     }
 
