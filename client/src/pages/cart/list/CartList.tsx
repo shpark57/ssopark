@@ -40,7 +40,7 @@ export default function CartList(){
     const ontSelect = () => {
 
         if(loggedIn){
-            axios.get( process.env.REACT_APP_SERVER_HOST + '/api/cart' , {params : {user_id: user.id , _rel : 'product' }})
+            axios.get( process.env.REACT_APP_CLIENT_HOST + '/api/cart' , {params : {user_id: user.id , _rel : 'product' }})
                 .then(res =>  {
                     res.data.map((obj:CartProps,index:number)=>{
                         obj.id = index
@@ -59,11 +59,11 @@ export default function CartList(){
                             var findIndex = res.data.findIndex((obj:any, index:number) => obj['product_id'] === row.product_id)
                             if(findIndex != -1){
                                 res.data[findIndex].cnt = res.data[findIndex].cnt + cartList[index].cnt
-                                axios.post( process.env.REACT_APP_SERVER_HOST + "/api/Cart", res.data[findIndex])
+                                axios.post( process.env.REACT_APP_CLIENT_HOST + "/api/Cart", res.data[findIndex])
                                     .catch((error) =>  {console.log("장바구니 수정 오류")});
                             }else{
                                 res.data = [...res.data , cartList[index]]
-                                axios.post( process.env.REACT_APP_SERVER_HOST + "/api/Cart", cartList[index])
+                                axios.post( process.env.REACT_APP_CLIENT_HOST + "/api/Cart", cartList[index])
                                     .catch((error) =>  {console.log("장바구니 수정 오류")});
                             }
                         })
@@ -102,7 +102,7 @@ export default function CartList(){
         // 변경된 배열을 설정합니다.
         setTableData(updatedItems);
         if(loggedIn){
-            axios.post( process.env.REACT_APP_SERVER_HOST + "/api/Cart", updatedItems[  Number(event.target.name) ])
+            axios.post( process.env.REACT_APP_CLIENT_HOST + "/api/Cart", updatedItems[  Number(event.target.name) ])
                 .catch((error) =>  {console.log("장바구니 수정 오류")});
         }else{
             let cartLocalStorage = window.localStorage;
@@ -126,7 +126,7 @@ export default function CartList(){
         // 변경된 배열을 설정합니다.
         setTableData(updatedItems);
         if(loggedIn){
-            axios.post( process.env.REACT_APP_SERVER_HOST + "/api/Cart", updatedItems[  Number( row.id) ])
+            axios.post( process.env.REACT_APP_CLIENT_HOST + "/api/Cart", updatedItems[  Number( row.id) ])
                 .catch((error) =>  {console.log("장바구니 수정 오류")});
         }else{
             let cartLocalStorage = window.localStorage;

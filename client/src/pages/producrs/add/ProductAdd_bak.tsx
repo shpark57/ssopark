@@ -149,7 +149,7 @@ const [loading, setLoading] = useState(false);
 
     try {
     setLoading(true);
-    const resProducts = await axios.post( process.env.REACT_APP_SERVER_HOST + "/api/Products" , params)
+    const resProducts = await axios.post( process.env.REACT_APP_CLIENT_HOST + "/api/Products" , params)
 
     let formData = new FormData();
     const config = {
@@ -171,7 +171,7 @@ const [loading, setLoading] = useState(false);
     }
 
 
-    axios.post( process.env.REACT_APP_SERVER_HOST + '/api/fileService/upload/Products',formData ,config) // Products 타입은 테이블명. 이게 폴더명으로 변경 됨
+    axios.post( process.env.REACT_APP_CLIENT_HOST + '/api/fileService/upload/Products',formData ,config) // Products 타입은 테이블명. 이게 폴더명으로 변경 됨
     .then(res=>{
 
       let formData = new FormData();
@@ -188,7 +188,7 @@ const [loading, setLoading] = useState(false);
         formData.append('files_params['+i+'].size', String(subtitleFiles[i].object.size))
       }
 
-      axios.post( process.env.REACT_APP_SERVER_HOST + '/api/fileService/upload/Products',formData ,config) // Products 타입은 테이블명. 이게 폴더명으로 변경 됨
+      axios.post( process.env.REACT_APP_CLIENT_HOST + '/api/fileService/upload/Products',formData ,config) // Products 타입은 테이블명. 이게 폴더명으로 변경 됨
       .then(res=>{setLoading(false)})
       .then(res => navigate(String("/ProductsList")))
       .catch(err=>console.log(err))
