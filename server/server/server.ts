@@ -40,11 +40,7 @@ const port: number = 6000;
 
 let corsOptions = {
     origin: ["http://localhost:3000"
-        ,"http://shpark91.iptime.org:3000"
-        ,"https://localhost:3000"
-        ,"https://shpark91.iptime.org:3000"
-        , "https://ssopark.sh2.site"
-        ,"http://ssopark.sh2.site"],
+        ,"http://shpark91.iptime.org:3000"],
     credentials: true
 }
 
