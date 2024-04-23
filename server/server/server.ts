@@ -39,7 +39,12 @@ app.use(function(err, req, res, next) {
 const port: number = 6000;
 
 let corsOptions = {
-    origin: ["http://localhost:3000","http://shpark91.iptime.org:3000"] ,
+    origin: ["http://localhost:3000"
+        ,"http://shpark91.iptime.org:3000"
+        ,"https://localhost:3000"
+        ,"https://shpark91.iptime.org:3000"
+        , "https://ssopark.sh2.site"
+        ,"http://ssopark.sh2.site"],
     credentials: true
 }
 
