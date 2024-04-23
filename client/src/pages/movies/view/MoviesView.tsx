@@ -43,7 +43,7 @@ const MoviesView = () =>{
     const [movie , setMovie] = useState<Movie|null>(null)
     const [rerend,setRerend] = useState(false)
     const getMovie = () => {
-        axios.get( process.env.REACT_APP_SERVER_HOST + '/Movies/'+id+'?use_yn=Y')
+        axios.get( '/Movies/'+id+'?use_yn=Y')
         .then(res =>{
             setMovie(res.data)
         })
@@ -59,7 +59,7 @@ const MoviesView = () =>{
 
     const [videoUrl ,setVideoUrl ] = useState('')
     const getVideoUrl = () =>{
-        axios.get( process.env.REACT_APP_SERVER_HOST + '/Files?parent_id='+ id +'&Type=Movies&type_detail=video&_limit=1')
+        axios.get( '/Files?parent_id='+ id +'&Type=Movies&type_detail=video&_limit=1')
         .then(res=>{
             setVideoUrl('/fileService/read/'+res.data[0].id)
         })
@@ -100,10 +100,10 @@ const MoviesView = () =>{
         const target_type = event.currentTarget.getAttribute('id') == '좋아요' ?  'like':'dis_like' //좋아요, 싫어요 구분
 
 
-        const likeCheck =  await axios.get( process.env.REACT_APP_SERVER_HOST + '/Likes?parent_id='+id+'&type=Movies&rgstr_id='+user.user_id)       // 중복 등록인지 체크
+        const likeCheck =  await axios.get( '/Likes?parent_id='+id+'&type=Movies&rgstr_id='+user.user_id)       // 중복 등록인지 체크
 
         if(likeCheck.data.length ==0) {
-            const saveLike =  await axios.post( process.env.REACT_APP_SERVER_HOST + '/Likes',{parent_id:id ,type:'Movies' ,rgstr_id : user.user_id, like_type:target_type }) //좋아요 , 싫어요 등록
+            const saveLike =  await axios.post( '/Likes',{parent_id:id ,type:'Movies' ,rgstr_id : user.user_id, like_type:target_type }) //좋아요 , 싫어요 등록
         
 
         }else if(likeCheck.data.length > 0){
@@ -124,10 +124,10 @@ const MoviesView = () =>{
             return
         }
 
-        const getLikeCnt =  await axios.get( process.env.REACT_APP_SERVER_HOST + '/Likes?parent_id='+id+'&type=Movies&like_type='+target_type)
+        const getLikeCnt =  await axios.get( '/Likes?parent_id='+id+'&type=Movies&like_type='+target_type)
         let params:any ={}
         params[target_type] = getLikeCnt.data.length
-        axios.patch( process.env.REACT_APP_SERVER_HOST + '/Movies/'+id,params).then(res=>{
+        axios.patch( '/Movies/'+id,params).then(res=>{
             getMovie()
 
         })

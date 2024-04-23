@@ -92,7 +92,7 @@ export default function SignUp() {
 
 
 
-    axios.post( process.env.REACT_APP_SERVER_HOST + "/Users" , params)
+    axios.post( "/Users" , params)
       .then( (response) => {
         
         showModal({

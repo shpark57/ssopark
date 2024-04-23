@@ -69,11 +69,11 @@ export default function Login(){
 
         const input_id = String(data.get('input_id'))
         const input_password = String(data.get('input_password'))
-        const res = await axios.post( process.env.REACT_APP_SERVER_HOST + "/password/check",{user_id:input_id,password:input_password})
+        const res = await axios.post( "/password/check",{user_id:input_id,password:input_password})
 
         if(res.data.check){
             //로그인 시 로그인 시간 저장
-            await axios.patch( process.env.REACT_APP_SERVER_HOST + "/Users/"+ res.data.id , {  last_login : Time.getTimeString() } )
+            await axios.patch( "/Users/"+ res.data.id , {  last_login : Time.getTimeString() } )
             .then((response) => { console.log("마지막 로그인 시간 수정 완료")})
             .catch((error) =>  {console.log("마지막 로그인 시간 수정 실패")});    
 

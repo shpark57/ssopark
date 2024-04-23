@@ -33,7 +33,7 @@ const CommentInputFrom:React.FC<CommentInputProp> =  (props) => {
         const params = { parent_id : props.parent_id , type : props.type , comment : comment , rgstr_id : user.user_id , parent_comment_id  : props.parent_comment_id}
          
         
-        axios.post( process.env.REACT_APP_SERVER_HOST + '/Comment',  params )
+        axios.post( '/Comment',  params )
         .then(res=>{
             showModal({
                 modalType: "AlertModal",
