@@ -23,7 +23,7 @@ export default function UserList(){
     const {loggedIn , user } = useContext(LoginContext);
     const [tableData , setTableData] = useState([])
     useEffect(() => {
-        axios.get( process.env.REACT_APP_SERVER_HOST + '/Movies' , {params : {use_yn: 'Y',_sort:'rgstr_time',_order:'DESC' }})
+        axios.get( process.env.REACT_APP_SERVER_HOST + '/api/Movies' , {params : {use_yn: 'Y',_sort:'rgstr_time',_order:'DESC' }})
             .then(res =>  setTableData(res.data))
     },[0])   
 
@@ -35,7 +35,7 @@ export default function UserList(){
             .catch( (error) => { alert("삭제 실패") });
         */
         /* useYn N 처리 업데이트 논리삭제*/
-        axios.patch( process.env.REACT_APP_SERVER_HOST + "/Movies/" + row.id , {
+        axios.patch( process.env.REACT_APP_SERVER_HOST + "/api/Movies/" + row.id , {
             use_yn : 'N' ,  
             mdfr_id : user.user_id,
             mdfr_time : Time.getTimeString()    
@@ -67,7 +67,7 @@ export default function UserList(){
         const id = e.target.dataset.id    
         
 
-        await axios.patch( process.env.REACT_APP_SERVER_HOST + '//Movies/'+id ,{'visits++' : 1})
+        await axios.patch( process.env.REACT_APP_SERVER_HOST + '/api//Movies/'+id ,{'visits++' : 1})
         navigate(String("/moviesView/"+ id))
     }
 

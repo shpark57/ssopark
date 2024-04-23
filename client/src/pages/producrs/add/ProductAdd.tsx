@@ -148,7 +148,7 @@ const [loading, setLoading] = useState(false);
       formData.append('size', String(imgFiles[0].object.size))
 
 
-      axios.post( process.env.REACT_APP_SERVER_HOST + '//fileService/tuiHook/Products',formData ,config)
+      axios.post( process.env.REACT_APP_SERVER_HOST + '/api//fileService/tuiHook/Products',formData ,config)
           .then(res => {
 
 
@@ -164,11 +164,11 @@ const [loading, setLoading] = useState(false);
             }
 
 
-            axios.post( process.env.REACT_APP_SERVER_HOST + "/Products" , params)
+            axios.post( process.env.REACT_APP_SERVER_HOST + "/api/Products" , params)
                 .then(res=>{setLoading(false)})
                /* .then(res => {
 
-                  axios.post( process.env.REACT_APP_SERVER_HOST + "/fileService/reallyChange" ,{
+                  axios.post( process.env.REACT_APP_SERVER_HOST + "/api/fileService/reallyChange" ,{
                     text : params.title_img+ params.content   //text 에는 이미지 전부 텍스트로 합쳐서 보낸다.
                     ,type : 'Products'
 
@@ -209,7 +209,7 @@ const [loading, setLoading] = useState(false);
     formData.append('size', String(blob.size))
 
 
-    axios.post( process.env.REACT_APP_SERVER_HOST + '//fileService/tuiHook/Products',formData ,config)
+    axios.post( process.env.REACT_APP_SERVER_HOST + '/api//fileService/tuiHook/Products',formData ,config)
         .then(res => {
           callback(res.data.message ,'img')
         })

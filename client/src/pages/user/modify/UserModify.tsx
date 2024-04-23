@@ -82,7 +82,7 @@ const UserModify:React.FC<Interface> =  (props) => {
         })
 
         useEffect(() => {
-            axios.get( process.env.REACT_APP_SERVER_HOST + '/Users/'+props.id)
+            axios.get( process.env.REACT_APP_SERVER_HOST + '/api/Users/'+props.id)
                 .then(res =>  setUserParams(res.data))
             /* .then(res => {
                  setUserParams((prevUser:userInfo ) => ({
@@ -103,7 +103,7 @@ const UserModify:React.FC<Interface> =  (props) => {
 
             const input_id = String(data.get('user_id'))
             const input_password = String(data.get('password'))
-            const res = await axios.post( process.env.REACT_APP_SERVER_HOST + "/password/check",{user_id:input_id,password:input_password})
+            const res = await axios.post( process.env.REACT_APP_SERVER_HOST + "/api/password/check",{user_id:input_id,password:input_password})
             if( data.get('password') == '' ){
                 setAlertMessage('비밀번호를 입력해주세요,')
                 return
@@ -126,7 +126,7 @@ const UserModify:React.FC<Interface> =  (props) => {
 
 
 
-            axios.put( process.env.REACT_APP_SERVER_HOST + "/Users/"+ userParams.id , userParams )
+            axios.put( process.env.REACT_APP_SERVER_HOST + "/api/Users/"+ userParams.id , userParams )
                 .then((response) => {
 
                     showModal({

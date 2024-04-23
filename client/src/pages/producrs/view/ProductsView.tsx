@@ -62,7 +62,7 @@ const ProductsView = () =>{
     const [product , setProduct] = useState<ProductProps>(ProductInit)
     const [rerend,setRerend] = useState(false)
     const getProduct = () => {
-        axios.get( process.env.REACT_APP_SERVER_HOST + '/Products/'+id+'?use_yn=Y')
+        axios.get( process.env.REACT_APP_SERVER_HOST + '/api/Products/'+id+'?use_yn=Y')
         .then(res =>{
             setProduct(res.data)
         })
@@ -91,10 +91,10 @@ const ProductsView = () =>{
         const target_type = event.currentTarget.getAttribute('id') == '좋아요' ?  'like':'dis_like' //좋아요, 싫어요 구분
 
 
-        const likeCheck =  await axios.get( process.env.REACT_APP_SERVER_HOST + '/Likes?parent_id='+id+'&type=Products&rgstr_id='+user.user_id)       // 중복 등록인지 체크
+        const likeCheck =  await axios.get( process.env.REACT_APP_SERVER_HOST + '/api/Likes?parent_id='+id+'&type=Products&rgstr_id='+user.user_id)       // 중복 등록인지 체크
 
         if(likeCheck.data.length ==0) {
-            const saveLike =  await axios.post( process.env.REACT_APP_SERVER_HOST + '//Likes',{parent_id:id ,type:'Products' ,rgstr_id : user.user_id, like_type:target_type }) //좋아요 , 싫어요 등록
+            const saveLike =  await axios.post( process.env.REACT_APP_SERVER_HOST + '/api//Likes',{parent_id:id ,type:'Products' ,rgstr_id : user.user_id, like_type:target_type }) //좋아요 , 싫어요 등록
         
 
         }else if(likeCheck.data.length > 0){
@@ -115,10 +115,10 @@ const ProductsView = () =>{
             return
         }
 
-        const getLikeCnt =  await axios.get( process.env.REACT_APP_SERVER_HOST + '/Likes?parent_id='+id+'&type=Products&like_type='+target_type)
+        const getLikeCnt =  await axios.get( process.env.REACT_APP_SERVER_HOST + '/api/Likes?parent_id='+id+'&type=Products&like_type='+target_type)
         let params:any ={}
         params[target_type] = getLikeCnt.data.length
-        axios.patch( process.env.REACT_APP_SERVER_HOST + '//Products/'+id,params).then(res=>{
+        axios.patch( process.env.REACT_APP_SERVER_HOST + '/api//Products/'+id,params).then(res=>{
             getProduct()
 
         })
@@ -141,7 +141,7 @@ const ProductsView = () =>{
     }
     const addCart = async () =>{
         if(loggedIn){
-            axios.get( process.env.REACT_APP_SERVER_HOST + "/Cart?user_id="+user.id+"&product_id="+product?.id)
+            axios.get( process.env.REACT_APP_SERVER_HOST + "/api/Cart?user_id="+user.id+"&product_id="+product?.id)
                 .then(res =>{
                     let params ={
                         user_id : user.id,
@@ -157,7 +157,7 @@ const ProductsView = () =>{
                         params.cnt  = res.data[0].cnt + productCnt
                     }
 
-                    axios.post( process.env.REACT_APP_SERVER_HOST + "/Cart", params)
+                    axios.post( process.env.REACT_APP_SERVER_HOST + "/api/Cart", params)
                         .then(res=>{
                             showModal({
                                 modalType: "AlertModal",

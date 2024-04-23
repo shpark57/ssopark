@@ -59,7 +59,7 @@ export default function ProductsModify() {
   )
   const [rerend,setRerend] = useState(false)
   const getProduct = () => {
-    axios.get( process.env.REACT_APP_SERVER_HOST + '/Products/'+id+'?use_yn=Y')
+    axios.get( process.env.REACT_APP_SERVER_HOST + '/api/Products/'+id+'?use_yn=Y')
         .then(res =>{
           setProduct(res.data)
         })
@@ -242,13 +242,13 @@ export default function ProductsModify() {
 
 
 
-         let res = await axios.post( process.env.REACT_APP_SERVER_HOST + '//fileService/tuiHook/Products',formData ,config)
+         let res = await axios.post( process.env.REACT_APP_SERVER_HOST + '/api//fileService/tuiHook/Products',formData ,config)
          params.title_img =res.data.message
 
 
       }
 
-      await axios.put( process.env.REACT_APP_SERVER_HOST + "/Products/"+ id , params)
+      await axios.put( process.env.REACT_APP_SERVER_HOST + "/api/Products/"+ id , params)
           .then(res=>{setLoading(false)}).then(res => navigate(String("/ProductsView/"+id))).catch(err=>console.log(err))
 
 
@@ -290,7 +290,7 @@ export default function ProductsModify() {
     formData.append('size', String(blob.size))
 
 
-    axios.post( process.env.REACT_APP_SERVER_HOST + '//fileService/tuiHook/Products',formData ,config)
+    axios.post( process.env.REACT_APP_SERVER_HOST + '/api//fileService/tuiHook/Products',formData ,config)
         .then(res => {
           callback(res.data.message ,'img')
         })
