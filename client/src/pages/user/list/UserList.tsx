@@ -23,7 +23,7 @@ export default function UserList(){
     const {loggedIn , user } = useContext(LoginContext);
     const [tableData , setTableData] = useState([])
     useEffect(() => {
-        axios.get( process.env.REACT_APP_CLIENT_HOST + '/api/Users' , {params : {use_yn: 'Y',_sort:'last_login',_order:'DESC' }})
+        axios.get( process.env.REACT_APP_SERVER_HOST + '/Users' , {params : {use_yn: 'Y',_sort:'last_login',_order:'DESC' }})
             .then(res =>  setTableData(res.data))
     },[0])   
 
@@ -47,7 +47,7 @@ export default function UserList(){
                 handleConfirm: () => {
 
 
-                    axios.patch( process.env.REACT_APP_CLIENT_HOST + "/api/Users/" + row.id , {
+                    axios.patch( process.env.REACT_APP_SERVER_HOST + "/Users/" + row.id , {
                         use_yn : 'N' ,
                         mdfr_id : user.user_id,
                         mdfr_time : Time.getTimeString()

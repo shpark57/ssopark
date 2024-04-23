@@ -48,10 +48,10 @@ const PasswordModifyModal:React.FC<PasswordModifyModalProps> = ({user_id}) => {
       return
     }
 
-    const res = await axios.post( process.env.REACT_APP_CLIENT_HOST + "/api/password/check",{user_id:user_id,password:password})
+    const res = await axios.post( process.env.REACT_APP_SERVER_HOST + "/password/check",{user_id:user_id,password:password})
     if(res.data.check){
 
-      axios.patch( process.env.REACT_APP_CLIENT_HOST + "/api/password/change/"+ res.data.id ,  {password :new_password , mdfr_time : Time.getTimeString() , mdfr_id : user.user_id } )
+      axios.patch( process.env.REACT_APP_SERVER_HOST + "/password/change/"+ res.data.id ,  {password :new_password , mdfr_time : Time.getTimeString() , mdfr_id : user.user_id } )
       .then((response) => { 
         showModal({
           modalType: "AlertModal",
