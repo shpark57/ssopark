@@ -199,7 +199,7 @@ const OrderAdd:React.FC<type> = (props) => {
         recipient_name: recipient_name,
         recipient_phone_number: recipient_phone_number
       }
-      axios.post( '/api//Orders', ordersParm)
+      axios.post( process.env.REACT_APP_SERVER_HOST + '//Orders', ordersParm)
           .then(res => {
             let ordersDetailParm = {
               order_id: res.data.id,
@@ -216,7 +216,7 @@ const OrderAdd:React.FC<type> = (props) => {
             }
 
 
-            axios.post( '/api//OrderDetails', ordersDetailParm)
+            axios.post( process.env.REACT_APP_SERVER_HOST + '//OrderDetails', ordersDetailParm)
                 .then(res => {
 
                   showModal({

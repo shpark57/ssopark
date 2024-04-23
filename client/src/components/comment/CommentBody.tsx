@@ -29,7 +29,7 @@ const CommentBody:React.FC<CommentBodyProp> = (props) => {
               cancelText: "No",
               title: "",
               handleConfirm: () => {
-                axios.patch( '/api//Comment/'+comment_id, {comment: '삭제한 댓글 입니다.'})   //논리삭제.
+                axios.patch( process.env.REACT_APP_SERVER_HOST + '//Comment/'+comment_id, {comment: '삭제한 댓글 입니다.'})   //논리삭제.
                 .then(res=>{
                     props.setCommentBodyRerend(!props.commentBodyRerend)    //댓글부분 리랜더링
                    

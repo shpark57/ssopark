@@ -32,7 +32,7 @@ const ProductBody:React.FC<ProductProps> = (props) => {
         const id = e.target.dataset.id
 
 
-        await axios.patch( '/api//Products/'+id ,{'visits++' : 1})
+        await axios.patch( process.env.REACT_APP_SERVER_HOST + '//Products/'+id ,{'visits++' : 1})
         navigate(String("/ProductsView/"+ id))
     }
 

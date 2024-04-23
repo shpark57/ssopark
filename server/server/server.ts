@@ -1,14 +1,13 @@
 import express from 'express';
 
-//const createError = require('http-errors');
-//const logger = require('morgan');
-
-
+const createError = require('http-errors');
+const logger = require('morgan');
 const bodyParser = require('body-parser')
 const app = express();
 const router = require("./router/router");
 const file = require("./router/file")
 const mail = require("./router/sendmail")
+const cors = require('cors');
 
 
 //app.use(logger('dev'));
@@ -22,9 +21,9 @@ app.use("/:table", router);
 
 
 // catch 404 and forward to error handler
-/*app.use(function(req, res, next) {
+app.use(function(req, res, next) {
     next(createError(404));
-});*/
+});
 // error handler
 app.use(function(err, req, res, next) {
     // set locals, only providing error in development
@@ -38,4 +37,12 @@ app.use(function(err, req, res, next) {
 
 
 const port: number = 6000;
+
+let corsOptions = {
+    origin: ["http://localhost:3000","http://shpark91.iptime.org:3000"] ,
+    credentials: true
+}
+
+app.use(cors(corsOptions));
+
 app.listen(port, () => console.log(`${port}`));
