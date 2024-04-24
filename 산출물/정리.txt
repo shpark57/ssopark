@@ -13,7 +13,7 @@ docker exec -t -i ssopark-client-1 /bin/bash
 
 docker exec -u 0 -it ssopark-server-1 sh  
 
-docker logs --tail 50 -f 9f228b62c87a
+docker logs --tail 50 -f 9ae857989cd7
 
 git remote add origin https://github.com/shpark57/ssopark.git
 

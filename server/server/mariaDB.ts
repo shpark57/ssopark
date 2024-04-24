@@ -1,16 +1,18 @@
 import { createPool, Pool} from 'mysql';
+require("dotenv").config({ path: "/server/.env" })
 
 let pool : Pool;
 
 
 export const init = () => {
     try {
+      // @ts-ignore
       pool = createPool({
-        host: 'shpark91.iptime.org',
-        user: 'shpark',
-        port: 3307,
-        password: 'SILV@Rs5ul',
-        database: 'shpark_farm',
+        host: process.env.DB_HOST,
+        user: process.env.DB_USER,
+        port: Number(process.env.DB_PORT),
+        password: process.env.DB_PW,
+        database: process.env.DB,
         connectionLimit: 4,
       });
   
