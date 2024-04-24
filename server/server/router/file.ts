@@ -9,6 +9,7 @@ import axios from 'axios';
 import multer from "multer";
 const fs=require('fs')
 import  mkdirp from 'mkdirp'
+require("dotenv").config({ path: "/server/.env" })
 
 const dir = path.join(__dirname, '../../../files/')
 let storage = multer.diskStorage({
@@ -38,7 +39,7 @@ let storage = multer.diskStorage({
 
 
   router.get('/read/:id', async function(req: Request, res: Response) {
-    const file = await axios.get('https://'+req.headers.host+'/Files/'+req.params.id)
+    const file = await axios.get(process.env.SERVER_HOST_API + '/Files/'+req.params.id)
     if(file.data){
       const url = dir +file.data.type+'/'+ file.data.ymd + file.data.change_name + '.' +file.data.file_type
       if(fs.existsSync(url)){
@@ -93,7 +94,7 @@ router.post("/upload/:type", fileUpload.array('files',10) , async function(req: 
             let origin = req.headers.origin
             origin = origin.charAt(origin.length - 1) == '/' ? origin : origin+'/'
 
-            axios.post( origin +'Files',params)
+            axios.post( process.env.SERVER_HOST_API + '/Files',params)
         }     
         
         res.status(201).send({
@@ -127,10 +128,10 @@ router.post("/tuiHook/:type", fileUpload.single('file') , async function(req: Re
         let origin = req.headers.origin
         origin = origin.charAt(origin.length - 1) == '/' ? origin : origin+'/'
 
-        axios.post( origin +'Files',params)
+        axios.post( process.env.SERVER_HOST_API + '/Files',params)
             .then(entity =>{
                 res.status(201).send({
-                    message: '/api/fileService/read/' + entity.data.id
+                    message: process.env.SERVER_HOST_API + '/fileService/read/' + entity.data.id
                 })
             })
 
@@ -160,7 +161,7 @@ router.post('/reallyChange', async function(req: Request, res: Response) {
 
 
     for(let i in ids){
-        axios.get(origin +"Files/"+  ids[i] ).then(res =>{
+        axios.get(process.env.SERVER_HOST_API + "/Files/"+  ids[i] ).then(res =>{
             const sourceFolder = dir +res.data.type+'/'+ res.data.ymd + res.data.change_name + '.' +res.data.file_type
             const destinationFolder = dir +req.body['type']+'/'+ res.data.ymd + res.data.change_name + '.' +res.data.file_type
 
@@ -197,7 +198,7 @@ router.post('/reallyChange', async function(req: Request, res: Response) {
             })
 
         }).then(res=>{
-            axios.patch(origin +"Files/"+  ids[i]  ,  { type :req.body['type'] } )
+            axios.patch(process.env.SERVER_HOST_API + "/Files/"+  ids[i]  ,  { type :req.body['type'] } )
         })
 
         res.status(201).send({
