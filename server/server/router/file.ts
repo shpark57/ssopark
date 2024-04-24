@@ -39,7 +39,7 @@ let storage = multer.diskStorage({
 
 
   router.get('/read/:id', async function(req: Request, res: Response) {
-    const file = await axios.get('https://db.sh2.site/api/Files/'+req.params.id)
+    const file = await axios.get('/Files/'+req.params.id)
     if(file.data){
       const url = dir +file.data.type+'/'+ file.data.ymd + file.data.change_name + '.' +file.data.file_type
       if(fs.existsSync(url)){
@@ -94,7 +94,7 @@ router.post("/upload/:type", fileUpload.array('files',10) , async function(req: 
             let origin = req.headers.origin
             origin = origin.charAt(origin.length - 1) == '/' ? origin : origin+'/'
 
-            axios.post( 'https://db.sh2.site/api/Files',params)
+            axios.post( '/Files',params)
         }     
         
         res.status(201).send({
@@ -128,7 +128,7 @@ router.post("/tuiHook/:type", fileUpload.single('file') , async function(req: Re
         let origin = req.headers.origin
         origin = origin.charAt(origin.length - 1) == '/' ? origin : origin+'/'
 
-        axios.post( 'https://db.sh2.site/api/Files',params)
+        axios.post( '/Files',params)
             .then(entity =>{
                 res.status(201).send({
                     message: 'https://db.sh2.site/api/fileService/read/' + entity.data.id
@@ -198,7 +198,7 @@ router.post('/reallyChange', async function(req: Request, res: Response) {
             })
 
         }).then(res=>{
-            axios.patch("https://db.sh2.site/api/Files/"+  ids[i]  ,  { type :req.body['type'] } )
+            axios.patch("/Files/"+  ids[i]  ,  { type :req.body['type'] } )
         })
 
         res.status(201).send({
