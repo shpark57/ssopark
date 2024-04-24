@@ -61,7 +61,7 @@ const MoviesView = () =>{
     const getVideoUrl = () =>{
         axios.get( process.env.REACT_APP_SERVER_HOST + '/api/Files?parent_id='+ id +'&Type=Movies&type_detail=video&_limit=1')
         .then(res=>{
-            setVideoUrl('/fileService/read/'+res.data[0].id)
+            setVideoUrl('/api/fileService/read/'+res.data[0].id)
         })
     }
     useEffect(() => {
