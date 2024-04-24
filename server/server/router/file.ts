@@ -38,7 +38,7 @@ let storage = multer.diskStorage({
 
 
   router.get('/read/:id', async function(req: Request, res: Response) {
-    const file = await axios.get('http://'+req.headers.host+'/Files/'+req.params.id)
+    const file = await axios.get('https://'+req.headers.host+'/Files/'+req.params.id)
     if(file.data){
       const url = dir +file.data.type+'/'+ file.data.ymd + file.data.change_name + '.' +file.data.file_type
       if(fs.existsSync(url)){
