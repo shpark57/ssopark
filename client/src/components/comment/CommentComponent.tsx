@@ -60,7 +60,7 @@ const CommentComponent:React.FC<CommentProps> = ({parent_id,type}) => {
     const [commentCnt , setCommentCnt] = useState(0) //댓글 컴포넌트 최상단의 총 댓글 갯수 조회.
     const [commentHeaderRerend , setCommentHeaderRerend ] = useState(false) //댓글 상위 부분 리랜더링을 위한 변수
     useEffect(() => {
-        axios.get( '/Comment?parent_id='+parent_id)
+        axios.get( process.env.REACT_APP_SERVER_HOST + '/api/Comment?parent_id='+parent_id)
         .then(res =>{
             setCommentCnt(res.data.length)
             return ()=>{
@@ -75,7 +75,7 @@ const CommentComponent:React.FC<CommentProps> = ({parent_id,type}) => {
     const [comments , setComments] = useState<Comments[]>([]) //해당 글의 댓글을 계층형으로 조회
     const [commentBodyRerend , setCommentBodyRerend ] = useState(false) //댓글 부분 리랜더링을 위한 변수.
     useEffect(() => {
-         axios.get( '/Comment?parent_id='+parent_id+'&type='+type+'&_rel=children&parent_comment_id=null&_sort=rgstr_time&_order=desc')
+         axios.get( process.env.REACT_APP_SERVER_HOST + '/api/Comment?parent_id='+parent_id+'&type='+type+'&_rel=children&parent_comment_id=null&_sort=rgstr_time&_order=desc')
         .then(res =>{
             setComments(res.data)
             return ()=>{

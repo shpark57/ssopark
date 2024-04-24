@@ -179,6 +179,5 @@
     "presets": [
       "react-app"
     ]
-  },
-  "proxy" : "http://shpark91.iptime.org:6000"
+  }
 }
