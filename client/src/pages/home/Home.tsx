@@ -34,7 +34,7 @@ export default function Home(){
   // API를 호출하는 부분
   const fetchData = () => {
     try {
-        axios.get( process.env.REACT_APP_SERVER_HOST + '/api/Products' , {params : {use_yn: 'Y',_sort:'id',_order:'DESC',_limit: 5,_exceptcols : 'content'}})
+        axios.get( process.env.REACT_APP_SERVER_HOST_API + '/Products' , {params : {use_yn: 'Y',_sort:'id',_order:'DESC',_limit: 5,_exceptcols : 'content'}})
             .then(response =>{
                 setProducts(response.data);
             }).catch((error) =>  {

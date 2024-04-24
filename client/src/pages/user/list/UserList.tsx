@@ -23,14 +23,14 @@ export default function UserList(){
     const {loggedIn , user } = useContext(LoginContext);
     const [tableData , setTableData] = useState([])
     useEffect(() => {
-        axios.get( process.env.REACT_APP_SERVER_HOST + '/api/Users' , {params : {use_yn: 'Y',_sort:'last_login',_order:'DESC' }})
+        axios.get( process.env.REACT_APP_SERVER_HOST_API + '/Users' , {params : {use_yn: 'Y',_sort:'last_login',_order:'DESC' }})
             .then(res =>  setTableData(res.data))
     },[0])   
 
     const handleDelete = (row:any) => () => {
         /* json-server 데이터 삭제 */
         /*
-        axios.delete( process.env.REACT_APP_SERVER_HOST + "/api/Users/" + row.id )
+        axios.delete( process.env.REACT_APP_SERVER_HOST_API + "/Users/" + row.id )
             .then( (response) => { alert("삭제 성공") })
             .catch( (error) => { alert("삭제 실패") });
         */
@@ -47,7 +47,7 @@ export default function UserList(){
                 handleConfirm: () => {
 
 
-                    axios.patch( process.env.REACT_APP_SERVER_HOST + "/api/Users/" + row.id , {
+                    axios.patch( process.env.REACT_APP_SERVER_HOST_API + "/Users/" + row.id , {
                         use_yn : 'N' ,
                         mdfr_id : user.user_id,
                         mdfr_time : Time.getTimeString()

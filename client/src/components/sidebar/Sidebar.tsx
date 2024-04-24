@@ -55,7 +55,7 @@ export default function Sidebar(){
     const [menuData , setMenuData] = useState([ {id:0 , parent_id:0 , name:'' ,list_order:0,url:'',icon:'',children:[{id:0 , parent_id:0 , name:'' ,list_order:0,url:'',icon:''}]} ])
     useEffect( () => {
         async function getMenuAndSet(){
-            const res = await  axios.get( process.env.REACT_APP_SERVER_HOST + '/api/Menu?_rel=children&parent_id=null&_sort=list_order')
+            const res = await  axios.get( process.env.REACT_APP_SERVER_HOST_API + '/Menu?_rel=children&parent_id=null&_sort=list_order')
             setMenuData(res.data)
         }
         getMenuAndSet()

@@ -52,7 +52,7 @@ const ForgotPassword = () => {
       return
     }
     if(radioValue == 'id'){
-      axios.get( process.env.REACT_APP_SERVER_HOST + "/api/Users?email="+data.get('email'))
+      axios.get( process.env.REACT_APP_SERVER_HOST_API + "/Users?email="+data.get('email'))
           .then(res=>{
             if(res.data.length == 0){
               setAlertMessage('등록된 아이디가 없습니다.')
@@ -73,7 +73,7 @@ const ForgotPassword = () => {
                       email : res.data[0].email ,
                       message :  res.data[0].user_name + "님의 아이디는  " + res.data[0].user_id + " 입니다."
                     }
-                    axios.post( process.env.REACT_APP_SERVER_HOST + "/api/sendmail",mailParam)
+                    axios.post( process.env.REACT_APP_SERVER_HOST_API + "/sendmail",mailParam)
                         .then(res=>{
                           showModal({
                             modalType: "AlertModal",
@@ -102,7 +102,7 @@ const ForgotPassword = () => {
         setAlertMessage('ID를 입력해주세요,')
         return
       }
-      axios.get( process.env.REACT_APP_SERVER_HOST + "/api/Users?email="+data.get('email')+"&user_id="+data.get('id'))
+      axios.get( process.env.REACT_APP_SERVER_HOST_API + "/Users?email="+data.get('email')+"&user_id="+data.get('id'))
           .then(res=>{
             if(res.data.length == 0){
               setAlertMessage('등록된 이메일이 없습니다.')
@@ -119,14 +119,14 @@ const ForgotPassword = () => {
                   handleConfirm: () => {
                     var new_password = generateRandomString()
                     console.log(new_password)
-                    axios.patch( process.env.REACT_APP_SERVER_HOST + "/api/password/change/"+ res.data[0].id ,  {password :new_password , mdfr_time : Time.getTimeString() , mdfr_id : 'system' } )
+                    axios.patch( process.env.REACT_APP_SERVER_HOST_API + "/password/change/"+ res.data[0].id ,  {password :new_password , mdfr_time : Time.getTimeString() , mdfr_id : 'system' } )
                         .then((response) => {
                           var mailParam = {
                             name  : "비밀번호 초기화" ,
                             email : res.data[0].email ,
                             message :  res.data[0].user_name + "님의 비밀번호를  " + new_password + "입니다. \n 비밀번호를 변경해주세요."
                           }
-                          axios.post( process.env.REACT_APP_SERVER_HOST + "/api/sendmail",mailParam)
+                          axios.post( process.env.REACT_APP_SERVER_HOST_API + "/sendmail",mailParam)
                               .then(res=>{
                                 showModal({
                                   modalType: "AlertModal",

@@ -40,7 +40,7 @@ export default function ProductsList(){
     const fetchData = async () => {
         setIsLoading(true);
         try {
-            const response = await axios.get( process.env.REACT_APP_SERVER_HOST + '/api/Products' , {params : {use_yn: 'Y',_sort:'id',_order:'DESC',_limit: 3,_page: page ,_exceptcols : 'content'}})
+            const response = await axios.get( process.env.REACT_APP_SERVER_HOST_API + '/Products' , {params : {use_yn: 'Y',_sort:'id',_order:'DESC',_limit: 3,_page: page ,_exceptcols : 'content'}})
 
 
             const newData = response.data.map(
