@@ -18,7 +18,7 @@ import Loading from 'src/components/loding/Loding';
 
 import {OrdersDetailParm} from '../props/OrdersDetailParm'
 
-import './OrderAdd.css'
+import './CartOrderAdd.css'
 
 
 import '@toast-ui/editor/dist/toastui-editor.css';
@@ -40,12 +40,11 @@ import FormControlLabel from "@mui/material/FormControlLabel";
 const theme = createTheme();
 
 interface type{
-  product? : ProductProps
-  orderCnt? : number
+  carts : CartProps[]
   totalPrice? : number
 }
 
-const OrderAdd:React.FC<type> = (props) => {
+const CartOrderAdd:React.FC<type> = (props) => {
 
 
   const { showModal } = useModal();
@@ -65,25 +64,25 @@ const OrderAdd:React.FC<type> = (props) => {
 
 
   const initData = () => {
-    if(props.product){
-      //단건 구매
+    if(props.carts){
+      //카트 구입
 
-    if(loggedIn){
-      setName(user.user_name)
-      setPhone_number(user.phone_number)
-      setEmail(user.email)
+      if(loggedIn){
+        setName(user.user_name)
+        setPhone_number(user.phone_number)
+        setEmail(user.email)
 
-      setRecipient_name(user.user_name)
-      setRecipient_phone_number(user.phone_number)
-      setRecipient_email(user.email)
+        setRecipient_name(user.user_name)
+        setRecipient_phone_number(user.phone_number)
+        setRecipient_email(user.email)
 
 
-      setAddr(user.addr)
-      setAddrDetail(user.addrDetail)
-      setZipNo(user.zipNo)
-    }else{
-      //비로그인 시 입력 가능하게
-    }
+        setAddr(user.addr)
+        setAddrDetail(user.addrDetail)
+        setZipNo(user.zipNo)
+      }else{
+        //비로그인 시 입력 가능하게
+      }
 
 
 
@@ -162,14 +161,12 @@ const OrderAdd:React.FC<type> = (props) => {
       return
     }
 
-    console.log("?")
-
     const data = {
       pg: PG, // PG사
       pay_method: payMethod, // 결제수단
       merchant_uid: ordNo, // 주문번호
       amount: props.totalPrice, // 결제금액
-      name: props.product?.product_nm, // 주문명
+      name: props.carts.length > 1 ?  props.carts[0].product.product_nm + '외 '+ String(props.carts.length -1) +'건' : props.carts[0].product.product_nm, // 주문명
       buyer_name: name, // 구매자 이름
       buyer_tel: phone_number, // 구매자 전화번호
       buyer_email: email, // 구매자 이메일
@@ -182,13 +179,14 @@ const OrderAdd:React.FC<type> = (props) => {
   };
   const callback = (response: any) => {
     const {success, error_msg} = response;
+
     if (success) {
       let ordersParm = {
         id: ordNo,
         user_id: user.id != 0 ? user.id : null,
         order_date: Time.getTimeString(),
         order_state: '결제완료',
-        order_title: props.product ? props.product.product_nm : '',
+        order_title: props.carts.length > 1 ?  props.carts[0].product.product_nm + '외 '+ String(props.carts.length -1) +'건' : props.carts[0].product.product_nm   ,
         order_price: props.totalPrice,  //배송비 무료
         rgstr_id: user.user_id != 'null' ? user.user_id : 'system',
         rgstr_time: Time.getTimeString(),
@@ -202,31 +200,52 @@ const OrderAdd:React.FC<type> = (props) => {
       }
       axios.post( process.env.REACT_APP_SERVER_HOST_API + '/Orders', ordersParm)
           .then(res => {
-            let ordersDetailParm = {
-              order_id: res.data.id,
-              product_nm: props.product?.product_nm,
-              product_type: props.product?.product_type,
-              cnt: props.orderCnt,
-              price: props.product?.price,
-              totalPrice: props.totalPrice,
-              title_img: props.product?.title_img,
-              rgstr_id: user.user_id != 'null' ? user.user_id : 'system',
-              rgstr_time: Time.getTimeString(),
-              mdfr_id: user.user_id != 'null' ? user.user_id : 'system',
-              mdfr_time: Time.getTimeString(),
+            let ordersDetailParm = {}
+
+
+
+            for(let i in props.carts){
+              ordersDetailParm = {
+                order_id: res.data.id,
+                product_nm: props.carts[i].product.product_nm,
+                product_type: props.carts[i].product.product_type,
+                cnt: props.carts[i].cnt,
+                price: props.carts[i].product.price,
+                totalPrice: props.totalPrice,
+                title_img: props.carts[i].product.title_img,
+                rgstr_id: user.user_id != 'null' ? user.user_id : 'system',
+                rgstr_time: Time.getTimeString(),
+                mdfr_id: user.user_id != 'null' ? user.user_id : 'system',
+                mdfr_time: Time.getTimeString(),
+              }
+              axios.post( process.env.REACT_APP_SERVER_HOST_API + '/OrderDetails', ordersDetailParm)
+                  .then(res=>{
+                    axios.delete( process.env.REACT_APP_SERVER_HOST_API + "/Cart?product_id="+props.carts[i].product_id +"&user_id="+props.carts[i].user_id )
+                        .catch( (error) => { console.log("장바구니 삭제 오류") });
+                  })
+                  .catch(e => { console.log(e)})
             }
 
 
-            axios.post( process.env.REACT_APP_SERVER_HOST_API + '/OrderDetails', ordersDetailParm)
-                .then(res => {
+            let cartLocalStorage = window.localStorage;
+            let localCartList =  cartLocalStorage.getItem("localCartList")
+            if(localCartList){
+              let cartList = JSON.parse(localCartList)
+              for(let i in props.carts){
+                cartList = cartList.filter((obj:CartProps , index:number) => obj['product_id'] !== props.carts[i].product_id )
+              }
+              cartLocalStorage.setItem("localCartList",JSON.stringify(cartList))
+            }
+            
+            showModal({
+              modalType: "AlertModal",
+              modalProps: {
+                message:  "결제가 완료됐습니다.",
+                handleConfirm : arg => { window.location.replace(window.location.href );}
+              }
+            });
 
-                  showModal({
-                    modalType: "AlertModal",
-                    modalProps: {
-                      message: "결제가 완료됐습니다."
-                    }
-                  });
-                })
+
           })
           .catch((error) => {
             console.log(error)
@@ -410,7 +429,6 @@ const OrderAdd:React.FC<type> = (props) => {
             />
           </Grid>
 
-
           <Grid item xs={12} container  justifyContent="flex-start" >
             <h4>결제 정보</h4>
           </Grid>
@@ -419,7 +437,17 @@ const OrderAdd:React.FC<type> = (props) => {
           </Grid>
           <Grid item  xs={12} sm={7}>
             <Grid item  xs={12} >
-              { props.product?props.product.product_nm:''}  {props.orderCnt + '개'}   {props.orderCnt ? ( props.product?props.product.price:0 * props.orderCnt).toLocaleString('ko-KR')+'원':'' }
+
+              {
+                props.carts.map((cart , index)=>{
+                  return(
+                      <div key={index}>
+                        { cart.product_nm }  {cart.cnt + '개'}   { ( cart.product.price * cart.cnt).toLocaleString('ko-KR')+'원' }
+                      </div>
+                  )
+                })
+              }
+
             </Grid>
           </Grid>
           <Grid item  xs={5}>
@@ -474,4 +502,4 @@ const OrderAdd:React.FC<type> = (props) => {
   );
 }
 
-export default  OrderAdd;
+export default  CartOrderAdd;

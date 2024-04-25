@@ -21,6 +21,8 @@ import {ProductProps} from "src/pages/producrs/props/ProductProps";
 import {CartProps} from "../props/CartProps"
 // @ts-ignore
 import Session from 'react-session-api';
+import OrderAdd from "../../order/add/OrderAdd";
+import CartOrderAdd from "src/pages/order/add/CartOrderAdd";
 
 export default function CartList(){
     const { showModal } = useModal();
@@ -224,6 +226,22 @@ export default function CartList(){
     ]
 
 
+    const addOrder = async () =>{
+        let tmpArr:CartProps[] = []
+        let total = 0
+        const selectedIDs = new Set(selectIds)
+        tableData.filter((row:CartProps ) => selectedIDs.has(row.id) ).forEach((obj)=> {
+            tmpArr.push(obj)
+        })
+
+        showModal({
+            modalType: "IncludeModal",
+            modalProps: {
+                message: <CartOrderAdd carts={tmpArr} totalPrice={totalPrice}/>
+            }
+        });
+    }
+
     return(
             <div className="cartList">
                 <DataGrid
@@ -248,7 +266,7 @@ export default function CartList(){
                             variant="contained"
                             sx={{fontSize : 20}}
                             style={{ height : '50px'  , margin : '10px'}}
-
+                            onClick={addOrder}
                         >
                             구매하기
                         </Button>
