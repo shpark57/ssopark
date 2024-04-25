@@ -39,7 +39,7 @@ let fileUpload = multer({
 
 
 router.get('/read/:id', async function(req: Request, res: Response) {
-    const file = await axios.get(   'http://' + req.headers.host + '/Files/'+req.params.id)
+    const file = await axios.get(   process.env.SERVER_HOST +  'Files/'+req.params.id)
     if(file.data){
         const url = dir +file.data.type+'/'+ file.data.ymd + file.data.change_name + '.' +file.data.file_type
         if(fs.existsSync(url)){
@@ -94,7 +94,7 @@ router.post("/upload/:type", fileUpload.array('files',10) , async function(req: 
             let origin = req.headers.origin
             origin = origin.charAt(origin.length - 1) == '/' ? origin : origin+'/'
 
-            axios.post( origin + 'Files',params)
+            axios.post( process.env.SERVER_HOST + 'Files',params)
         }
 
         res.status(201).send({
@@ -127,11 +127,10 @@ router.post("/tuiHook/:type", fileUpload.single('file') , async function(req: Re
 
         let origin = req.headers.origin
         origin = origin.charAt(origin.length - 1) == '/' ? origin : origin+'/'
-
-        axios.post( origin + 'Files',params)
+        axios.post( process.env.SERVER_HOST + 'Files',params)
             .then(entity =>{
                 res.status(201).send({
-                    message:  '/fileService/read/' + entity.data.id
+                    message: process.env.CLIENT_HOST + 'api/fileService/read/' + entity.data.id //저장될 값을 보내주어야하니 클라이언트 서버 가 들어가야한다.
                 })
             })
 
@@ -147,7 +146,7 @@ router.post("/tuiHook/:type", fileUpload.single('file') , async function(req: Re
 router.post('/reallyChange', async function(req: Request, res: Response) {
     try {
 
-        let regex = /\/fileService\/read\/(\d+)/g;
+        let regex = /\/api\/fileService\/read\/(\d+)/g;
         let text = req.body['text'];
         let ids = [];
         let match;
@@ -161,7 +160,7 @@ router.post('/reallyChange', async function(req: Request, res: Response) {
 
 
         for(let i in ids){
-            axios.get(origin + "Files/"+  ids[i] )
+            axios.get(process.env.SERVER_HOST + "Files/"+  ids[i] )
                 .then(res =>{
                 const sourceFolder = dir +res.data.type+'/'+ res.data.ymd + res.data.change_name + '.' +res.data.file_type
                 const destinationFolder = dir +req.body['type']+'/'+ res.data.ymd + res.data.change_name + '.' +res.data.file_type
@@ -199,7 +198,7 @@ router.post('/reallyChange', async function(req: Request, res: Response) {
                 })
 
             }).then(res=>{
-                axios.patch(origin + "Files/"+  ids[i]  ,  { type :req.body['type'] } )
+                axios.patch(process.env.SERVER_HOST + "Files/"+  ids[i]  ,  { type :req.body['type'] } )
             })
 
             res.status(201).send({

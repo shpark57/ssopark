@@ -7,8 +7,8 @@ const app = express();
 const router = require("./router/router");
 const file = require("./router/file")
 const mail = require("./router/sendmail")
-const cors = require('cors');
 
+require('dotenv').config();
 
 //app.use(logger('dev'));
 app.use(bodyParser.urlencoded({extended:true}))
@@ -35,15 +35,6 @@ app.use(function(err, req, res, next) {
     res.render('error');
 });
 
-
 const port: number = 6000;
-
-let corsOptions = {
-    origin: ["http://localhost:3000"
-        ,"http://shpark91.iptime.org:3000"],
-    credentials: true
-}
-
-app.use(cors(corsOptions));
 
 app.listen(port, () => console.log(`${port}`));

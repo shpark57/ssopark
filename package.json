@@ -1,0 +1,10 @@
+{
+  "dependencies": {
+    "yarn": "^1.22.22"
+  },
+  "name": "ssopark",
+  "version": "1.0.0",
+  "main": "index.js",
+  "repository": "https://github.com/shpark57/ssopark.git",
+  "license": "MIT"
+}

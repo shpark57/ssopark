@@ -81,7 +81,7 @@ const ProductsView = () =>{
             showModal({
                 modalType: "AlertModal",
                 modalProps: {
-                    message: "로그인을 해야 좋아요 표현을 할 수 있습니다.."
+                    message: "좋아요 는 로그인 후 이용 할 수 있습니다."
                 }
             });
             return
