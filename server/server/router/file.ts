@@ -131,7 +131,7 @@ router.post("/tuiHook/:type", fileUpload.single('file') , async function(req: Re
         axios.post( origin + 'Files',params)
             .then(entity =>{
                 res.status(201).send({
-                    message: 'https://db.sh2.site/api/fileService/read/' + entity.data.id
+                    message:  '/fileService/read/' + entity.data.id
                 })
             })
 
