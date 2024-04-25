@@ -30,9 +30,10 @@ import {BrowserRouter as Router, Routes, Route  } from 'react-router-dom'
 
 import GlobalModal from "./components/modal/GlobalModal";
 import CartList from "./pages/cart/list/CartList";
-import OrderAdd from "./pages/order/add/OrderAdd";
 import Footer from "./components/footer/Footer";
 import Nav from "./components/nav/Nav";
+import OrderAdd from "./pages/order/add/OrderAdd";
+import CartOrderAdd from './pages/order/add/CartOrderAdd';
 
 
 function App() {
@@ -42,7 +43,7 @@ function App() {
   // loggedIn 가 true 면 정상 페이지들을 보여주고
   // loggedIn 가 false 면 로그인 회원가입만 표시
   const loggedIn = Boolean(window.sessionStorage.getItem('loggedIn')) //로그인정보 세션스토리지에 저장
-  
+
   return (
     <LoginProvider>
     <GlobalModal />
@@ -66,6 +67,7 @@ function App() {
               <Route path="/login" element={ <Login/> }/>
               <Route path="/signUp" element={ <SignUp/> }/>
               <Route path="/orderAdd" element={ <OrderAdd/> }/>
+              <Route path="/cartOrderAdd" element={ <CartOrderAdd carts={[]}/> }/>
 
 
 
