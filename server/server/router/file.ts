@@ -91,8 +91,6 @@ router.post("/upload/:type", fileUpload.array('files',10) , async function(req: 
                 ,size           : req.body['files_params['+i+'].size' ]
             }
 
-            let origin = req.headers.origin
-            origin = origin.charAt(origin.length - 1) == '/' ? origin : origin+'/'
 
             axios.post( process.env.SERVER_HOST + 'Files',params)
         }
@@ -125,12 +123,10 @@ router.post("/tuiHook/:type", fileUpload.single('file') , async function(req: Re
             ,size           : req.body['size' ]
         }
 
-        let origin = req.headers.origin
-        origin = origin.charAt(origin.length - 1) == '/' ? origin : origin+'/'
         axios.post( process.env.SERVER_HOST + 'Files',params)
             .then(entity =>{
                 res.status(201).send({
-                    message: process.env.CLIENT_HOST + 'api/fileService/read/' + entity.data.id //저장될 값을 보내주어야하니 클라이언트 서버 가 들어가야한다.
+                    message: '/api/fileService/read/' + entity.data.id
                 })
             })
 
@@ -150,8 +146,6 @@ router.post('/reallyChange', async function(req: Request, res: Response) {
         let text = req.body['text'];
         let ids = [];
         let match;
-        let origin = req.headers.origin
-        origin = origin.charAt(origin.length - 1) == '/' ? origin : origin+'/'
 
 
         while ((match = regex.exec(text)) !== null) {
