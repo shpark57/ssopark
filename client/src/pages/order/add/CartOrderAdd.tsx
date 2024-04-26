@@ -165,7 +165,7 @@ const CartOrderAdd:React.FC<type> = (props) => {
       id: ordNo,
       user_id: user.id != 0 ? user.id : null,
       order_date: Time.getTimeString(),
-      order_state: '결제완료',
+      order_state: '결제대기',
       order_title: props.carts.length > 1 ?  props.carts[0].product.product_nm + '외 '+ String(props.carts.length -1) +'건' : props.carts[0].product.product_nm   ,
       order_price: props.totalPrice,  //배송비 무료
       rgstr_id: user.user_id != 'null' ? user.user_id : 'system',
@@ -180,12 +180,8 @@ const CartOrderAdd:React.FC<type> = (props) => {
     }
     axios.post( process.env.REACT_APP_SERVER_HOST_API + '/Orders', ordersParm)
         .then(res => {
-          let ordersDetailParm = {}
-
-
-
           for(let i in props.carts){
-            ordersDetailParm = {
+            let ordersDetailParm = {
               order_id: res.data.id,
               product_nm: props.carts[i].product.product_nm,
               product_type: props.carts[i].product.product_type,
@@ -229,29 +225,49 @@ const CartOrderAdd:React.FC<type> = (props) => {
                 buyer_email: email, // 구매자 이메일
                 buyer_addr: addr + ' ' +addrDetail, // 구매자 주소
                 buyer_postcode: zipNo, // 구매자 우편번호
-                r_redirect_url : process.env.REACT_APP_CLIENT_HOST + '/carts/complete?imp_uid='+ ordNo +'&merchant_uid='+ `${process.env.REACT_APP_IMP}` +'&imp_success=true'
+                r_redirect_url : process.env.REACT_APP_CLIENT_HOST + '/payment'
               };
               IMP.request_pay(data, callback);
-
         })
         .catch((error) => {
           console.log(error)
         });
-
-
-
-
-
   };
   const callback = (response: any) => {
     const {success, error_msg} = response;
 
     if (success) {
+      axios.patch(process.env.REACT_APP_SERVER_HOST_API + '/Orders/id='+ordNo ,{ 'order_state' : '결제성공'})
+          .then(res=>{
+            showModal({
+              modalType: "AlertModal",
+              modalProps: {
+                message: "주문에 성공했습니다.",
+                handleConfirm : arg => {
+                  navigate(String("/carts"))
+                }
+              }
+            });
+          })
+
 
     } else {
-      alert(`결제 실패: ${error_msg}`);
-    }
-    ;
+      axios.delete(process.env.REACT_APP_SERVER_HOST_API + '/OrderDetails?order_id='+ordNo)
+          .then(res=>{
+            axios.delete(process.env.REACT_APP_SERVER_HOST_API + '/Order?id='+ordNo)
+                .then(res=>{
+                  showModal({
+                    modalType: "AlertModal",
+                    modalProps: {
+                      message: "주문에 실패했습니다.",
+                      handleConfirm : arg => {
+                        navigate(String("/carts"))
+                      }
+                    }
+                  });
+                    }).catch(e=>{console.log(e)})
+          }).catch(e=>{console.log(e)})
+    };
   }
 
  const copyDefaultInfo = () =>{
