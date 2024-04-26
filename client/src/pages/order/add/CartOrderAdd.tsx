@@ -128,7 +128,6 @@ const CartOrderAdd:React.FC<type> = (props) => {
 
   const ordNo = 'ord_' +Time.toDateStringNumRandom();
   const onClickPayment = () => {
-
     const { IMP }:any = window;
     IMP.init(`${process.env.REACT_APP_IMP}`);
 
@@ -161,19 +160,86 @@ const CartOrderAdd:React.FC<type> = (props) => {
       return
     }
 
-    const data = {
-      pg: PG, // PG사
-      pay_method: payMethod, // 결제수단
-      merchant_uid: ordNo, // 주문번호
-      amount: props.totalPrice, // 결제금액
-      name: props.carts.length > 1 ?  props.carts[0].product.product_nm + '외 '+ String(props.carts.length -1) +'건' : props.carts[0].product.product_nm, // 주문명
-      buyer_name: name, // 구매자 이름
-      buyer_tel: phone_number, // 구매자 전화번호
-      buyer_email: email, // 구매자 이메일
-      buyer_addr: addr + ' ' +addrDetail, // 구매자 주소
-      buyer_postcode: zipNo, // 구매자 우편번호
-    };
-    IMP.request_pay(data, callback);
+
+    let ordersParm = {
+      id: ordNo,
+      user_id: user.id != 0 ? user.id : null,
+      order_date: Time.getTimeString(),
+      order_state: '결제완료',
+      order_title: props.carts.length > 1 ?  props.carts[0].product.product_nm + '외 '+ String(props.carts.length -1) +'건' : props.carts[0].product.product_nm   ,
+      order_price: props.totalPrice,  //배송비 무료
+      rgstr_id: user.user_id != 'null' ? user.user_id : 'system',
+      rgstr_time: Time.getTimeString(),
+      mdfr_id:  user.user_id != 'null' ? user.user_id : 'system',
+      mdfr_time: Time.getTimeString(),
+      addr: addr,
+      addrDetail: addrDetail,
+      zipNo: zipNo,
+      recipient_name: recipient_name,
+      recipient_phone_number: recipient_phone_number
+    }
+    axios.post( process.env.REACT_APP_SERVER_HOST_API + '/Orders', ordersParm)
+        .then(res => {
+          let ordersDetailParm = {}
+
+
+
+          for(let i in props.carts){
+            ordersDetailParm = {
+              order_id: res.data.id,
+              product_nm: props.carts[i].product.product_nm,
+              product_type: props.carts[i].product.product_type,
+              cnt: props.carts[i].cnt,
+              price: props.carts[i].product.price,
+              totalPrice: props.totalPrice,
+              title_img: props.carts[i].product.title_img,
+              rgstr_id: user.user_id != 'null' ? user.user_id : 'system',
+              rgstr_time: Time.getTimeString(),
+              mdfr_id: user.user_id != 'null' ? user.user_id : 'system',
+              mdfr_time: Time.getTimeString(),
+            }
+            axios.post( process.env.REACT_APP_SERVER_HOST_API + '/OrderDetails', ordersDetailParm)
+                .then(res=>{
+                  axios.delete( process.env.REACT_APP_SERVER_HOST_API + "/Cart?product_id="+props.carts[i].product_id +"&user_id="+props.carts[i].user_id )
+                      .catch( (error) => { console.log("장바구니 삭제 오류") });
+                })
+                .catch(e => { console.log(e)})
+          }
+
+
+          let cartLocalStorage = window.localStorage;
+          let localCartList =  cartLocalStorage.getItem("localCartList")
+          if(localCartList){
+            let cartList = JSON.parse(localCartList)
+            for(let i in props.carts){
+              cartList = cartList.filter((obj:CartProps , index:number) => obj['product_id'] !== props.carts[i].product_id )
+            }
+            cartLocalStorage.setItem("localCartList",JSON.stringify(cartList))
+          }
+
+
+              const data = {
+                pg: PG, // PG사
+                pay_method: payMethod, // 결제수단
+                merchant_uid: ordNo, // 주문번호
+                amount: props.totalPrice, // 결제금액
+                name: props.carts.length > 1 ?  props.carts[0].product.product_nm + '외 '+ String(props.carts.length -1) +'건' : props.carts[0].product.product_nm, // 주문명
+                buyer_name: name, // 구매자 이름
+                buyer_tel: phone_number, // 구매자 전화번호
+                buyer_email: email, // 구매자 이메일
+                buyer_addr: addr + ' ' +addrDetail, // 구매자 주소
+                buyer_postcode: zipNo, // 구매자 우편번호
+                r_redirect_url : process.env.REACT_APP_CLIENT_HOST + '/carts/complete?imp_uid='+ ordNo +'&merchant_uid='+ `${process.env.REACT_APP_IMP}` +'&imp_success=true'
+              };
+              IMP.request_pay(data, callback);
+
+        })
+        .catch((error) => {
+          console.log(error)
+        });
+
+
+
 
 
   };
@@ -181,75 +247,6 @@ const CartOrderAdd:React.FC<type> = (props) => {
     const {success, error_msg} = response;
 
     if (success) {
-      let ordersParm = {
-        id: ordNo,
-        user_id: user.id != 0 ? user.id : null,
-        order_date: Time.getTimeString(),
-        order_state: '결제완료',
-        order_title: props.carts.length > 1 ?  props.carts[0].product.product_nm + '외 '+ String(props.carts.length -1) +'건' : props.carts[0].product.product_nm   ,
-        order_price: props.totalPrice,  //배송비 무료
-        rgstr_id: user.user_id != 'null' ? user.user_id : 'system',
-        rgstr_time: Time.getTimeString(),
-        mdfr_id:  user.user_id != 'null' ? user.user_id : 'system',
-        mdfr_time: Time.getTimeString(),
-        addr: addr,
-        addrDetail: addrDetail,
-        zipNo: zipNo,
-        recipient_name: recipient_name,
-        recipient_phone_number: recipient_phone_number
-      }
-      axios.post( process.env.REACT_APP_SERVER_HOST_API + '/Orders', ordersParm)
-          .then(res => {
-            let ordersDetailParm = {}
-
-
-
-            for(let i in props.carts){
-              ordersDetailParm = {
-                order_id: res.data.id,
-                product_nm: props.carts[i].product.product_nm,
-                product_type: props.carts[i].product.product_type,
-                cnt: props.carts[i].cnt,
-                price: props.carts[i].product.price,
-                totalPrice: props.totalPrice,
-                title_img: props.carts[i].product.title_img,
-                rgstr_id: user.user_id != 'null' ? user.user_id : 'system',
-                rgstr_time: Time.getTimeString(),
-                mdfr_id: user.user_id != 'null' ? user.user_id : 'system',
-                mdfr_time: Time.getTimeString(),
-              }
-              axios.post( process.env.REACT_APP_SERVER_HOST_API + '/OrderDetails', ordersDetailParm)
-                  .then(res=>{
-                    axios.delete( process.env.REACT_APP_SERVER_HOST_API + "/Cart?product_id="+props.carts[i].product_id +"&user_id="+props.carts[i].user_id )
-                        .catch( (error) => { console.log("장바구니 삭제 오류") });
-                  })
-                  .catch(e => { console.log(e)})
-            }
-
-
-            let cartLocalStorage = window.localStorage;
-            let localCartList =  cartLocalStorage.getItem("localCartList")
-            if(localCartList){
-              let cartList = JSON.parse(localCartList)
-              for(let i in props.carts){
-                cartList = cartList.filter((obj:CartProps , index:number) => obj['product_id'] !== props.carts[i].product_id )
-              }
-              cartLocalStorage.setItem("localCartList",JSON.stringify(cartList))
-            }
-            
-            showModal({
-              modalType: "AlertModal",
-              modalProps: {
-                message:  "결제가 완료됐습니다.",
-                handleConfirm : arg => { window.location.replace(window.location.href );}
-              }
-            });
-
-
-          })
-          .catch((error) => {
-            console.log(error)
-          });
 
     } else {
       alert(`결제 실패: ${error_msg}`);
