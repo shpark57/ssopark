@@ -23,6 +23,7 @@ import {CartProps} from "../props/CartProps"
 import Session from 'react-session-api';
 import OrderAdd from "../../order/add/OrderAdd";
 import CartOrderAdd from "src/pages/order/add/CartOrderAdd";
+import {getCookie, removeCookie, setCookie} from "../../../types/cookie";
 
 export default function CartList(){
     const { showModal } = useModal();
@@ -41,6 +42,7 @@ export default function CartList(){
 
     const ontSelect = () => {
 
+        let cookieCartList =   getCookie("cookieCartList")
         if(loggedIn){
             axios.get( process.env.REACT_APP_SERVER_HOST_API + '/cart' , {params : {user_id: user.id , _rel : 'product' }})
                 .then(res =>  {
@@ -49,12 +51,9 @@ export default function CartList(){
                         obj.product_nm = obj.product.product_nm
                     })
 
-                    let cartLocalStorage = window.localStorage;
-                    let localCartList =  cartLocalStorage.getItem("localCartList")
-
                     let cartList: CartProps[] = []
-                    if(localCartList){
-                        cartList = JSON.parse(localCartList)
+                    if(cookieCartList){
+                        cartList = cookieCartList
                         cartList.forEach( (row:CartProps,index:number) =>{
                             row.user_id = user.id
 
@@ -70,7 +69,7 @@ export default function CartList(){
                             }
                         })
                         setTableData(res.data)
-                        cartLocalStorage.removeItem("localCartList" )
+                        removeCookie("cookieCartList")
                     }else{
                         setTableData(res.data)
                     }
@@ -78,11 +77,8 @@ export default function CartList(){
                 })
             setSelectChk(1)
         }else{
-            let cartLocalStorage = window.localStorage;
-            let localCartList =  cartLocalStorage.getItem("localCartList")
-            if(localCartList){
-                let cartList = JSON.parse(localCartList)
-                setTableData(cartList)
+            if(cookieCartList){
+                setTableData(cookieCartList)
                 setSelectChk(1)
             }
         }
@@ -107,15 +103,15 @@ export default function CartList(){
             axios.post( process.env.REACT_APP_SERVER_HOST_API + "/Cart", updatedItems[  Number(event.target.name) ])
                 .catch((error) =>  {console.log("장바구니 수정 오류")});
         }else{
-            let cartLocalStorage = window.localStorage;
-            let localCartList =  cartLocalStorage.getItem("localCartList")
-            if(localCartList){
-                let cartList = JSON.parse(localCartList)
+            let cookieCartList =   getCookie("cookieCartList")
+            if(cookieCartList){
+                let cartList = JSON.parse(cookieCartList)
                 var findIndex = cartList.findIndex((obj:any, index:number) => obj['product_id'] === updatedItems[ Number(event.target.name)].product_id )
                 if(findIndex != -1){
                     cartList[findIndex].cnt = cartList[findIndex].cnt + 1
                 }
-                cartLocalStorage.setItem("localCartList",JSON.stringify(cartList))
+
+                setCookie("cookieCartList" , JSON.stringify(cartList))
             }
         }
 
@@ -131,15 +127,14 @@ export default function CartList(){
             axios.post( process.env.REACT_APP_SERVER_HOST_API + "/Cart", updatedItems[  Number( row.id) ])
                 .catch((error) =>  {console.log("장바구니 수정 오류")});
         }else{
-            let cartLocalStorage = window.localStorage;
-            let localCartList =  cartLocalStorage.getItem("localCartList")
-            if(localCartList){
-                let cartList = JSON.parse(localCartList)
+            let cookieCartList =   getCookie("cookieCartList")
+            if(cookieCartList){
+                let cartList = cookieCartList
                 var findIndex = cartList.findIndex((obj:any, index:number) => obj['product_id'] === updatedItems[Number( row.id)].product_id )
                 if(findIndex != -1){
                     cartList[findIndex].cnt = cartList[findIndex].cnt + 1
                 }
-                cartLocalStorage.setItem("localCartList",JSON.stringify(cartList))
+                setCookie("cookieCartList" , JSON.stringify(cartList))
             }
         }
     }
@@ -167,12 +162,12 @@ export default function CartList(){
                         axios.delete( process.env.REACT_APP_SERVER_HOST_API + "/Cart?product_id="+row.product_id +"&user_id="+user.id )
                             .catch( (error) => { alert("장바구니 삭제 오류") });
                     }else{
-                        let cartLocalStorage = window.localStorage;
-                        let localCartList =  cartLocalStorage.getItem("localCartList")
-                        if(localCartList){
-                            let cartList = JSON.parse(localCartList)
+                        let cookieCartList =   getCookie("cookieCartList")
+                        if(cookieCartList){
+                            let cartList = cookieCartList
                             let tmpArr = updatedItems.filter((obj:CartProps , index:number) => obj['product_id'] !== updatedItems[Number( row.id)].product_id )
-                            cartLocalStorage.setItem("localCartList",JSON.stringify(tmpArr))
+
+                            setCookie("cookieCartList",JSON.stringify(tmpArr))
                         }
                     }
                 },

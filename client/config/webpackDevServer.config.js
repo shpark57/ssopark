@@ -71,7 +71,7 @@ module.exports = function (proxy, allowedHost) {
       },
     },
     client: {
-      webSocketURL: "wss://0.0.0.0:443/wss",
+      webSocketURL : "wss://0.0.0.0:443/wss",
       overlay: {
         errors: true,
         warnings: false,

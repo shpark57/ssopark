@@ -18,12 +18,13 @@ const Payment = () => {
     let navigate = useNavigate();   //페이지 이동을 위해필요.
     const [query, setQuery]  = useSearchParams();
     useEffect(() => {
-
+        console.log("?")
         if(query.get('imp_uid') && query.get('merchant_uid') && query.get('imp_success')) {
             // 결제 후 리디렉션 url로 이동이 되었을 경우
             // ... 쿼리스트링으로 받은 데이터를 가지고 핸들링
             alert("결제변경 갑니다.")
-            axios.patch(process.env.REACT_APP_SERVER_HOST_API + '/Orders?id='+query.get('merchant_uid') ,{ 'order_state' : '결제성공'})
+
+            axios.patch(process.env.REACT_APP_SERVER_HOST_API + '/Orders/'+query.get('merchant_uid') ,{ 'order_state' : '결제성공'})
                 .then(res=>{
 
                     alert("주문도성공")

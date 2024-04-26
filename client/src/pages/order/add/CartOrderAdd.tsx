@@ -230,7 +230,11 @@ const CartOrderAdd:React.FC<type> = (props) => {
               modalProps: {
                 message: "주문에 성공했습니다.",
                 handleConfirm : arg => {
-                  
+                  if(loggedIn){
+
+                  }else{
+
+                  }
                   /*  장바구니 삭제 로직
     let cartLocalStorage = window.localStorage;
     let localCartList =  cartLocalStorage.getItem("localCartList")
