@@ -25,11 +25,8 @@ dpkg-reconfigure tzdata   // 타임존 설정
 
 
 강제로 최신본으로 pull
-git fetch --all  
-git reset --hard origin/master
-
-
-
+git fetch --all
+git reset --hard origin/product
 
 import\s+([^;\s]+)\s+from\s+['\"]([^'\"]+)['\"];?
 const {$1} = require('$2');
