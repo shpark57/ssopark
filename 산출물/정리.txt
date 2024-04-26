@@ -101,3 +101,10 @@ docker exec -t -i shpark57/shpark_farm /bin/bash
 
   show global variables like "PORT";
   마이sql 포트확인
+
+
+
+
+강제로 최신본으로 pull -- 운영영
+git fetch --all
+git reset --hard origin/dev
