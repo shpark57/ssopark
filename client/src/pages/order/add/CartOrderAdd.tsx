@@ -1,7 +1,6 @@
 
 import React, {useState, useEffect, useContext, useCallback, useRef, ChangeEvent} from 'react';
 import { LoginContext } from 'src/contexts/login'
-import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import * as Time from 'src/types/time'
 
@@ -195,39 +194,26 @@ const CartOrderAdd:React.FC<type> = (props) => {
               mdfr_time: Time.getTimeString(),
             }
             axios.post( process.env.REACT_APP_SERVER_HOST_API + '/OrderDetails', ordersDetailParm)
-                .then(res=>{
-                  axios.delete( process.env.REACT_APP_SERVER_HOST_API + "/Cart?product_id="+props.carts[i].product_id +"&user_id="+props.carts[i].user_id )
-                      .catch( (error) => { console.log("장바구니 삭제 오류") });
-                })
                 .catch(e => { console.log(e)})
           }
 
 
-          let cartLocalStorage = window.localStorage;
-          let localCartList =  cartLocalStorage.getItem("localCartList")
-          if(localCartList){
-            let cartList = JSON.parse(localCartList)
-            for(let i in props.carts){
-              cartList = cartList.filter((obj:CartProps , index:number) => obj['product_id'] !== props.carts[i].product_id )
-            }
-            cartLocalStorage.setItem("localCartList",JSON.stringify(cartList))
-          }
 
-
-              const data = {
-                pg: PG, // PG사
-                pay_method: payMethod, // 결제수단
-                merchant_uid: ordNo, // 주문번호
-                amount: props.totalPrice, // 결제금액
-                name: props.carts.length > 1 ?  props.carts[0].product.product_nm + '외 '+ String(props.carts.length -1) +'건' : props.carts[0].product.product_nm, // 주문명
-                buyer_name: name, // 구매자 이름
-                buyer_tel: phone_number, // 구매자 전화번호
-                buyer_email: email, // 구매자 이메일
-                buyer_addr: addr + ' ' +addrDetail, // 구매자 주소
-                buyer_postcode: zipNo, // 구매자 우편번호
-                r_redirect_url : process.env.REACT_APP_CLIENT_HOST + '/payment'
-              };
-              IMP.request_pay(data, callback);
+        }).then(res=>{
+            const data = {
+              pg: PG, // PG사
+              pay_method: payMethod, // 결제수단
+              merchant_uid: ordNo, // 주문번호
+              amount: props.totalPrice, // 결제금액
+              name: props.carts.length > 1 ?  props.carts[0].product.product_nm + '외 '+ String(props.carts.length -1) +'건' : props.carts[0].product.product_nm, // 주문명
+              buyer_name: name, // 구매자 이름
+              buyer_tel: phone_number, // 구매자 전화번호
+              buyer_email: email, // 구매자 이메일
+              buyer_addr: addr + ' ' +addrDetail, // 구매자 주소
+              buyer_postcode: zipNo, // 구매자 우편번호
+              m_redirect_url : process.env.REACT_APP_CLIENT_HOST + '/payment'
+            };
+            IMP.request_pay(data, callback);
         })
         .catch((error) => {
           console.log(error)
@@ -244,7 +230,19 @@ const CartOrderAdd:React.FC<type> = (props) => {
               modalProps: {
                 message: "주문에 성공했습니다.",
                 handleConfirm : arg => {
-                  navigate(String("/carts"))
+                  
+                  /*  장바구니 삭제 로직
+    let cartLocalStorage = window.localStorage;
+    let localCartList =  cartLocalStorage.getItem("localCartList")
+    if(localCartList){
+      let cartList = JSON.parse(localCartList)
+      for(let i in props.carts){
+        cartList = cartList.filter((obj:CartProps , index:number) => obj['product_id'] !== props.carts[i].product_id )
+      }
+      cartLocalStorage.setItem("localCartList",JSON.stringify(cartList))
+    }
+                  
+                   */
                 }
               }
             });
@@ -261,7 +259,6 @@ const CartOrderAdd:React.FC<type> = (props) => {
                     modalProps: {
                       message: "주문에 실패했습니다.",
                       handleConfirm : arg => {
-                        navigate(String("/carts"))
                       }
                     }
                   });
