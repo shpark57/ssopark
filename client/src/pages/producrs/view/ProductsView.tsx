@@ -31,6 +31,7 @@ import EditIcon from '@mui/icons-material/Edit';
 import Session from 'react-session-api';
 import UserModify from "../../user/modify/UserModify";
 import OrderAdd from "src/pages/order/add/OrderAdd";
+import {getCookie, setCookie} from "../../../types/cookie";
 
 const ProductsView = () =>{
 
@@ -181,12 +182,10 @@ const ProductsView = () =>{
                 id : 0
             }
             // 2. 객체
-            let cartLocalStorage = window.localStorage;
-            let localCartList =  cartLocalStorage.getItem("localCartList")
-
+            let cookieCartList =   getCookie("cookieCartList")
             let cartList
-            if(localCartList){
-                cartList = JSON.parse(localCartList)
+            if(cookieCartList){
+                cartList = cookieCartList
                 var findIndex = cartList.findIndex((obj:any, index:number) => obj['product_id'] === product?.id)
                 if(findIndex != -1){
                     cartList[findIndex].cnt = cartList[findIndex].cnt + productCnt
@@ -198,7 +197,7 @@ const ProductsView = () =>{
             }else{
                 cartList = [params]
             }
-            cartLocalStorage.setItem("localCartList" , JSON.stringify(cartList))
+            setCookie("cookieCartList" , JSON.stringify(cartList))
 
             showModal({
                 modalType: "AlertModal",
