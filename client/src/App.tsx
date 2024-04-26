@@ -34,6 +34,7 @@ import Footer from "./components/footer/Footer";
 import Nav from "./components/nav/Nav";
 import OrderAdd from "./pages/order/add/OrderAdd";
 import CartOrderAdd from './pages/order/add/CartOrderAdd';
+import Payment from "./pages/payment/Payment";
 
 
 function App() {
@@ -68,6 +69,7 @@ function App() {
               <Route path="/signUp" element={ <SignUp/> }/>
               <Route path="/orderAdd" element={ <OrderAdd/> }/>
               <Route path="/cartOrderAdd" element={ <CartOrderAdd carts={[]}/> }/>
+              <Route path="/payment" element={ <Payment/> }/>
 
 
 
