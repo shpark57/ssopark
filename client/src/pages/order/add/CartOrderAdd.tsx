@@ -19,7 +19,6 @@ import {OrdersDetailParm} from '../props/OrdersDetailParm'
 
 import './CartOrderAdd.css'
 
-
 import '@toast-ui/editor/dist/toastui-editor.css';
 import {Editor,  EditorProps} from '@toast-ui/react-editor';
 import '@toast-ui/editor/dist/i18n/ko-kr';
@@ -35,6 +34,7 @@ import {IAddr} from "../../../types/iddr";
 
 import {CartProps} from "src/pages/cart/props/CartProps"
 import FormControlLabel from "@mui/material/FormControlLabel";
+import {getCookie, setCookie} from "../../../types/cookie";
 
 const theme = createTheme();
 
@@ -182,6 +182,7 @@ const CartOrderAdd:React.FC<type> = (props) => {
           for(let i in props.carts){
             let ordersDetailParm = {
               order_id: res.data.id,
+              product_id: props.carts[i].product.id,
               product_nm: props.carts[i].product.product_nm,
               product_type: props.carts[i].product.product_type,
               cnt: props.carts[i].cnt,
@@ -223,36 +224,43 @@ const CartOrderAdd:React.FC<type> = (props) => {
     const {success, error_msg} = response;
 
     if (success) {
-      axios.patch(process.env.REACT_APP_SERVER_HOST_API + '/Orders/id='+ordNo ,{ 'order_state' : '결제성공'})
+      axios.patch(process.env.REACT_APP_SERVER_HOST_API + '/Orders/'+ordNo ,{ 'order_state' : '결제성공'})
           .then(res=>{
-            showModal({
-              modalType: "AlertModal",
-              modalProps: {
-                message: "주문에 성공했습니다.",
-                handleConfirm : arg => {
-                  if(loggedIn){
+            axios.get(process.env.REACT_APP_SERVER_HOST_API + '/Orders?id='+ordNo+'&_rel=details')
+                .then(res=>{
+                  let details = res.data[0].details
 
+                  if(loggedIn){
+                    details.forEach((detail:OrdersDetailParm) =>{
+                      axios.delete( process.env.REACT_APP_SERVER_HOST_API + "/Cart?product_id="+detail.product_id +"&user_id="+user.id ).catch(e => console.log(e))
+                    })
                   }else{
+                    let cookieCartList =   getCookie("cookieCartList")
+                    let tmpArr:CartProps[] = []
+
+                    cookieCartList.forEach((cart: CartProps) =>{
+                      let index = details.findIndex((detail:OrdersDetailParm) => detail.product_id  === cart.product.id)
+                      if(index === -1 ){
+                        tmpArr.push(cart)
+                      }
+                    })
+                    setCookie("cookieCartList" , JSON.stringify(tmpArr))
+
+
 
                   }
-                  /*  장바구니 삭제 로직
-    let cartLocalStorage = window.localStorage;
-    let localCartList =  cartLocalStorage.getItem("localCartList")
-    if(localCartList){
-      let cartList = JSON.parse(localCartList)
-      for(let i in props.carts){
-        cartList = cartList.filter((obj:CartProps , index:number) => obj['product_id'] !== props.carts[i].product_id )
-      }
-      cartLocalStorage.setItem("localCartList",JSON.stringify(cartList))
-    }
-                  
-                   */
-                }
-              }
-            });
-          })
-
-
+                }).then(res=>{
+                  showModal({
+                    modalType: "AlertModal",
+                    modalProps: {
+                      message: "주문성공했습니다.",
+                      handleConfirm : arg => {
+                        window.location.replace(window.location.href );
+                      }
+                    }
+                  });
+                })
+          }).catch(e=>{console.log(e)})
     } else {
       axios.delete(process.env.REACT_APP_SERVER_HOST_API + '/OrderDetails?order_id='+ordNo)
           .then(res=>{

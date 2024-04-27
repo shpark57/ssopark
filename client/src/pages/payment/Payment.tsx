@@ -10,9 +10,13 @@ import DeleteIcon from '@mui/icons-material/Delete';
 
 
 import CommentComponent from 'src/components/comment/CommentComponent';
+import {getCookie, setCookie} from "../../types/cookie";
+import {CartProps} from "../cart/props/CartProps";
+import {OrdersDetailParm} from "../order/props/OrdersDetailParm";
 
 const Payment = () => {
 
+    const {loggedIn , user } = useContext(LoginContext);
     const { showModal } = useModal();
     let navigate = useNavigate();   //페이지 이동을 위해필요.
     const [query, setQuery]  = useSearchParams();
@@ -20,32 +24,49 @@ const Payment = () => {
         if(query.get('imp_uid') && query.get('merchant_uid') && query.get('imp_success')) {
             // 결제 후 리디렉션 url로 이동이 되었을 경우
             // ... 쿼리스트링으로 받은 데이터를 가지고 핸들링
-
-            axios.patch(process.env.REACT_APP_SERVER_HOST_API + '/Orders/'+query.get('merchant_uid') ,{ 'order_state' : '결제성공'})
+            axios.patch(process.env.REACT_APP_SERVER_HOST_API + '/Orders/id='+query.get('merchant_uid') ,{ 'order_state' : '결제성공'})
                 .then(res=>{
 
-                    alert("주문도성공")
-                    showModal({
-                        modalType: "AlertModal",
-                        modalProps: {
-                            message: "주문에 성공했습니다.",
-                            handleConfirm : arg => {
-                                /* 장바구니 삭제 로직
-                                    let cartLocalStorage = window.localStorage;
-                                   let localCartList =  cartLocalStorage.getItem("localCartList")
-                                   if(localCartList){
-                                     let cartList = JSON.parse(localCartList)
-                                     for(let i in props.carts){
-                                       cartList = cartList.filter((obj:CartProps , index:number) => obj['product_id'] !== props.carts[i].product_id )
-                                     }
-                                     cartLocalStorage.setItem("localCartList",JSON.stringify(cartList))
-                                   }
-                                 */
-                                navigate(String("/carts"))
-                            }
-                        }
-                    });
-                })
+
+                        axios.get(process.env.REACT_APP_SERVER_HOST_API + '/Orders?id='+query.get('merchant_uid')+'&_rel=details')
+                            .then(res=>{
+                                let details = res.data[0].details
+                                if(loggedIn){
+
+                                    details.forEach((detail:OrdersDetailParm) =>{
+                                        axios.delete( process.env.REACT_APP_SERVER_HOST_API + "/Cart?product_id="+detail.product_id +"&user_id="+user.id ).catch(e => console.log(e))
+                                    })
+
+                                }else {
+                                    let cookieCartList =   getCookie("cookieCartList")
+                                    let tmpArr:CartProps[] = []
+
+                                    cookieCartList.forEach((cart: CartProps) =>{
+                                        let index = details.findIndex((detail:OrdersDetailParm) => detail.product_id  === cart.product.id  )
+                                        if(index === -1 ){
+                                            tmpArr.push(cart)
+                                        }
+                                    })
+                                    setCookie("cookieCartList" , JSON.stringify(tmpArr))
+
+
+                                }
+
+                            }).then(res=>{
+                            showModal({
+                                modalType: "AlertModal",
+                                modalProps: {
+                                    message: "주문에 성공했습니다.",
+                                    handleConfirm : arg => {
+                                        navigate(String("/carts"))
+                                    }
+                                }
+                            });
+                        })
+
+
+                }).catch(e=>{console.log(e)})
+
         }else{
             axios.delete(process.env.REACT_APP_SERVER_HOST_API + '/OrderDetails?order_id='+query.get('merchant_uid'))
                 .then(res=>{
