@@ -162,80 +162,96 @@ const OrderAdd:React.FC<type> = (props) => {
       return
     }
 
-    console.log("?")
+    let ordersParm = {
+      id: ordNo,
+      user_id: user.id != 0 ? user.id : null,
+      order_date: Time.getTimeString(),
+      order_state: '결제대기',
+      order_title: props.product ? props.product.product_nm : '',
+      order_price: props.totalPrice,  //배송비 무료
+      rgstr_id: user.user_id != 'null' ? user.user_id : 'system',
+      rgstr_time: Time.getTimeString(),
+      mdfr_id:  user.user_id != 'null' ? user.user_id : 'system',
+      mdfr_time: Time.getTimeString(),
+      addr: addr,
+      addrDetail: addrDetail,
+      zipNo: zipNo,
+      recipient_name: recipient_name,
+      recipient_phone_number: recipient_phone_number
+    }
 
-    const data = {
-      pg: PG, // PG사
-      pay_method: payMethod, // 결제수단
-      merchant_uid: ordNo, // 주문번호
-      amount: props.totalPrice, // 결제금액
-      name: props.product?.product_nm, // 주문명
-      buyer_name: name, // 구매자 이름
-      buyer_tel: phone_number, // 구매자 전화번호
-      buyer_email: email, // 구매자 이메일
-      buyer_addr: addr + ' ' +addrDetail, // 구매자 주소
-      buyer_postcode: zipNo, // 구매자 우편번호
-    };
-    IMP.request_pay(data, callback);
+
+    axios.post( process.env.REACT_APP_SERVER_HOST_API + '/Orders', ordersParm)
+        .then(res => {
+          let ordersDetailParm = {
+            order_id: res.data.id,
+            product_id: props.product?.id,
+            product_nm: props.product?.product_nm,
+            product_type: props.product?.product_type,
+            cnt: props.orderCnt,
+            price: props.product?.price,
+            totalPrice: props.totalPrice,
+            title_img: props.product?.title_img,
+            rgstr_id: user.user_id != 'null' ? user.user_id : 'system',
+            rgstr_time: Time.getTimeString(),
+            mdfr_id: user.user_id != 'null' ? user.user_id : 'system',
+            mdfr_time: Time.getTimeString(),
+          }
+          axios.post( process.env.REACT_APP_SERVER_HOST_API + '/OrderDetails', ordersDetailParm)
+              .then(res => {
+                const data = {
+                  pg: PG, // PG사
+                  pay_method: payMethod, // 결제수단
+                  merchant_uid: ordNo, // 주문번호
+                  amount: props.totalPrice, // 결제금액
+                  name: props.product?.product_nm, // 주문명
+                  buyer_name: name, // 구매자 이름
+                  buyer_tel: phone_number, // 구매자 전화번호
+                  buyer_email: email, // 구매자 이메일
+                  buyer_addr: addr + ' ' +addrDetail, // 구매자 주소
+                  buyer_postcode: zipNo, // 구매자 우편번호
+                  m_redirect_url : process.env.REACT_APP_CLIENT_HOST + '/payment'
+                };
+                IMP.request_pay(data, callback);
 
 
+              })
+        })
+        .catch((error) => {
+          console.log(error)
+        });
   };
   const callback = (response: any) => {
     const {success, error_msg} = response;
     if (success) {
-      let ordersParm = {
-        id: ordNo,
-        user_id: user.id != 0 ? user.id : null,
-        order_date: Time.getTimeString(),
-        order_state: '결제완료',
-        order_title: props.product ? props.product.product_nm : '',
-        order_price: props.totalPrice,  //배송비 무료
-        rgstr_id: user.user_id != 'null' ? user.user_id : 'system',
-        rgstr_time: Time.getTimeString(),
-        mdfr_id:  user.user_id != 'null' ? user.user_id : 'system',
-        mdfr_time: Time.getTimeString(),
-        addr: addr,
-        addrDetail: addrDetail,
-        zipNo: zipNo,
-        recipient_name: recipient_name,
-        recipient_phone_number: recipient_phone_number
-      }
-      axios.post( process.env.REACT_APP_SERVER_HOST_API + '/Orders', ordersParm)
-          .then(res => {
-            let ordersDetailParm = {
-              order_id: res.data.id,
-              product_nm: props.product?.product_nm,
-              product_type: props.product?.product_type,
-              cnt: props.orderCnt,
-              price: props.product?.price,
-              totalPrice: props.totalPrice,
-              title_img: props.product?.title_img,
-              rgstr_id: user.user_id != 'null' ? user.user_id : 'system',
-              rgstr_time: Time.getTimeString(),
-              mdfr_id: user.user_id != 'null' ? user.user_id : 'system',
-              mdfr_time: Time.getTimeString(),
-            }
+      axios.patch(process.env.REACT_APP_SERVER_HOST_API + '/Orders/id='+ordNo ,{ 'order_state' : '결제성공'})
+          .then(res=>{
+            showModal({
+              modalType: "AlertModal",
+              modalProps: {
+                message: "주문에 성공했습니다.",
+                handleConfirm : arg => {
 
-
-            axios.post( process.env.REACT_APP_SERVER_HOST_API + '/OrderDetails', ordersDetailParm)
-                .then(res => {
-
+                }
+              }
+            });
+          }).catch(e=>{console.log(e)})
+    } else {
+      axios.delete(process.env.REACT_APP_SERVER_HOST_API + '/OrderDetails?order_id='+ordNo)
+          .then(res=>{
+            axios.delete(process.env.REACT_APP_SERVER_HOST_API + '/Order?id='+ordNo)
+                .then(res=>{
                   showModal({
                     modalType: "AlertModal",
                     modalProps: {
-                      message: "결제가 완료됐습니다."
+                      message: "주문에 실패했습니다.",
+                      handleConfirm : arg => {
+                      }
                     }
                   });
-                })
-          })
-          .catch((error) => {
-            console.log(error)
-          });
-
-    } else {
-      alert(`결제 실패: ${error_msg}`);
+                }).catch(e=>{console.log(e)})
+          }).catch(e=>{console.log(e)})
     }
-    ;
   }
 
  const copyDefaultInfo = () =>{

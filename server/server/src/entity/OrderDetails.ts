@@ -25,6 +25,9 @@ export class OrderDetails {
     @Column({nullable : false})
     order_id: number;
 
+    @Index()
+    @Column({nullable : false})
+    product_id: number;      //제품명  not null
 
     @Index()
     @Column({nullable : false})
