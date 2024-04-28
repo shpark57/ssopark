@@ -224,7 +224,7 @@ const CartOrderAdd:React.FC<type> = (props) => {
     const {success, error_msg} = response;
 
     if (success) {
-      axios.patch(process.env.REACT_APP_SERVER_HOST_API + '/Orders/'+ordNo ,{ 'order_state' : '결제성공'})
+      axios.patch(process.env.REACT_APP_SERVER_HOST_API + '/Orders/'+ordNo ,{ 'order_state' : '결제완료'})
           .then(res=>{
             axios.get(process.env.REACT_APP_SERVER_HOST_API + '/Orders?id='+ordNo+'&_rel=details')
                 .then(res=>{
@@ -250,30 +250,15 @@ const CartOrderAdd:React.FC<type> = (props) => {
 
                   }
                 }).then(res=>{
-                  showModal({
-                    modalType: "AlertModal",
-                    modalProps: {
-                      message: "주문성공했습니다.",
-                      handleConfirm : arg => {
-                        window.location.replace(window.location.href );
-                      }
-                    }
-                  });
+                    alert("주문에 성공했습니다.")
                 })
           }).catch(e=>{console.log(e)})
     } else {
       axios.delete(process.env.REACT_APP_SERVER_HOST_API + '/OrderDetails?order_id='+ordNo)
           .then(res=>{
-            axios.delete(process.env.REACT_APP_SERVER_HOST_API + '/Order?id='+ordNo)
+            axios.delete(process.env.REACT_APP_SERVER_HOST_API + '/Orders?id='+ordNo)
                 .then(res=>{
-                  showModal({
-                    modalType: "AlertModal",
-                    modalProps: {
-                      message: "주문에 실패했습니다.",
-                      handleConfirm : arg => {
-                      }
-                    }
-                  });
+                  alert("주문에 실패했습니다.")
                     }).catch(e=>{console.log(e)})
           }).catch(e=>{console.log(e)})
     };
