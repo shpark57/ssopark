@@ -26,17 +26,13 @@ const Payment = () => {
             // ... 쿼리스트링으로 받은 데이터를 가지고 핸들링
             axios.patch(process.env.REACT_APP_SERVER_HOST_API + '/Orders/'+query.get('merchant_uid') ,{ 'order_state' : '결제완료'})
                 .then(res=>{
-
-
                         axios.get(process.env.REACT_APP_SERVER_HOST_API + '/Orders?id='+query.get('merchant_uid')+'&_rel=details')
                             .then(res=>{
                                 let details = res.data[0].details
                                 if(loggedIn){
-
                                     details.forEach((detail:OrdersDetailParm) =>{
                                         axios.delete( process.env.REACT_APP_SERVER_HOST_API + "/Cart?product_id="+detail.product_id +"&user_id="+user.id ).catch(e => console.log(e))
                                     })
-
                                 }else {
                                     let cookieCartList =   getCookie("cookieCartList")
                                     let tmpArr:CartProps[] = []
@@ -88,7 +84,7 @@ const Payment = () => {
 
     return(
         <Container component="main" maxWidth="lg">
-            테스트
+            결제중.
         </Container>
     )
 
