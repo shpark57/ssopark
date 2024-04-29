@@ -133,12 +133,13 @@ const ProductsView = () =>{
     }
 
     const addOrder = async () =>{
-        showModal({
-            modalType: "IncludeModal",
-            modalProps: {
-                message: <OrderAdd product={product} orderCnt={productCnt} totalPrice={totalPrice?totalPrice:product.price }/>
-            }
-        });
+
+        navigate("/OrderAdd" , {state : {
+                product : product,
+                orderCnt : productCnt,
+                totalPrice : totalPrice?totalPrice:product.price
+            }})
+
     }
     const addCart = async () =>{
         if(loggedIn){

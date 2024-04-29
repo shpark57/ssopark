@@ -1,7 +1,7 @@
 
 import React, {useState, useEffect, useContext, useCallback, useRef, ChangeEvent} from 'react';
 import { LoginContext } from 'src/contexts/login'
-import { useNavigate } from 'react-router-dom';
+import {useLocation, useNavigate} from 'react-router-dom';
 import axios from 'axios';
 import * as Time from 'src/types/time'
 
@@ -39,13 +39,21 @@ import FormControlLabel from "@mui/material/FormControlLabel";
 
 const theme = createTheme();
 
+
 interface type{
-  product? : ProductProps
-  orderCnt? : number
-  totalPrice? : number
+  state : {
+    product : ProductProps
+    orderCnt : number
+    totalPrice : number
+  }
 }
 
-const OrderAdd:React.FC<type> = (props) => {
+const OrderAdd = () => {
+
+  const {state} = useLocation() as type;	// 2번 라인
+  const {product ,orderCnt ,totalPrice}= state;	// 3번 라인
+
+  let navigate = useNavigate();   //페이지 이동을 위해필요.
 
 
   const { showModal } = useModal();
@@ -65,7 +73,7 @@ const OrderAdd:React.FC<type> = (props) => {
 
 
   const initData = () => {
-    if(props.product){
+    if(product){
       //단건 구매
 
     if(loggedIn){
@@ -167,8 +175,8 @@ const OrderAdd:React.FC<type> = (props) => {
       user_id: user.id != 0 ? user.id : null,
       order_date: Time.getTimeString(),
       order_state: '결제대기',
-      order_title: props.product ? props.product.product_nm : '',
-      order_price: props.totalPrice,  //배송비 무료
+      order_title: product.product_nm,
+      order_price: totalPrice,  //배송비 무료
       rgstr_id: user.user_id != 'null' ? user.user_id : 'system',
       rgstr_time: Time.getTimeString(),
       mdfr_id:  user.user_id != 'null' ? user.user_id : 'system',
@@ -185,13 +193,13 @@ const OrderAdd:React.FC<type> = (props) => {
         .then(res => {
           let ordersDetailParm = {
             order_id: res.data.id,
-            product_id: props.product?.id,
-            product_nm: props.product?.product_nm,
-            product_type: props.product?.product_type,
-            cnt: props.orderCnt,
-            price: props.product?.price,
-            totalPrice: props.totalPrice,
-            title_img: props.product?.title_img,
+            product_id: product.id,
+            product_nm: product.product_nm,
+            product_type: product.product_type,
+            cnt: orderCnt,
+            price: product.price,
+            totalPrice: totalPrice,
+            title_img: product.title_img,
             rgstr_id: user.user_id != 'null' ? user.user_id : 'system',
             rgstr_time: Time.getTimeString(),
             mdfr_id: user.user_id != 'null' ? user.user_id : 'system',
@@ -203,8 +211,8 @@ const OrderAdd:React.FC<type> = (props) => {
                   pg: PG, // PG사
                   pay_method: payMethod, // 결제수단
                   merchant_uid: ordNo, // 주문번호
-                  amount: props.totalPrice, // 결제금액
-                  name: props.product?.product_nm, // 주문명
+                  amount: totalPrice, // 결제금액
+                  name: product.product_nm, // 주문명
                   buyer_name: name, // 구매자 이름
                   buyer_tel: phone_number, // 구매자 전화번호
                   buyer_email: email, // 구매자 이메일
@@ -226,14 +234,27 @@ const OrderAdd:React.FC<type> = (props) => {
     if (success) {
       axios.patch(process.env.REACT_APP_SERVER_HOST_API + '/Orders/'+ordNo ,{ 'order_state' : '결제완료'})
           .then(res=>{
-            alert("주문에 성공했습니다.")
+            showModal({
+              modalType: "AlertModal",
+              modalProps: {
+                message: "주문에 성공했습니다.",
+                handleConfirm : arg => {
+                  navigate("/carts")
+                }
+              }
+            })
           }).catch(e=>{console.log(e)})
     } else {
       axios.delete(process.env.REACT_APP_SERVER_HOST_API + '/OrderDetails?order_id='+ordNo)
           .then(res=>{
             axios.delete(process.env.REACT_APP_SERVER_HOST_API + '/Orders?id='+ordNo)
                 .then(res=>{
-                    alert("주문에 실패했습니다.")
+                  showModal({
+                    modalType: "AlertModal",
+                    modalProps: {
+                      message: "주문에 실패했습니다."
+                    }
+                  })
                 }).catch(e=>{console.log(e)})
           }).catch(e=>{console.log(e)})
     }
@@ -420,14 +441,14 @@ const OrderAdd:React.FC<type> = (props) => {
           </Grid>
           <Grid item  xs={12} sm={7}>
             <Grid item  xs={12} >
-              { props.product?props.product.product_nm:''}  {props.orderCnt + '개'}   {props.orderCnt ? ( props.product?props.product.price:0 * props.orderCnt).toLocaleString('ko-KR')+'원':'' }
+              { product?product.product_nm:''}  {orderCnt + '개'}   {orderCnt ? ( product?product.price:0 * orderCnt).toLocaleString('ko-KR')+'원':'' }
             </Grid>
           </Grid>
           <Grid item  xs={5}>
             총 가격 :
           </Grid>
           <Grid item  xs={7}>
-            {props.totalPrice? props.totalPrice.toLocaleString('ko-KR')+'원':''}
+            {totalPrice? totalPrice.toLocaleString('ko-KR')+'원':''}
           </Grid>
           <Grid item  xs={5} >
             배송비 :
@@ -439,7 +460,7 @@ const OrderAdd:React.FC<type> = (props) => {
             결제 금액 :
           </Grid>
           <Grid item  xs={7} >
-            {props.totalPrice?  props.totalPrice.toLocaleString('ko-KR') + '원':''}
+            {totalPrice?  totalPrice.toLocaleString('ko-KR') + '원':''}
           </Grid>
 
           <Grid item xs={12} sm={5}>

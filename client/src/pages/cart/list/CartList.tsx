@@ -4,7 +4,7 @@ import './cartList.css'
 import {DataGrid, GridSelectionModel} from '@mui/x-data-grid'
 import { DeleteOutline } from "@mui/icons-material";
 import axios from 'axios';
-import {Link} from 'react-router-dom'
+import {Link, useNavigate} from 'react-router-dom'
 import * as Time from 'src/types/time'
 import { LoginContext } from 'src/contexts/login'
 
@@ -221,6 +221,7 @@ export default function CartList(){
     ]
 
 
+    let navigate = useNavigate();   //페이지 이동을 위해필요.
     const addOrder = async () =>{
         let tmpArr:CartProps[] = []
         let total = 0
@@ -228,13 +229,20 @@ export default function CartList(){
         tableData.filter((row:CartProps ) => selectedIDs.has(row.id) ).forEach((obj)=> {
             tmpArr.push(obj)
         })
+        navigate("/cartOrderAdd" , {state : {
+                carts : tmpArr,
+                totalPrice : totalPrice
+            }})
 
+        /*
         showModal({
             modalType: "IncludeModal",
             modalProps: {
                 message: <CartOrderAdd carts={tmpArr} totalPrice={totalPrice}/>
             }
         });
+
+         */
     }
 
     return(
