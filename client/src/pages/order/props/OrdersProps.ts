@@ -1,6 +1,8 @@
 import * as Time from "../../../types/time";
+import {OrdersDetailParm} from "./OrdersDetailParm";
 
 export interface OrdersProps {
+    id : string
     user_id : number
     order_date : string
     order_state : string
@@ -15,5 +17,6 @@ export interface OrdersProps {
     zipNo : string
     recipient_name :string
     recipient_phone_number : string
+    details : OrdersDetailParm[]
 }
 

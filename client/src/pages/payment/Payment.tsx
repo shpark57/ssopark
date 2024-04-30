@@ -10,7 +10,7 @@ import DeleteIcon from '@mui/icons-material/Delete';
 
 
 import CommentComponent from 'src/components/comment/CommentComponent';
-import {getCookie, setCookie} from "../../types/cookie";
+import {getCookie, removeCookie, setCookie} from "../../types/cookie";
 import {CartProps} from "../cart/props/CartProps";
 import {OrdersDetailParm} from "../order/props/OrdersDetailParm";
 
@@ -22,63 +22,95 @@ const Payment = () => {
     const [query, setQuery]  = useSearchParams();
     useEffect(() => {
         if(query.get('imp_uid') && query.get('merchant_uid') && query.get('imp_success')) {
-            // 결제 후 리디렉션 url로 이동이 되었을 경우
-            // ... 쿼리스트링으로 받은 데이터를 가지고 핸들링
-            axios.patch(process.env.REACT_APP_SERVER_HOST_API + '/Orders/'+query.get('merchant_uid') ,{ 'order_state' : '결제완료'})
-                .then(res=>{
-                        axios.get(process.env.REACT_APP_SERVER_HOST_API + '/Orders?id='+query.get('merchant_uid')+'&_rel=details')
-                            .then(res=>{
-                                let details = res.data[0].details
-                                if(loggedIn){
-                                    details.forEach((detail:OrdersDetailParm) =>{
-                                        axios.delete( process.env.REACT_APP_SERVER_HOST_API + "/Cart?product_id="+detail.product_id +"&user_id="+user.id ).catch(e => console.log(e))
-                                    })
-                                }else {
-                                    let cookieCartList =   getCookie("cookieCartList")
-                                    let tmpArr:CartProps[] = []
+                        let ckCarts   = getCookie("ckCarts" );
+                        let ckAddInfo = getCookie("ckAddInfo" );
+                        let ordNo = query.get('merchant_uid')
 
-                                    cookieCartList.forEach((cart: CartProps) =>{
-                                        let index = details.findIndex((detail:OrdersDetailParm) => detail.product_id  === cart.product.id  )
-                                        if(index === -1 ){
-                                            tmpArr.push(cart)
-                                        }
-                                    })
-                                    setCookie("cookieCartList" , JSON.stringify(tmpArr))
-
-
+                        let ordersParm = {
+                            id: ordNo,
+                            user_id: user.id != 0 ? user.id : null,
+                            order_date: Time.getTimeString(),
+                            order_state: '결제성공',
+                            order_title: ckCarts.length > 1 ?  ckCarts[0].product.product_nm + '외 '+ String(ckCarts.length -1) +'건' : ckCarts[0].product.product_nm   ,
+                            order_price: ckAddInfo.totalPrice,  //배송비 무료
+                            rgstr_id: user.user_id != 'null' ? user.user_id : 'system',
+                            rgstr_time: Time.getTimeString(),
+                            mdfr_id:  user.user_id != 'null' ? user.user_id : 'system',
+                            mdfr_time: Time.getTimeString(),
+                            addr: ckAddInfo.addr,
+                            addrDetail: ckAddInfo.addrDetail,
+                            zipNo: ckAddInfo.zipNo,
+                            recipient_name: ckAddInfo.recipient_name,
+                            recipient_phone_number: ckAddInfo.recipient_phone_number
+                        }
+                        axios.post( process.env.REACT_APP_SERVER_HOST_API + '/Orders', ordersParm)
+                            .then(res => {
+                                for(let i in ckCarts){
+                                    let ordersDetailParm = {
+                                        order_id: res.data.id,
+                                        product_id: ckCarts[i].product.id,
+                                        product_nm: ckCarts[i].product.product_nm,
+                                        product_type: ckCarts[i].product.product_type,
+                                        cnt: ckCarts[i].cnt,
+                                        price: ckCarts[i].product.price,
+                                        totalPrice: ckAddInfo.totalPrice,
+                                        title_img: ckCarts[i].product.title_img,
+                                        rgstr_id: user.user_id != 'null' ? user.user_id : 'system',
+                                        rgstr_time: Time.getTimeString(),
+                                        mdfr_id: user.user_id != 'null' ? user.user_id : 'system',
+                                        mdfr_time: Time.getTimeString(),
+                                    }
+                                    axios.post( process.env.REACT_APP_SERVER_HOST_API + '/OrderDetails', ordersDetailParm)
+                                        .catch(e => { console.log(e)})
                                 }
-
                             }).then(res=>{
-                            showModal({
-                                modalType: "AlertModal",
-                                modalProps: {
-                                    message: "주문에 성공했습니다.",
-                                    handleConfirm : arg => {
-                                        navigate(String("/carts"))
+                            removeCookie("ckCarts" );
+                            removeCookie("ckAddInfo" );
+
+                            axios.get(process.env.REACT_APP_SERVER_HOST_API + '/Orders?id='+ordNo+'&_rel=details')
+                                .then(res=>{
+                                    let details = res.data[0].details
+                                    if(loggedIn){
+                                        details.forEach((detail:OrdersDetailParm) =>{
+                                            axios.delete( process.env.REACT_APP_SERVER_HOST_API + "/Cart?product_id="+detail.product_id +"&user_id="+user.id ).catch(e => console.log(e))
+                                        })
+                                    }else{
+                                        let cookieCartList =   getCookie("cookieCartList")
+                                        let tmpArr:CartProps[] = []
+
+                                        cookieCartList.forEach((cart: CartProps) =>{
+                                            let index = details.findIndex((detail:OrdersDetailParm) => detail.product_id  === cart.product.id)
+                                            if(index === -1 ){
+                                                tmpArr.push(cart)
+                                            }
+                                        })
+                                        setCookie("cookieCartList" , JSON.stringify(tmpArr))
                                     }
-                                }
-                            });
+                                }).then(res=>{
+                                showModal({
+                                    modalType: "AlertModal",
+                                    modalProps: {
+                                        message: "주문에 성공했습니다.",
+                                        handleConfirm : arg => {
+                                            navigate("/carts")
+                                        }
+                                    }
+                                })
+                            })
                         })
-
-
-                }).catch(e=>{console.log(e)})
-
+                .catch((error) => {
+                    console.log(error)
+                });
         }else{
-            axios.delete(process.env.REACT_APP_SERVER_HOST_API + '/OrderDetails?order_id='+query.get('merchant_uid'))
-                .then(res=>{
-                    axios.delete(process.env.REACT_APP_SERVER_HOST_API + '/Order?id='+query.get('merchant_uid'))
-                        .then(res=>{
-                            showModal({
-                                modalType: "AlertModal",
-                                modalProps: {
-                                    message: "주문에 실패했습니다.",
-                                    handleConfirm : arg => {
-                                        navigate(String("/carts"))
-                                    }
-                                }
-                            });
-                        }).catch(e=>{console.log(e)})
-                }).catch(e=>{console.log(e)})
+            showModal({
+                modalType: "AlertModal",
+                modalProps: {
+                    message: "주문에 실패했습니다.",
+                    handleConfirm : arg => {
+                        navigate(String("/carts"))
+                    }
+                }
+            });
         }
     }, [query]);
 
