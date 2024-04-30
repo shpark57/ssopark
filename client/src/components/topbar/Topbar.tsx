@@ -117,6 +117,12 @@ export default function Topbar(){
         navigate(String("/carts"))
     }
 
+    const goOrderList =() =>{
+        if(loggedIn){
+            navigate(String("/orderList"))
+        }
+    }
+
     return(
         <div className='topbar'>
             <div className='topbarWrapper'>
@@ -226,18 +232,24 @@ export default function Topbar(){
                             loggedIn  ?
                                 <MenuItem onClick={handleModify}>
                                     <Avatar /> 내정보
+
                                 </MenuItem>
-                                : <MenuItem></MenuItem>
+
+                                : ''
+                        }
+                        {
+                            loggedIn  ?
+                                <Divider />
+                                : ''
                         }
 
-                        <Divider />
                         <MenuItem onClick={goCarts}>
                             <ListItemIcon >
                                 <ShoppingCartIcon fontSize="small" />
                             </ListItemIcon >
                             장바구니
                         </MenuItem>
-                        <MenuItem onClick={handleClose2}>
+                        <MenuItem onClick={goOrderList}>
                             <ListItemIcon >
                                 <LibraryBooksIcon fontSize="small" />
                             </ListItemIcon >

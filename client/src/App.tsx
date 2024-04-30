@@ -35,6 +35,7 @@ import Nav from "./components/nav/Nav";
 import OrderAdd from "./pages/order/add/OrderAdd";
 import CartOrderAdd from './pages/order/add/CartOrderAdd';
 import Payment from "./pages/payment/Payment";
+import OrderList from "./pages/order/list/OrderList";
 
 
 function App() {
@@ -70,7 +71,7 @@ function App() {
               <Route path="/orderAdd" element={ <OrderAdd/> }/>
               <Route path="/cartOrderAdd" element={ <CartOrderAdd/> }/>
               <Route path="/payment" element={ <Payment/> }/>
-
+              <Route path="/orderList" element={<OrderList/>}/>
 
 
             </Routes>
