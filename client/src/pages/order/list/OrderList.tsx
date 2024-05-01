@@ -109,7 +109,7 @@ export default function ProductsList(){
     return(
         <>
 
-            <Container component="main" maxWidth="md">
+            <Container component="main" maxWidth="lg">
                 <Typography variant="h5" >
                     주문목록
                 </Typography>

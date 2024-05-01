@@ -75,7 +75,7 @@ const OrderBody  = (props:Interface) => {
                                                     ,right : '0'
                                                     ,margin: '10px auto'
                                                 }}
-                                                sx={{height : 50 , objectFit: 'scale-down'}}
+                                                sx={{height : 100 , objectFit: 'scale-down'}}
                                             />
 
 
