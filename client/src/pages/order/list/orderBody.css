@@ -1,25 +1,4 @@
-.home{
-    width:100%;
 
-    margin-top: 10px;
-}
-
-.homeWidgets{
-    margin:10px;
-}
-
-
-
-
-
-
-.homeCard{
-
-    -webkit-box-shadow: 0px 0px 12px -1px #000000;
-    box-shadow: 0px 0px 12px -1px #000000;
-    padding: 20px;
-    text-align: center;
-}
 
 .imgCarousel{
     height: 150px;
