@@ -4,7 +4,7 @@
     "port": 3307,
     "username": "shpark",
     "password": "SILV@Rs5ul",
-    "database": "shpark_farm",
+    "database": "shpark_farm_dev",
     "entities": ["server/src/entity/*.ts"],
     "logging": true,
     "synchronize": true

@@ -10,7 +10,7 @@ export const init = () => {
         user: 'shpark',
         port: 3307,
         password: 'SILV@Rs5ul',
-        database: 'shpark_farm',
+        database: 'shpark_farm_dev',
         connectionLimit: 4,
       });
   
