@@ -104,14 +104,24 @@ const UserModify:React.FC<Interface> =  (props) => {
             const input_id = String(data.get('user_id'))
             const input_password = String(data.get('password'))
             const res = await axios.post( process.env.REACT_APP_SERVER_HOST_API + "/password/check",{user_id:input_id,password:input_password})
-            if( data.get('password') == '' ){
-                setAlertMessage('비밀번호를 입력해주세요,')
-                return
+
+            if(user.auth == 'admin'){
+                if( data.get('password') == '' ){
+                    let tmp = Object.assign(userParams)
+                    delete tmp.password
+                    setUserParams(tmp)
+                }
+            }else{
+                if( data.get('password') == '' ){
+                    setAlertMessage('비밀번호를 입력해주세요,')
+                    return
+                }
+                if(!res.data.check){
+                    setAlertMessage('비밀번호가 다릅니다,')
+                    return
+                }
             }
-            if(!res.data.check){
-                setAlertMessage('비밀번호가 다릅니다,')
-                return
-            }
+
 
             const regPhone = /^01([0|1|6|7|8|9])-?([0-9]{3,4})-?([0-9]{4})$/
             const emailRegEx = /^[A-Za-z0-9]([-_.]?[A-Za-z0-9])*@[A-Za-z0-9]([-_.]?[A-Za-z0-9])*\.[A-Za-z]{2,3}$/i;

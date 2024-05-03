@@ -34,38 +34,23 @@ const OrderBody  = (props:Interface) => {
     let navigate = useNavigate();   //페이지 이동을 위해필요.
     const theme = createTheme();
 
-    const goProductsView =  (detail:OrdersDetailParm)  => () => {
-        axios.get( process.env.REACT_APP_SERVER_HOST_API + '/Products/'+detail.product_id)
-            .then(res=>{
-                if(res.data != ''){
-                    axios.patch( process.env.REACT_APP_SERVER_HOST_API + '/Products/'+detail.product_id ,{'visits++' : 1})
-                        .then(res=>{
-                            navigate(String("/ProductsView/"+ detail.product_id))
-                        })
-                }else{
-                    showModal({
-                        modalType: "AlertModal",
-                        modalProps: {
-                            message: "삭제된 상품입니다."
-                        }
-                    });
-                }
-            }).catch(e=>{ console.log(e)})
-
-
+    const goOrderView =  ()  => () => {
+        navigate("/orderView" , {state : {
+                order :  props.order
+            }})
     }
 
     return (
-        <Grid>
+        <CardActionArea onClick={goOrderView()}>
             <Grid item xs={8} justifyContent="flex-start">
                 <h5 style={{display:"inline"}}>{toDateStringDay(props.order.rgstr_time)}</h5>   <h6 style={{color : 'silver',display:"inline"}}> ㆍ 주문번호 : {props.order.id}</h6>
             </Grid>
                 {props.order.details.map((detail,index)=>{
                     return(
-                        <CardActionArea  key ={index} sx={{ mt: -4}}  onClick={goProductsView(detail)}>
+                        <Grid  key ={index} sx={{ mt: -4}}  >
                             <CardContent >
                                 <Grid  container spacing={2} sx={{ mt: 2}}>
-                                    <Grid item xs={4} sm={2}>
+                                    <Grid item xs={4} sm={3}>
                                         <Typography variant="h6" color="red" align="left" >
                                             <CardMedia
                                                 component="img"
@@ -81,18 +66,18 @@ const OrderBody  = (props:Interface) => {
 
                                         </Typography>
                                     </Grid>
-                                    <Grid item xs={8} sm = {10} sx={{ mt: 2}}>
+                                    <Grid item xs={8} sm = {9} sx={{ mt: 2}}>
                                         {detail.product_nm}
                                         <br/>
                                         {detail.price.toLocaleString('ko-KR')+'원'}  {detail.cnt} 개
                                     </Grid>
                                 </Grid>
                             </CardContent>
-                        </CardActionArea>
+                        </Grid>
                     )
                 })}
 
-        </Grid>
+        </CardActionArea>
     )
 } 
 export default OrderBody

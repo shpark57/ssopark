@@ -1,0 +1,125 @@
+.comment{
+    position : sticky;
+    top:50px;
+    background-color: white;
+    z-index: 100;
+}
+
+.productTitle{
+    font-size:1.7em;
+    font-weight:600;
+}
+
+.productImg{
+    width:40px;
+    height:40px;
+    border-radius:50%;
+    object-fit: cover;
+}
+.productButton{
+    padding:15px 10px;
+    border: solid 0.5px;
+    border-radius:100px;
+}
+
+.productButton.좋아요{
+    background-color:#e5faf2;
+    color: #3bb077;
+    cursor:pointer;
+}
+.productButton.싫어요{
+    background-color:#e5faf2;
+    color: #d95087;
+    cursor:pointer;
+}
+.productTable{
+    width:100%;
+    border-spacing:20px;
+}
+
+.productTh{
+    text-align:left;
+}
+
+.productUser{
+    display:flex;
+    align-items:center;
+    font-weight:600;
+}
+
+.productImg{
+    width:40px;
+    height:40px;
+    border-radius:50%;
+    object-fit: corver;
+    margin-right:10px;
+}
+
+.productContent{
+    font-size:1.2em;
+    white-space:pre-wrap;
+}
+
+.commentTitle {
+    font:bold;
+}
+.commentTime{
+    font-size:0.5em;
+}
+.commentContent{
+    margin-top: 5px;
+    margin-left: 20px;
+    font-size:0.9em;
+    white-space:pre-wrap;
+}
+.replyBtn{
+    margin-top: 3px;
+    font-size:0.8em;
+    cursor: pointer;
+}
+
+.commentDelete{
+    cursor: pointer;
+}
+
+.childComment{
+    display: none;
+}
+
+.numeric-input-container {
+    align-items: center;
+    width: 150px;
+
+    border-radius: 4px;
+    overflow: hidden;
+}
+.numeric-input::-webkit-outer-spin-button,
+.numeric-input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+.numeric-input{
+    border: 1px solid #ccc;
+    -webkit-appearance: none;
+    margin: 0;
+}
+.numeric-input-container button {
+    padding: 8px 12px;
+    font-size: 16px;
+    border: none;
+    cursor: pointer;
+    background-color: #f0f0f0;
+}
+
+.numeric-input-container button:hover {
+    background-color: #e0e0e0;
+}
+
+.numeric-input-container input {
+    padding: 8px;
+    font-size: 16px;
+    border: none;
+    outline: none;
+    width: 30px !important;
+    text-align: center;
+}

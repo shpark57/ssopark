@@ -273,7 +273,7 @@ const CartOrderAdd = () => {
                         modalProps: {
                           message: "주문에 성공했습니다.",
                           handleConfirm : arg => {
-                            navigate("/carts")
+                            navigate("/orderList")
                           }
                         }
                       })

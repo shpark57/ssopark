@@ -92,7 +92,7 @@ const Payment = () => {
                                     modalProps: {
                                         message: "주문에 성공했습니다.",
                                         handleConfirm : arg => {
-                                            navigate("/carts")
+                                            navigate("/orderList")
                                         }
                                     }
                                 })
@@ -107,7 +107,7 @@ const Payment = () => {
                 modalProps: {
                     message: "주문에 실패했습니다.",
                     handleConfirm : arg => {
-                        navigate(String("/carts"))
+                        navigate("/orderList")
                     }
                 }
             });
