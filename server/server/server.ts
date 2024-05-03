@@ -35,6 +35,6 @@ app.use(function(err, req, res, next) {
     res.render('error');
 });
 
-const port: number = 6000;
+const port: number = 6001;
 
 app.listen(port, () => console.log(`${port}`));
