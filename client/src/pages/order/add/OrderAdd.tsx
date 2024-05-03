@@ -284,15 +284,9 @@ const OrderAdd = () => {
                       setCookie("cookieCartList" , JSON.stringify(tmpArr))
                     }
                   }).then(res=>{
-                      showModal({
-                        modalType: "AlertModal",
-                        modalProps: {
-                          message: "주문에 성공했습니다.",
-                          handleConfirm : arg => {
-                            navigate("/carts")
-                          }
-                        }
-                      })
+                    // @ts-ignore
+                    if(!alert("주문에 성공했습니다.")) navigate("/orderList")
+
               })
             })
           .catch((error) => {
@@ -303,12 +297,9 @@ const OrderAdd = () => {
           .then(res=>{
             axios.delete(process.env.REACT_APP_SERVER_HOST_API + '/Orders?id='+ordNo)
                 .then(res=>{
-                  showModal({
-                    modalType: "AlertModal",
-                    modalProps: {
-                      message: "주문에 실패했습니다."
-                    }
-                  })
+
+                  // @ts-ignore
+                  if(!alert("주문에 실패했습니다.")) navigate("/orderList")
                 }).catch(e=>{console.log(e)})
           }).catch(e=>{console.log(e)})
     }

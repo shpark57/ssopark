@@ -24,12 +24,14 @@ import {toDateStringDay} from "../../../types/time";
 import {display} from "@mui/system";
 import {OrdersDetailParm} from "../props/OrdersDetailParm";
 import useModal from "../../../components/modal/hooks/useModal";
+import {LoginContext} from "../../../contexts/login";
 
 interface Interface {
     order : OrdersProps
 }
 const OrderBody  = (props:Interface) => {
 
+    const {loggedIn , user } = useContext(LoginContext);
     const { showModal } = useModal();
     let navigate = useNavigate();   //페이지 이동을 위해필요.
     const theme = createTheme();
@@ -43,12 +45,16 @@ const OrderBody  = (props:Interface) => {
     return (
         <CardActionArea onClick={goOrderView()}>
             <Grid item xs={8} justifyContent="flex-start">
-                <h5 style={{display:"inline"}}>{toDateStringDay(props.order.rgstr_time)}</h5>   <h6 style={{color : 'silver',display:"inline"}}> ㆍ 주문번호 : {props.order.id}</h6>
+                <h4 style={{display:"inline"}}>{toDateStringDay(props.order.rgstr_time)}</h4>   <h5 style={{color : 'silver',display:"inline"}}> ㆍ 주문번호 : {props.order.id}</h5>
             </Grid>
+                <Grid item xs={12}>
+                    <h5 style={{display:"inline"}}>받는 사람: {props.order.recipient_name}</h5>
+                </Grid>
                 {props.order.details.map((detail,index)=>{
                     return(
                         <Grid  key ={index} sx={{ mt: -4}}  >
                             <CardContent >
+
                                 <Grid  container spacing={2} sx={{ mt: 2}}>
                                     <Grid item xs={4} sm={3}>
                                         <Typography variant="h6" color="red" align="left" >

@@ -87,30 +87,18 @@ const Payment = () => {
                                         setCookie("cookieCartList" , JSON.stringify(tmpArr))
                                     }
                                 }).then(res=>{
-                                showModal({
-                                    modalType: "AlertModal",
-                                    modalProps: {
-                                        message: "주문에 성공했습니다.",
-                                        handleConfirm : arg => {
-                                            navigate("/orderList")
-                                        }
-                                    }
-                                })
+
+                                    // @ts-ignore
+                                    if(!alert("주문에 성공했습니다.")) navigate("/orderList")
+
                             })
                         })
                 .catch((error) => {
                     console.log(error)
                 });
         }else{
-            showModal({
-                modalType: "AlertModal",
-                modalProps: {
-                    message: "주문에 실패했습니다.",
-                    handleConfirm : arg => {
-                        navigate("/orderList")
-                    }
-                }
-            });
+            // @ts-ignore
+            if(!alert("주문에 실패했습니다.")) navigate("/orderList")
         }
     }, [query]);
 
