@@ -1,4 +1,4 @@
-version: '2'
+version: '3'
 services:
   server:
     build:
@@ -6,23 +6,27 @@ services:
     command:  yarn run server
     volumes:
       - ./server/:/usr/app
+      - ./files/:/usr/files
       - /usr/app/node_modules
-    image : shpark57/ssopark-server:1.0.1
     ports:
-      - "6000:6000"
+      - "6001:6001"
     # env_file: ./server/.env # TODO - uncomment this to auto-load your .env file!
     environment:
       - NODE_ENV=development
       - CHOKIDAR_USEPOLLING=true
+      - TZ=Asia/Seoul
   client:
     build:
-      context: ./client/
-    command: yarn run client
+      context: ./client
+      dockerfile: Dockerfile
+    command:  serve -s build -l 3001 #아래 포트가 안먹어서 여기서 선언해주어야함.
     volumes:
       - ./client/:/usr/app
       - /usr/app/node_modules
+      - /usr/app/build
     depends_on:
       - server
-    image: shpark57/ssopark-client:1.0.1
     ports:
-      - "3000:3000"
+      - "3001:3001"       #왜인지 이게 안먹음
+    environment:
+      - TZ=Asia/Seoul
