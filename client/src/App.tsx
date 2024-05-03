@@ -35,6 +35,9 @@ import Nav from "./components/nav/Nav";
 import OrderAdd from "./pages/order/add/OrderAdd";
 import CartOrderAdd from './pages/order/add/CartOrderAdd';
 import Payment from "./pages/payment/Payment";
+import OrderList from "./pages/order/list/OrderList";
+import OrderView from "./pages/order/view/OrderView";
+import OrderListAdmin from './pages/order/list/OrderListAdmin';
 
 
 function App() {
@@ -68,9 +71,11 @@ function App() {
               <Route path="/login" element={ <Login/> }/>
               <Route path="/signUp" element={ <SignUp/> }/>
               <Route path="/orderAdd" element={ <OrderAdd/> }/>
-              <Route path="/cartOrderAdd" element={ <CartOrderAdd carts={[]}/> }/>
+              <Route path="/cartOrderAdd" element={ <CartOrderAdd/> }/>
               <Route path="/payment" element={ <Payment/> }/>
-
+              <Route path="/orderList" element={<OrderList/>}/>
+              <Route path="/orderListAdmin" element={<OrderListAdmin/>}/>
+              <Route path="/orderView" element={<OrderView/>}/>
 
 
             </Routes>

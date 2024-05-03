@@ -1,6 +1,7 @@
 
 export interface OrdersDetailParm {
     order_id    : string
+    product_id  : number
     product_nm  : string
     product_type: string
     cnt         : number

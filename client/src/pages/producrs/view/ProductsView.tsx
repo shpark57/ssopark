@@ -31,6 +31,7 @@ import EditIcon from '@mui/icons-material/Edit';
 import Session from 'react-session-api';
 import UserModify from "../../user/modify/UserModify";
 import OrderAdd from "src/pages/order/add/OrderAdd";
+import {getCookie, setCookie} from "../../../types/cookie";
 
 const ProductsView = () =>{
 
@@ -132,12 +133,13 @@ const ProductsView = () =>{
     }
 
     const addOrder = async () =>{
-        showModal({
-            modalType: "IncludeModal",
-            modalProps: {
-                message: <OrderAdd product={product} orderCnt={productCnt} totalPrice={totalPrice?totalPrice:product.price }/>
-            }
-        });
+
+        navigate("/OrderAdd" , {state : {
+                product : product,
+                orderCnt : productCnt,
+                totalPrice : totalPrice?totalPrice:product.price
+            }})
+
     }
     const addCart = async () =>{
         if(loggedIn){
@@ -181,12 +183,10 @@ const ProductsView = () =>{
                 id : 0
             }
             // 2. 객체
-            let cartLocalStorage = window.localStorage;
-            let localCartList =  cartLocalStorage.getItem("localCartList")
-
+            let cookieCartList =   getCookie("cookieCartList")
             let cartList
-            if(localCartList){
-                cartList = JSON.parse(localCartList)
+            if(cookieCartList){
+                cartList = cookieCartList
                 var findIndex = cartList.findIndex((obj:any, index:number) => obj['product_id'] === product?.id)
                 if(findIndex != -1){
                     cartList[findIndex].cnt = cartList[findIndex].cnt + productCnt
@@ -198,7 +198,7 @@ const ProductsView = () =>{
             }else{
                 cartList = [params]
             }
-            cartLocalStorage.setItem("localCartList" , JSON.stringify(cartList))
+            setCookie("cookieCartList" , JSON.stringify(cartList))
 
             showModal({
                 modalType: "AlertModal",
@@ -225,19 +225,19 @@ const ProductsView = () =>{
       <Container component="main" maxWidth="lg" className='product' sx={{ mb: 8}} >
 
         <Grid container spacing={3} sx={{ mb: 5}} >
-            <Grid item xs={8} container justifyContent="flex-start" sx={{ mt: 3}}>
+            <Grid item xs={12}  sm ={12} container justifyContent="flex-start" sx={{ mt: 3 , mb : -8}}>
                 <h3 className="productTitle">{product?.product_nm}</h3>   <h6 style={{color : 'silver'}}>{product?.product_type}</h6>
             </Grid>
 
-            <Grid item xs={4}  container  justifyContent="flex-end" sx={{ mt: 7 }}>
-               방문자 수 : {product?.visits}
-            </Grid>
 
-            <Grid item xs={12} container  justifyContent="flex-start" sx={{ mt: -9 , ml:7 }}>
+            <Grid item xs={8} sm ={8}  container justifyContent="flex-start" >
                 <h5>{ product?.rgstr_id}|</h5>  <h6>{product && Time.toDateString(product.rgstr_time) }</h6>
             </Grid>
 
 
+            <Grid item xs={4}  sm ={4}  container  justifyContent="flex-end" >
+                <h5>방문자 수 : {product?.visits}</h5>
+            </Grid>
 
             <Grid item xs={12} sx={{alignItems: 'center'}} >
                 <Box

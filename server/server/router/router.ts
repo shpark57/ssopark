@@ -290,7 +290,7 @@ createConnection().then(connection => {
         */
 
         let table = req.baseUrl.substr(1)
-        req.body['id'] = Number(req.params.id)
+        req.body['id'] = isNaN(Number(req.params.id)) ? req.params.id : Number(req.params.id)
         const entity =  patchRepository(table , req , res)
         .then(entity => {
             res.send(entity);
@@ -392,7 +392,7 @@ createConnection().then(connection => {
         router.patch("/change/:id", function(req: Request, res: Response) {
             // /테이블명/1 의 형태의 url은 이곳으로 온다.
     
-            req.body['id'] = Number(req.params.id)
+            req.body['id'] = isNaN(Number(req.params.id)) ? req.params.id :Number(req.params.id)
             const salt = crypto.randomBytes(32).toString('hex');
             req.body['salt'] = salt
             req.body['password'] = crypto.pbkdf2Sync(req.body.password, salt, 1, 32, 'sha512').toString('hex');
