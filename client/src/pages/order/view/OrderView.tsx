@@ -78,7 +78,7 @@ const OrderView = () =>{
         <Container component="main" maxWidth="lg" className='product' sx={{ mb: 8}} >
             <Grid>
                 <Grid item xs={12} justifyContent="flex-start">
-                    <h2 style={{display:"inline"}}> {order.order_title} </h2>  <h5 style={{display:"inline"}}>{toDateString(order.rgstr_time)}</h5>   <h6 style={{color : 'silver',display:"inline"}}> ㆍ 주문번호 : {order.id}</h6>
+                    <h2 style={{display:"inline"}}> {order.order_title} </h2>  ㆍ <h5 style={{display:"inline"}}>{toDateString(order.rgstr_time)}</h5>  <br/> <h6 style={{color : 'silver',display:"inline"}}>  주문번호 : {order.id}</h6>
                 </Grid>
                 {order.details.map((detail,index)=>{
                     return(
@@ -130,11 +130,14 @@ const OrderView = () =>{
                 <Grid item xs={8} sm = {4} >
                     {order.recipient_phone_number}
                 </Grid>
-                <Grid item xs={3} sm = {2} >
+                <Grid item xs={4} sm = {2} >
                     주소 :
                 </Grid>
-                <Grid item xs={9} sm = {10} >
-                    [{order.zipNo}]  {order.addr} {order.addrDetail}
+                <Grid item xs={8} sm = {10} >
+                    [{order.zipNo}] <br/> {order.addr} <br/>{order.addrDetail}
+                </Grid>
+                <Grid item xs={12} sm = {12} sx={{ mb: -4}}>
+                    <h4>결제 정보</h4>
                 </Grid>
                 <Grid item xs={4} sm = {2} >
                     주문 상태 :
