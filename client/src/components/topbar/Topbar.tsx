@@ -171,12 +171,18 @@ export default function Topbar(){
                         <MenuItem onClick={menuClick} data-url="/productsList">
                             제품 리스트
                         </MenuItem>
-                        {   user.auth == 'admin' ?
+                        {   user.auth == 'admin' &&
                             <MenuItem onClick={menuClick} data-url="/users">
                                 유저
                             </MenuItem>
-                            :''
                         }
+                        {   user.auth == 'admin' &&
+                            <MenuItem onClick={menuClick} data-url="/orderListAdmin">
+                                주문 목록
+                            </MenuItem>
+
+                        }
+
                     </Menu>
                 </div>
                 <div className='topRight'>
@@ -229,18 +235,16 @@ export default function Topbar(){
                     >
 
                         {
-                            loggedIn  ?
+                            loggedIn  &&
                                 <MenuItem onClick={handleModify}>
                                     <Avatar /> 내정보
-
                                 </MenuItem>
 
-                                : ''
                         }
                         {
-                            loggedIn  ?
+                            loggedIn  &&
                                 <Divider />
-                                : ''
+
                         }
 
                         <MenuItem onClick={goCarts}>
