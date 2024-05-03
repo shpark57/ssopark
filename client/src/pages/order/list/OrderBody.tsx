@@ -95,7 +95,8 @@ const OrderBody  = (props:Interface) => {
             </Grid>
                 <Grid item xs={12}>
                     <h5 style={{display:"inline"}}>받는 사람: {order.recipient_name}</h5> ㆍ <h5 style={{display:"inline"}}>주문 상태: {order.order_state}</h5>
-                    <FormControl sx={{float : "right"}}>
+                    {user.auth == 'admin' &&
+                        <FormControl sx={{float : "right"}}>
                         <InputLabel variant="standard" htmlFor="uncontrolled-native">
                             주문상태
                         </InputLabel>
@@ -112,7 +113,7 @@ const OrderBody  = (props:Interface) => {
                             <option value={'환불완료'} >환불완료</option>
                         </NativeSelect>
                     </FormControl>
-
+                    }
                 </Grid>
                 {order.details.map((detail,index)=>{
                     return(
