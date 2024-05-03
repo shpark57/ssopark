@@ -4,10 +4,15 @@ WORKDIR /usr/app
 
 COPY package*.json ./
 
-RUN yarn
+RUN yarn install
 
 COPY . .
 
-EXPOSE 3001
+RUN yarn add --dev process
 
-CMD ["yarn", "run" , "client"]
+RUN yarn build
+
+RUN yarn global add serve
+
+
+EXPOSE 3001
