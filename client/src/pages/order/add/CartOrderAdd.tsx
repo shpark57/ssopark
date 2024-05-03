@@ -268,15 +268,10 @@ const CartOrderAdd = () => {
                         setCookie("cookieCartList" , JSON.stringify(tmpArr))
                       }
                     }).then(res=>{
-                      showModal({
-                        modalType: "AlertModal",
-                        modalProps: {
-                          message: "주문에 성공했습니다.",
-                          handleConfirm : arg => {
-                            navigate("/orderList")
-                          }
-                        }
-                      })
+
+                      // @ts-ignore
+                      if(!alert("주문에 성공했습니다.")) navigate("/orderList")
+
                     })
             })
             .catch((error) => {
@@ -312,12 +307,10 @@ const CartOrderAdd = () => {
 */
 
     } else {
-      showModal({
-        modalType: "AlertModal",
-        modalProps: {
-          message: "주문에 실패했습니다.",
-        }
-      })
+
+      // @ts-ignore
+      if(!alert("주문에 실패했습니다.")) navigate("/orderList")
+
       /*
       axios.delete(process.env.REACT_APP_SERVER_HOST_API + '/OrderDetails?order_id='+ordNo)
           .then(res=>{
