@@ -225,19 +225,19 @@ const ProductsView = () =>{
       <Container component="main" maxWidth="lg" className='product' sx={{ mb: 8}} >
 
         <Grid container spacing={3} sx={{ mb: 5}} >
-            <Grid item xs={8} container justifyContent="flex-start" sx={{ mt: 3}}>
+            <Grid item xs={12}  sm ={12} container justifyContent="flex-start" sx={{ mt: 3 , mb : -8}}>
                 <h3 className="productTitle">{product?.product_nm}</h3>   <h6 style={{color : 'silver'}}>{product?.product_type}</h6>
             </Grid>
 
-            <Grid item xs={4}  container  justifyContent="flex-end" sx={{ mt: 7 }}>
-               방문자 수 : {product?.visits}
-            </Grid>
 
-            <Grid item xs={12} container  justifyContent="flex-start" sx={{ mt: -9 , ml:7 }}>
+            <Grid item xs={8} sm ={8}  container justifyContent="flex-start" >
                 <h5>{ product?.rgstr_id}|</h5>  <h6>{product && Time.toDateString(product.rgstr_time) }</h6>
             </Grid>
 
 
+            <Grid item xs={4}  sm ={4}  container  justifyContent="flex-end" >
+                <h5>방문자 수 : {product?.visits}</h5>
+            </Grid>
 
             <Grid item xs={12} sx={{alignItems: 'center'}} >
                 <Box
