@@ -19,10 +19,11 @@ services:
     build:
       context: ./client
       dockerfile: Dockerfile
-    command:  yarn run client
+    command:  serve -s build -l 3001 #아래 포트가 안먹어서 여기서 선언해주어야함.
     volumes:
       - ./client/:/usr/app
       - /usr/app/node_modules
+      - /usr/app/build
     depends_on:
       - server
     ports:
