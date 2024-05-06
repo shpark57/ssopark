@@ -14,7 +14,7 @@ import Topbar from './components/topbar/Topbar';                //탑바
 import Sidebar from './components/sidebar/Sidebar';             //사이드바
 import DagAndDrop from './pages/dragAndDrop/DragAndDrop';  //드래그앤드랍 샘플
 import Home from './pages/home/Home';                           //홈
-import UserList from './pages/user/list/UserList';              //유저 테이블  
+import UserList from './pages/user/list/UserList';              //유저 테이블
 import UserModify from './pages/user/modify/UserModify';        //유저 정보 수정
 import MoviesList from './pages/movies/list/MoviesList';        //영화 리스트
 import MovieAdd from './pages/movies/add/MovieAdd';           //영화 추가
@@ -38,10 +38,12 @@ import Payment from "./pages/payment/Payment";
 import OrderList from "./pages/order/list/OrderList";
 import OrderView from "./pages/order/view/OrderView";
 import OrderListAdmin from './pages/order/list/OrderListAdmin';
+import TermsOfUse from "./components/footer/TermsOfUse/TermsOfUse";
 
 
 function App() {
-
+  window.Kakao.init(process.env.REACT_APP_JAVASCRIPT_KEY);
+  window.Kakao.isInitialized(); // init되면 true, 아니면 false를 반환한다
 
   //sessionStorage를 이용한 로그인처리
   // loggedIn 가 true 면 정상 페이지들을 보여주고
@@ -67,7 +69,7 @@ function App() {
               <Route path="/sample" element={ <Sample/> }/>
               <Route path="/users" element={<UserList/>}/>
               <Route path="/carts" element={<CartList/>}/>
-              <Route path="/userModify"     element={ <UserModify/> }/>
+              <Route path="/userModify" element={ <UserModify/> }/>
               <Route path="/login" element={ <Login/> }/>
               <Route path="/signUp" element={ <SignUp/> }/>
               <Route path="/orderAdd" element={ <OrderAdd/> }/>
@@ -76,11 +78,10 @@ function App() {
               <Route path="/orderList" element={<OrderList/>}/>
               <Route path="/orderListAdmin" element={<OrderListAdmin/>}/>
               <Route path="/orderView" element={<OrderView/>}/>
-
+              <Route path="/termsOfUse" element={<TermsOfUse type={"?"}/>}/>
 
             </Routes>
           </div>
-
           <Footer />
         </Router>
     </LoginProvider>
