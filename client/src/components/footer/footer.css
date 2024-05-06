@@ -9,3 +9,7 @@
     font-size: 10px;
     height : 80px;
 }
+
+span{
+    cursor: pointer;
+}
