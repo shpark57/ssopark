@@ -19,7 +19,7 @@ import {SvgIconTypeMap} from "@mui/material/SvgIcon/SvgIcon";
 import {ProductProps} from 'src/pages/producrs/props/ProductProps'
 import {OrdersProps} from "../props/OrdersProps";
 import {OrdersDetailParm} from "../props/OrdersDetailParm";
-import OrderBodyAdmin from "./OrderBodyAdmin";
+import OrderBodyAdmin from "src/pages/order/list/OrderBodyAdmin";
 import {CardActionArea} from "@mui/material";
 
 export default function ProductsList(){
