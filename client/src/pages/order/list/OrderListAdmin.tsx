@@ -19,7 +19,7 @@ import {SvgIconTypeMap} from "@mui/material/SvgIcon/SvgIcon";
 import {ProductProps} from 'src/pages/producrs/props/ProductProps'
 import {OrdersProps} from "../props/OrdersProps";
 import {OrdersDetailParm} from "../props/OrdersDetailParm";
-import OrderBody from "./OrderBody";
+import OrderBodyAdmin from "./OrderBodyAdmin";
 import {CardActionArea} from "@mui/material";
 
 export default function ProductsList(){
@@ -119,7 +119,7 @@ export default function ProductsList(){
                 orders.map( (order, index ,array) => {
                     return(
 
-                        <OrderBody key={index} order={order}></OrderBody>
+                        <OrderBodyAdmin key={index} order={order}></OrderBodyAdmin>
                     )
                 })
 
