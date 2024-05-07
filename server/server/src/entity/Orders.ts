@@ -80,4 +80,13 @@ export class Orders {
 
     @OneToMany(type => OrderDetails , details => details.order)
     details : OrderDetails[];
+
+
+
+    @Column({default: ''})
+    courier_company: string; //택배사
+
+
+    @Column({default: ''})
+    invoice_number: string; //송장번호
 }

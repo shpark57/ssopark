@@ -136,6 +136,22 @@ const OrderView = () =>{
                 <Grid item xs={8} sm = {10} >
                     [{order.zipNo}] <br/> {order.addr} <br/>{order.addrDetail}
                 </Grid>
+
+                <Grid item xs={12} sm = {12} sx={{ mb: -4}}>
+                    <h4>배송 정보</h4>
+                </Grid>
+                <Grid item xs={4} sm = {2} >
+                    택배사 :
+                </Grid>
+                <Grid item xs={8} sm = {4} >
+                    {order.courier_company ? order.courier_company : '-'}
+                </Grid>
+                <Grid item xs={4} sm = {2} >
+                    송장 번호 :
+                </Grid>
+                <Grid item xs={8} sm = {4} >
+                    {order.invoice_number? order.invoice_number : '-'}
+                </Grid>
                 <Grid item xs={12} sm = {12} sx={{ mb: -4}}>
                     <h4>결제 정보</h4>
                 </Grid>

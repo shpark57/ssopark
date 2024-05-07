@@ -36,7 +36,8 @@ import {CartProps} from "src/pages/cart/props/CartProps"
 import FormControlLabel from "@mui/material/FormControlLabel";
 import {getCookie, removeCookie, setCookie} from "../../../types/cookie";
 import { useLocation , useNavigate } from 'react-router-dom'
-import LoginPage from "../../user/login/defaultLogin/Login"; 	// 1번 라인
+import LoginPage from "../../user/login/defaultLogin/Login";
+import {CartContext} from "../../../contexts/carts/cartsProv"; 	// 1번 라인
 
 const theme = createTheme();
 
@@ -57,6 +58,7 @@ const CartOrderAdd = () => {
   const { showModal } = useModal();
 
   const {loggedIn , user } = useContext(LoginContext);
+  const {ckCarts,ckAddInfo,setCkCartsSession,removeSessionCarts} = useContext(CartContext);
 
   const [alertMessage, setAlertMessage] = useState(''); //알림 메시지
   const [name, setName] = React.useState("");
@@ -168,7 +170,7 @@ const CartOrderAdd = () => {
     }
 
 
-
+    /*
     setCookie("ckCarts" , JSON.stringify(carts));
     let addInfo ={
       totalPrice : totalPrice,
@@ -179,6 +181,17 @@ const CartOrderAdd = () => {
       recipient_phone_number : recipient_phone_number
     }
     setCookie("ckAddInfo" , JSON.stringify(addInfo));
+    */
+    let addInfo ={
+      totalPrice : totalPrice,
+      addr : addr,
+      addrDetail : addrDetail,
+      zipNo : zipNo,
+      recipient_name : recipient_name,
+      recipient_phone_number : recipient_phone_number
+    }
+    setCkCartsSession(JSON.stringify(carts) , JSON.stringify(addInfo))
+
 
     const data = {
       pg: PG, // PG사
@@ -203,8 +216,8 @@ const CartOrderAdd = () => {
 
     if (success) {
 
-      let ckCarts   = getCookie("ckCarts" );
-      let ckAddInfo = getCookie("ckAddInfo" );
+      let sckCarts   = JSON.parse(String(sessionStorage.getItem('ckCarts')))
+      let sckAddInfo =  JSON.parse(String(sessionStorage.getItem('ckAddInfo')))
 
 
       let ordersParm = {
@@ -212,30 +225,30 @@ const CartOrderAdd = () => {
           user_id: user.id != 0 ? user.id : null,
           order_date: Time.getTimeString(),
           order_state: '결제성공',
-          order_title: ckCarts.length > 1 ?  ckCarts[0].product.product_nm + '외 '+ String(ckCarts.length -1) +'건' : ckCarts[0].product.product_nm   ,
-          order_price: ckAddInfo.totalPrice,  //배송비 무료
+          order_title: sckCarts.length > 1 ?  sckCarts[0].product.product_nm + '외 '+ String(sckCarts.length -1) +'건' : sckCarts[0].product.product_nm   ,
+          order_price: sckAddInfo.totalPrice,  //배송비 무료
           rgstr_id: user.user_id != 'null' ? user.user_id : 'system',
           rgstr_time: Time.getTimeString(),
           mdfr_id:  user.user_id != 'null' ? user.user_id : 'system',
           mdfr_time: Time.getTimeString(),
-          addr: ckAddInfo.addr,
-          addrDetail: ckAddInfo.addrDetail,
-          zipNo: ckAddInfo.zipNo,
-          recipient_name: ckAddInfo.recipient_name,
-          recipient_phone_number: ckAddInfo.recipient_phone_number
+          addr: sckAddInfo.addr,
+          addrDetail: sckAddInfo.addrDetail,
+          zipNo: sckAddInfo.zipNo,
+          recipient_name: sckAddInfo.recipient_name,
+          recipient_phone_number: sckAddInfo.recipient_phone_number
         }
         axios.post( process.env.REACT_APP_SERVER_HOST_API + '/Orders', ordersParm)
             .then(res => {
-              for(let i in ckCarts){
+              for(let i in sckCarts){
                 let ordersDetailParm = {
                   order_id: res.data.id,
-                  product_id: ckCarts[i].product.id,
-                  product_nm: ckCarts[i].product.product_nm,
-                  product_type: ckCarts[i].product.product_type,
-                  cnt: ckCarts[i].cnt,
-                  price: ckCarts[i].product.price,
-                  totalPrice: ckAddInfo.totalPrice,
-                  title_img: ckCarts[i].product.title_img,
+                  product_id: sckCarts[i].product.id,
+                  product_nm: sckCarts[i].product.product_nm,
+                  product_type: sckCarts[i].product.product_type,
+                  cnt: sckCarts[i].cnt,
+                  price: sckCarts[i].product.price,
+                  totalPrice: sckAddInfo.totalPrice,
+                  title_img: sckCarts[i].product.title_img,
                   rgstr_id: user.user_id != 'null' ? user.user_id : 'system',
                   rgstr_time: Time.getTimeString(),
                   mdfr_id: user.user_id != 'null' ? user.user_id : 'system',
@@ -245,8 +258,7 @@ const CartOrderAdd = () => {
                     .catch(e => { console.log(e)})
               }
             }).then(res=>{
-              removeCookie("ckCarts" );
-              removeCookie("ckAddInfo" );
+            removeSessionCarts()
 
               axios.get(process.env.REACT_APP_SERVER_HOST_API + '/Orders?id='+ordNo+'&_rel=details')
                   .then(res=>{
@@ -256,7 +268,7 @@ const CartOrderAdd = () => {
                           axios.delete( process.env.REACT_APP_SERVER_HOST_API + "/Cart?product_id="+detail.product_id +"&user_id="+user.id ).catch(e => console.log(e))
                         })
                       }else{
-                        let cookieCartList =   getCookie("cookieCartList")
+                        let cookieCartList =   JSON.parse(ckCarts)
                         let tmpArr:CartProps[] = []
 
                         cookieCartList.forEach((cart: CartProps) =>{

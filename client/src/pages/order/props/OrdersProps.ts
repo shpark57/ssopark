@@ -18,5 +18,7 @@ export interface OrdersProps {
     recipient_name :string
     recipient_phone_number : string
     details : OrdersDetailParm[]
+    courier_company : string
+    invoice_number : string
 }
 
