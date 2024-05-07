@@ -65,6 +65,8 @@ export default function ProductsList(){
                     , recipient_name            : orders.recipient_name
                     , recipient_phone_number    : orders.recipient_phone_number
                     , details                   : orders.details
+                    , courier_company           : orders.courier_company
+                    , invoice_number            : orders.invoice_number
 
                 })
             )
