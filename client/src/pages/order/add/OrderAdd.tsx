@@ -37,7 +37,7 @@ import {IAddr} from "../../../types/iddr";
 import {CartProps} from "src/pages/cart/props/CartProps"
 import FormControlLabel from "@mui/material/FormControlLabel";
 import {getCookie, removeCookie, setCookie} from "../../../types/cookie";
-import {CartContext} from "../../../contexts/carts/cartsProv";
+import {CartContext} from "src/contexts/carts/cartsProv";
 
 const theme = createTheme();
 
@@ -228,7 +228,7 @@ const OrderAdd = () => {
     IMP.request_pay(data, callback);
 
   };
-  const callback = (response: any) => {
+  const callback = async (response: any) => {
     const {success, error_msg} = response;
     if (success) {
 
@@ -254,58 +254,50 @@ const OrderAdd = () => {
               recipient_name: sckAddInfo.recipient_name,
               recipient_phone_number: sckAddInfo.recipient_phone_number
             }
-            axios.post( process.env.REACT_APP_SERVER_HOST_API + '/Orders', ordersParm)
-                .then(res => {
-                  for(let i in sckCarts){
-                    let ordersDetailParm = {
-                      order_id: res.data.id,
-                      product_id: sckCarts[i].product.id,
-                      product_nm: sckCarts[i].product.product_nm,
-                      product_type: sckCarts[i].product.product_type,
-                      cnt: sckCarts[i].cnt,
-                      price: sckCarts[i].product.price,
-                      totalPrice: sckAddInfo.totalPrice,
-                      title_img: sckCarts[i].product.title_img,
-                      rgstr_id: user.user_id != 'null' ? user.user_id : 'system',
-                      rgstr_time: Time.getTimeString(),
-                      mdfr_id: user.user_id != 'null' ? user.user_id : 'system',
-                      mdfr_time: Time.getTimeString(),
-                    }
-                    axios.post( process.env.REACT_APP_SERVER_HOST_API + '/OrderDetails', ordersDetailParm)
-                        .catch(e => { console.log(e)})
-                  }
-                }).then(res=>{
+            let a1 = await axios.post( process.env.REACT_APP_SERVER_HOST_API + '/Orders', ordersParm)
+            for(let i in sckCarts){
+              let ordersDetailParm = {
+                order_id: a1.data.id,
+                product_id: sckCarts[i].product.id,
+                product_nm: sckCarts[i].product.product_nm,
+                product_type: sckCarts[i].product.product_type,
+                cnt: sckCarts[i].cnt,
+                price: sckCarts[i].product.price,
+                totalPrice: sckAddInfo.totalPrice,
+                title_img: sckCarts[i].product.title_img,
+                rgstr_id: user.user_id != 'null' ? user.user_id : 'system',
+                rgstr_time: Time.getTimeString(),
+                mdfr_id: user.user_id != 'null' ? user.user_id : 'system',
+                mdfr_time: Time.getTimeString(),
+              }
+              let a2 = await axios.post( process.env.REACT_APP_SERVER_HOST_API + '/OrderDetails', ordersDetailParm)
+            }
 
-                removeSessionCarts()
-              axios.get(process.env.REACT_APP_SERVER_HOST_API + '/Orders?id='+ordNo+'&_rel=details')
-                  .then(res=>{
-                    let details = res.data[0].details
-                    if(loggedIn){
-                      details.forEach((detail:OrdersDetailParm) =>{
-                        axios.delete( process.env.REACT_APP_SERVER_HOST_API + "/Cart?product_id="+detail.product_id +"&user_id="+user.id ).catch(e => console.log(e))
-                      })
-                    }else{
-                      let cookieCartList =   getCookie("cookieCartList")
-                      let tmpArr:CartProps[] = []
+            removeSessionCarts()
+            let a3 = await axios.get(process.env.REACT_APP_SERVER_HOST_API + '/Orders?id='+ordNo+'&_rel=details')
 
-                      cookieCartList.forEach((cart: CartProps) =>{
-                        let index = details.findIndex((detail:OrdersDetailParm) => detail.product_id  === cart.product.id)
-                        if(index === -1 ){
-                          tmpArr.push(cart)
-                        }
-                      })
-
-                      setCookie("cookieCartList" , JSON.stringify(tmpArr))
-                    }
-                  }).then(res=>{
-                    // @ts-ignore
-                    if(!alert("주문에 성공했습니다.")) navigate("/orderList")
-
+            let details = a3.data[0].details
+            if(loggedIn){
+              details.forEach((detail:OrdersDetailParm) =>{
+                axios.delete( process.env.REACT_APP_SERVER_HOST_API + "/Cart?product_id="+detail.product_id +"&user_id="+user.id ).catch(e => console.log(e))
               })
-            })
-                .catch((error) => {
-                  console.log(error)
-          });
+            }else{
+              let cookieCartList =   getCookie("cookieCartList")
+              let tmpArr:CartProps[] = []
+
+              cookieCartList.forEach((cart: CartProps) =>{
+                let index = details.findIndex((detail:OrdersDetailParm) => detail.product_id  === cart.product.id)
+                if(index === -1 ){
+                  tmpArr.push(cart)
+                }
+              })
+
+              setCookie("cookieCartList" , JSON.stringify(tmpArr))
+            }
+
+            // @ts-ignore
+            if(!alert("주문에 성공했습니다.")) navigate("/orderList")
+
     } else {
       axios.delete(process.env.REACT_APP_SERVER_HOST_API + '/OrderDetails?order_id='+ordNo)
           .then(res=>{
