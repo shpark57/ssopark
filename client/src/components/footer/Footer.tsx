@@ -27,9 +27,9 @@ export default function Footer(){
             <br/>
             사업자번호 :479-96-01630  통신판매업신고 : 아직..
             <br/>
-            대표번호 : 010-9029-3089 이메일 : shpark91@kakao.com
+            대표번호 : 02-310-9497 이메일 : shpark91@kakao.com
             <br/>
-            copyrightⓒ2024 shpark91.iptime.org. All Rights Reserved.
+            copyrightⓒ2024 https://farm.shnea.kr. All Rights Reserved.
         </div>
     )
 }
