@@ -39,6 +39,7 @@ import OrderList from "./pages/order/list/OrderList";
 import OrderView from "./pages/order/view/OrderView";
 import OrderListAdmin from './pages/order/list/OrderListAdmin';
 import TermsOfUse from "./components/footer/TermsOfUse/TermsOfUse";
+import {CartProvider} from "./contexts/carts/cartsProv";
 
 
 function App() {
@@ -51,39 +52,41 @@ function App() {
   const loggedIn = Boolean(window.sessionStorage.getItem('loggedIn')) //로그인정보 세션스토리지에 저장
 
   return (
-    <LoginProvider>
-    <GlobalModal />
-        <Router>
-          <Topbar />
-          <div className="container">
-            <Routes>
-              <Route path="/" element={ <Home/>}/>
-              <Route path="/moviesList" element={<MoviesList/>}/>
-              <Route path="/movieAdd" element={<MovieAdd/>}/>
-              <Route path="/dragAndDrop" element={<DagAndDrop/>}/>
-              <Route path="/moviesView/:id" element={ <MoviesView/> }/>
-              <Route path="/ProductsList" element={ <ProductsList/> }/>
-              <Route path="/ProductsAdd" element={ <ProductsAdd/> }/>
-              <Route path="/ProductsView/:id" element={ <ProductsView/> }/>
-              <Route path="/ProductsModify/:id" element={ <ProductsModify/> }/>
-              <Route path="/sample" element={ <Sample/> }/>
-              <Route path="/users" element={<UserList/>}/>
-              <Route path="/carts" element={<CartList/>}/>
-              <Route path="/userModify" element={ <UserModify/> }/>
-              <Route path="/login" element={ <Login/> }/>
-              <Route path="/signUp" element={ <SignUp/> }/>
-              <Route path="/orderAdd" element={ <OrderAdd/> }/>
-              <Route path="/cartOrderAdd" element={ <CartOrderAdd/> }/>
-              <Route path="/payment" element={ <Payment/> }/>
-              <Route path="/orderList" element={<OrderList/>}/>
-              <Route path="/orderListAdmin" element={<OrderListAdmin/>}/>
-              <Route path="/orderView" element={<OrderView/>}/>
-              <Route path="/termsOfUse" element={<TermsOfUse type={"?"}/>}/>
+      <LoginProvider>
+        <CartProvider>
+          <GlobalModal />
+              <Router>
+                <Topbar />
+                <div className="container">
+                  <Routes>
+                    <Route path="/" element={ <Home/>}/>
+                    <Route path="/moviesList" element={<MoviesList/>}/>
+                    <Route path="/movieAdd" element={<MovieAdd/>}/>
+                    <Route path="/dragAndDrop" element={<DagAndDrop/>}/>
+                    <Route path="/moviesView/:id" element={ <MoviesView/> }/>
+                    <Route path="/ProductsList" element={ <ProductsList/> }/>
+                    <Route path="/ProductsAdd" element={ <ProductsAdd/> }/>
+                    <Route path="/ProductsView/:id" element={ <ProductsView/> }/>
+                    <Route path="/ProductsModify/:id" element={ <ProductsModify/> }/>
+                    <Route path="/sample" element={ <Sample/> }/>
+                    <Route path="/users" element={<UserList/>}/>
+                    <Route path="/carts" element={<CartList/>}/>
+                    <Route path="/userModify" element={ <UserModify/> }/>
+                    <Route path="/login" element={ <Login/> }/>
+                    <Route path="/signUp" element={ <SignUp/> }/>
+                    <Route path="/orderAdd" element={ <OrderAdd/> }/>
+                    <Route path="/cartOrderAdd" element={ <CartOrderAdd/> }/>
+                    <Route path="/payment" element={ <Payment/> }/>
+                    <Route path="/orderList" element={<OrderList/>}/>
+                    <Route path="/orderListAdmin" element={<OrderListAdmin/>}/>
+                    <Route path="/orderView" element={<OrderView/>}/>
+                    <Route path="/termsOfUse" element={<TermsOfUse type={"?"}/>}/>
 
-            </Routes>
-          </div>
-          <Footer />
-        </Router>
+                  </Routes>
+                </div>
+                <Footer />
+              </Router>
+        </CartProvider>
     </LoginProvider>
   );
 }
