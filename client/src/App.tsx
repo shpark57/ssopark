@@ -28,18 +28,18 @@ import Sample from './pages/sample/Sample'
 
 import {BrowserRouter as Router, Routes, Route  } from 'react-router-dom'
 
-import GlobalModal from "./components/modal/GlobalModal";
-import CartList from "./pages/cart/list/CartList";
-import Footer from "./components/footer/Footer";
-import Nav from "./components/nav/Nav";
-import OrderAdd from "./pages/order/add/OrderAdd";
-import CartOrderAdd from './pages/order/add/CartOrderAdd';
-import Payment from "./pages/payment/Payment";
-import OrderList from "./pages/order/list/OrderList";
-import OrderView from "./pages/order/view/OrderView";
-import OrderListAdmin from './pages/order/list/OrderListAdmin';
-import TermsOfUse from "./components/footer/TermsOfUse/TermsOfUse";
-import {CartProvider} from "./contexts/carts/cartsProv";
+import GlobalModal from "src/components/modal/GlobalModal";
+import CartList from "src/pages/cart/list/CartList";
+import Footer from "src/components/footer/Footer";
+import Nav from "src/components/nav/Nav";
+import OrderAdd from "src/pages/order/add/OrderAdd";
+import CartOrderAdd from 'src/pages/order/add/CartOrderAdd';
+import Payment from "src/pages/payment/Payment";
+import OrderList from "src/pages/order/list/OrderList";
+import OrderView from "src/pages/order/view/OrderView";
+import OrderListAdmin from 'src/pages/order/list/OrderListAdmin';
+import TermsOfUse from "src/components/footer/TermsOfUse/TermsOfUse";
+import {CartProvider} from "src/contexts/carts/cartsProv";
 
 
 function App() {
@@ -60,15 +60,10 @@ function App() {
                 <div className="container">
                   <Routes>
                     <Route path="/" element={ <Home/>}/>
-                    <Route path="/moviesList" element={<MoviesList/>}/>
-                    <Route path="/movieAdd" element={<MovieAdd/>}/>
-                    <Route path="/dragAndDrop" element={<DagAndDrop/>}/>
-                    <Route path="/moviesView/:id" element={ <MoviesView/> }/>
                     <Route path="/ProductsList" element={ <ProductsList/> }/>
                     <Route path="/ProductsAdd" element={ <ProductsAdd/> }/>
                     <Route path="/ProductsView/:id" element={ <ProductsView/> }/>
                     <Route path="/ProductsModify/:id" element={ <ProductsModify/> }/>
-                    <Route path="/sample" element={ <Sample/> }/>
                     <Route path="/users" element={<UserList/>}/>
                     <Route path="/carts" element={<CartList/>}/>
                     <Route path="/userModify" element={ <UserModify/> }/>
@@ -81,7 +76,6 @@ function App() {
                     <Route path="/orderListAdmin" element={<OrderListAdmin/>}/>
                     <Route path="/orderView" element={<OrderView/>}/>
                     <Route path="/termsOfUse" element={<TermsOfUse type={"?"}/>}/>
-
                   </Routes>
                 </div>
                 <Footer />

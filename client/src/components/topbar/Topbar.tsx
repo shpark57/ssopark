@@ -1,5 +1,5 @@
 import MenuIcon from '@mui/icons-material/Menu';
-import React, {useContext} from "react";
+import React, {useContext, useState} from "react";
 import './topbar.css'
 import NotificationsNoneIcon from '@mui/icons-material/NotificationsNone'
 import LanguageIcon from '@mui/icons-material/Language'
@@ -12,7 +12,7 @@ import Tooltip from "@mui/material/Tooltip";
 import PersonAdd from "@mui/icons-material/PersonAdd";
 import Settings from "@mui/icons-material/Settings";
 import Logout from "@mui/icons-material/Logout";
-import { Box, Container } from "@mui/material";
+import {Box, Container, InputBase, Paper} from "@mui/material";
 
 
 import Divider from "@mui/material/Divider";
@@ -31,6 +31,15 @@ import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
 import LibraryBooksIcon from '@mui/icons-material/LibraryBooks';
 import LogoutIcon from '@mui/icons-material/Logout';
 import LoginIcon from '@mui/icons-material/Login';
+import axios from "axios";
+import NonMembers from "../../pages/order/view/pop/NonMembers";
+import {OrdersProps} from "../../pages/order/props/OrdersProps";
+import {BordersProps} from "@mui/system";
+
+import SearchIcon from '@mui/icons-material/Search';
+import DirectionsIcon from '@mui/icons-material/Directions'
+
+
 export default function Topbar(){
 
     let navigate = useNavigate();   //페이지 이동을 위해필요.
@@ -117,12 +126,41 @@ export default function Topbar(){
         navigate(String("/carts"))
     }
 
+    function orderChild(order: OrdersProps) {
+        navigate("/orderView" , {state : {
+                order :  order
+            }})
+    }
+
     const goOrderList =() =>{
         if(loggedIn){
             navigate(String("/orderList"))
+        }else{
+
+
+            showModal({
+                modalType: "IncludeModal",
+                modalProps: {
+                    message:  <NonMembers setParentOrder ={orderChild}/>
+                }
+            });
         }
     }
 
+/*
+    const [searchProdcut , setSearchProdcut]  = useState("");
+    const [fixSearchProdcut , setFixSearchProdcut]  = useState("");
+
+    const handleChangeProduct = (event: React.ChangeEvent) =>{
+        // @ts-ignore
+        let value = event.target.value
+        setSearchProdcut(value)
+
+    }
+    const iconClick  = () =>{
+        setFixSearchProdcut(searchProdcut)
+    }
+*/
     return(
         <div className='topbar'>
             <div className='topbarWrapper'>
@@ -185,6 +223,22 @@ export default function Topbar(){
 
                     </Menu>
                 </div>
+                {/*
+                <Paper
+                    sx={{ p: '2px 4px', display: 'flex', alignItems: 'center' , width:150 ,boxShadow  : '0px 1px 0px 0px rgba(0, 0, 0, 0.12)'}}
+                >
+                    <InputBase
+                        sx={{ ml: 1, flex: 1 }}
+                        placeholder="제품 검색"
+                        inputProps={{ 'aria-label': '제품 검색' }}
+                        value={searchProdcut}
+                        onChange={handleChangeProduct}
+                    />
+                    <IconButton type="button" sx={{ p: '10px' }} aria-label="search" onClick={iconClick}>
+                        <SearchIcon />
+                    </IconButton>
+                </Paper>
+                */}
                 <div className='topRight'>
                     <Tooltip title="Account settings">
                         <IconButton

@@ -49,14 +49,19 @@ export default function Home(){
 
   return(
         <Container component="main" maxWidth="xs" sx={{textAlign:'center'}}>
-            <CardMedia
-                component="img"
-                image="https://www.kindacode.com/wp-content/uploads/2021/06/cute-dog.jpeg"
-                style={{
-                    margin: '10px auto'
-                }}
-                sx={{height : 200 , objectFit: 'scale-down'}}
-            />
+
+            <p>
+                <strong>
+                    2018년 영농 후 계자로 출발한 저희 농장인 승현네는 귀농 후 고창군의 청정하고 아름다운 자연 속에서
+                </strong>
+            </p>
+            <p>
+                <strong>
+                    수박, 메론, 블루베리, 청량고추 등 다양한 작물을 친환경 재배방식으로 정성껏 재배하고 있습니다.
+                </strong>
+            </p>
+
+
 
             <Carousel products={products}/>
 
