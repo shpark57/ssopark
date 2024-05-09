@@ -32,6 +32,7 @@ import Session from 'react-session-api';
 import UserModify from "../../user/modify/UserModify";
 import OrderAdd from "src/pages/order/add/OrderAdd";
 import {getCookie, setCookie} from "../../../types/cookie";
+import {width} from "@mui/system";
 
 const ProductsView = () =>{
 
@@ -222,7 +223,7 @@ const ProductsView = () =>{
     }
 
     return (
-      <Container component="main" maxWidth="lg" className='product' sx={{ mb: 8}} >
+      <Container component="main" maxWidth="md" className='product' sx={{ mb: 8}} >
 
         <Grid container spacing={3} sx={{ mb: 5}} >
             <Grid item xs={12}  sm ={12} container justifyContent="flex-start" sx={{ mt: 3 , mb : -8}}>
@@ -285,11 +286,14 @@ const ProductsView = () =>{
             </Grid>
 
 
-            <Grid item xs={12} container justifyContent="center">
-                {  product ?  <div  dangerouslySetInnerHTML={ {__html : product?.content} }></div>: ''
-
+            <Grid item xs={12} sx={{alignItems: 'center'}} >
+                {
+                    product.content && <Box   dangerouslySetInnerHTML={ {__html : product?.content} } />
                 }
             </Grid>
+
+
+
 
 
             <Grid item xs={12}>

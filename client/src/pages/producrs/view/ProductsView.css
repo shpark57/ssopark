@@ -123,3 +123,8 @@
     width: 30px !important;
     text-align: center;
 }
+
+
+.MuiGrid-container img{
+    width: 100%;
+}
