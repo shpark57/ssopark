@@ -19,7 +19,7 @@ export default function Footer(){
     };
     return(
         <div className='footer'>
-            <span onClick={goTermsOfUse("")}>회사소개</span>  <span onClick={goTermsOfUse("TermsofUse")}>이용약관</span>  <span onClick={goTermsOfUse("privacyPolicy")}>개인정보처리방침</span>  <span onClick={goTermsOfUse("informationUse")}>이용안내</span>
+            <span onClick={goTermsOfUse("introduction")}>회사소개</span>  <span onClick={goTermsOfUse("TermsofUse")}>이용약관</span>  <span onClick={goTermsOfUse("privacyPolicy")}>개인정보처리방침</span>  <span onClick={goTermsOfUse("informationUse")}>이용안내</span>
             <br/>
             상호 : 승현네 대표 : 박성일
             <br/>

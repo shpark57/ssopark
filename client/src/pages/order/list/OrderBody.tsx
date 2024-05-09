@@ -99,7 +99,12 @@ const OrderBody  = (props:Interface) => {
                     cancelText: "No",
                     title: "",
                     handleConfirm: () => {
-                        let tmpOrder = Object.assign({...order} , {order_state: value})
+                        let tmpOrder
+                        if(value == '결제대기' || value == '결제성공'){
+                            tmpOrder = Object.assign({...order} , {order_state: value , courier_company : ''  , invoice_number : ''})
+                        }else{
+                            tmpOrder = Object.assign({...order} , {order_state: value})
+                        }
                         setOrder(tmpOrder)
                         axios.patch(process.env.REACT_APP_SERVER_HOST_API + '/Orders/'+order.id, tmpOrder)
                             .then(res=>{console.log('주문상태 수정 성공')})

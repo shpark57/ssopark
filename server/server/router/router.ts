@@ -2,7 +2,7 @@
 import * as express from "express";
 import {Request, Response} from "express";
 const router = express.Router();
-import {createConnection , IsNull  , Not, MoreThan, Equal , LessThanOrEqual  , MoreThanOrEqual , } from "typeorm";
+import {createConnection , IsNull  , Not, MoreThan, Equal , LessThanOrEqual  , MoreThanOrEqual ,Like  } from "typeorm";
 import crypto from 'crypto'
 
 
@@ -72,7 +72,7 @@ createConnection().then(connection => {
         let orderObj = {}
         let paramOrder= ''
         let paramSort= ''
-
+        let tmpWhere =[]
         for(const [paramKey ,ParamValue] of Object.entries(req.query)){
             let key = `${paramKey}`.toLowerCase()
             let value = `${ParamValue}`.toLowerCase()
@@ -80,8 +80,6 @@ createConnection().then(connection => {
             if(key.indexOf('_limit') !== -1){
                 params['take'] = value
             }else if(key.indexOf('_page') !== -1){
-
-
                 params['skip'] = (Number(  value   )-1) * (params['take']?params['take']:10)
             }else if(key.indexOf('_sort') !== -1){
                 paramSort = value
@@ -91,6 +89,8 @@ createConnection().then(connection => {
                  whereObj[key.replace('_gte','')] =  MoreThanOrEqual(value)    // >= 
             }else if(key.indexOf('_lte') !== -1){
                 whereObj[key.replace('_lte','')] =  LessThanOrEqual(value)     // <=
+            }else if(key.indexOf('_like') !== -1){
+                whereObj[key.replace('_like','')] =  Like("%" + value+ "%")     // <=
             }else if(key.indexOf('_ne') !== -1 ){
                 if(value == 'null'){
                 whereObj[key.replace('_ne','')] =  Not(IsNull())     // is not null
@@ -105,6 +105,36 @@ createConnection().then(connection => {
                 params['relations'] =  value.split(',')
             }else if(key.indexOf('_exceptcols') !== -1 ){
                 params['exceptcols'] = value
+            }else if(key.indexOf('_or') !== -1 ){
+                let tmpObj ={}
+                for(const [orParamKey ,orParamValue] of Object.entries( JSON.parse(value))){
+                    let orKey = `${orParamKey}`.toLowerCase()
+                    let orValue = `${orParamValue}`.toLowerCase()
+
+                    if(orKey.indexOf('_gte') !== -1 ){
+                        tmpObj[orKey.replace('_gte','')] =  MoreThanOrEqual(orValue)    // >=
+                    }else if(orKey.indexOf('_lte') !== -1){
+                        tmpObj[orKey.replace('_lte','')] =  LessThanOrEqual(orValue)     // <=
+                    }else if(orKey.indexOf('_like') !== -1){
+                        tmpObj[orKey.replace('_like','')] =  Like("%" + orValue+ "%")     // <=
+                    }else if(orKey.indexOf('_ne') !== -1 ){
+                        if(orValue == 'null'){
+                            tmpObj[orKey.replace('_ne','')] =  Not(IsNull())     // is not null
+                        }else{
+                            tmpObj[orKey.replace('_ne','')] =  Not(orValue)     //  !=
+                        }
+                    }
+                    else{
+                        if(orValue == 'null'){
+                            tmpObj[orKey] = IsNull()
+                        }else{
+                            tmpObj[orKey] = orValue
+                        }
+                    }
+                }
+
+                tmpWhere.push( tmpObj )
+
             }
             else{
                 if(value == 'null'){
@@ -121,6 +151,7 @@ createConnection().then(connection => {
             }
         }
         where.push(whereObj)
+        where = [...where , ...tmpWhere]
 
         if( Object.keys(where[0]).length != 0 ){
             params['where'] =  where
