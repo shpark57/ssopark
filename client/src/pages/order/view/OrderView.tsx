@@ -10,7 +10,7 @@ import Button from '@mui/material/Button';
 
 import * as Time from 'src/types/time'
 
-import {Container, Grid, Box, TextField, CardActionArea} from '@mui/material';
+import {Container, Grid, Box, TextField, CardActionArea, NativeSelect} from '@mui/material';
 import { LoginContext } from 'src/contexts/login'
 import useModal from "src/components/modal/hooks/useModal";
 import DeleteIcon from '@mui/icons-material/Delete';
@@ -74,6 +74,31 @@ const OrderView = () =>{
 
     }
 
+
+    const deliConfirm = () => {
+        showModal({
+            modalType: "ConfirmModal",
+            modalProps: {
+                message: "배송 상품을 수령하셨습니까?",
+                confirmText: "Yes",
+                cancelText: "No",
+                title: "",
+                handleConfirm: () => {
+                    let tmpOrder = Object.assign({...order} , {order_state: '거래완료'})
+                    axios.patch(process.env.REACT_APP_SERVER_HOST_API + '/Orders/'+order.id, tmpOrder)
+                        .then(res=>{
+                            navigate("/orderView" , {state : {
+                                    order :  order
+                                }})
+                        })
+                        .catch(e=>{console.log(e)})
+                },
+                handleClose: () => {
+
+                }
+            }
+        });
+    }
     return (
         <Container component="main" maxWidth="lg" className='product' sx={{ mb: 8}} >
             <Grid>
@@ -168,7 +193,33 @@ const OrderView = () =>{
                     {order.order_price.toLocaleString('ko-KR')+'원'}
                 </Grid>
 
+                <Grid item xs={12} sm = {12} sx={{textAlign : 'center'}}>
+                    {
+                        (order.order_state == '결제대기' || order.order_state == '결제성공') &&
+                        <Button
+                            variant="contained"
+                            color="error"
+                            sx={{fontSize : 15}}
+                            style={{ height : '50px' , margin : '10px'}}
+
+                        >
+                            주문 취소
+                        </Button>
+                    }
+                    {
+                        (order.order_state == '배송중') &&
+                        <Button
+                            variant="contained"
+                            sx={{fontSize : 15}}
+                            style={{ height : '50px'  , margin : '10px'}}
+                            onClick={deliConfirm}
+                        >
+                            배송 완료 확인
+                        </Button>
+                    }
+                </Grid>
             </Grid>
+
         </Container>
     )
 }

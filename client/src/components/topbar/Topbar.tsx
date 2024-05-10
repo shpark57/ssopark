@@ -32,7 +32,7 @@ import LibraryBooksIcon from '@mui/icons-material/LibraryBooks';
 import LogoutIcon from '@mui/icons-material/Logout';
 import LoginIcon from '@mui/icons-material/Login';
 import axios from "axios";
-import NonMembers from "../../pages/order/view/pop/NonMembers";
+import NonMembers from "src/pages/order/view/pop/NonMembers";
 import {OrdersProps} from "../../pages/order/props/OrdersProps";
 import {BordersProps} from "@mui/system";
 
