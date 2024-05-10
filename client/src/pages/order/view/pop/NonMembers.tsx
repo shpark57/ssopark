@@ -61,9 +61,10 @@ const NonMembers:React.FC<NonMemberProp> = (props) => {
                 <Grid item xs={12}>
                     주문번호를 입력해주세요.
                 </Grid>
-                <Grid item xs={8}  sm={8}>
+                <Grid item xs={12}  sm={12}>
                     <TextField
                         required
+                        fullWidth
                         id="id"
                         label="주문번호"
                         name="id"

@@ -138,7 +138,7 @@ const OrderAdd = () => {
   };
 
 
-  const ordNo = 'ord_' +Time.toDateStringNumRandom();
+  const ordNo = Time.toDateStringNumRandom();
   const onClickPayment = () => {
 
     const { IMP }:any = window;
