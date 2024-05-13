@@ -32,6 +32,7 @@ type CicpProp = {
 const Cicp:React.FC<CicpProp> = (props) => {
 
 
+  const { loggedIn , user } = useContext(LoginContext);
   const { showModal,hideModal } = useModal();
   const [order,setOrder] = useState<OrdersProps>(props.order)
   const [valCourier_company , setValCourier_company] = useState("로젠택배")
@@ -60,7 +61,7 @@ const Cicp:React.FC<CicpProp> = (props) => {
       alert("송장번호를 입력해주세요")
       return;
     }
-    let tmpOrder = Object.assign({...order} , {order_state: '배송중' ,courier_company : valCourier_company  , invoice_number : valInvoice_number})
+    let tmpOrder = Object.assign({...order} , {order_state: '배송중' ,courier_company : valCourier_company  , invoice_number : valInvoice_number , mdfr_id : user.user_id , mdfr_time : Time.getTimeString()})
     setOrder(tmpOrder)
     setParentOrder(tmpOrder)
     axios.patch(process.env.REACT_APP_SERVER_HOST_API + '/Orders/'+order.id, tmpOrder)
