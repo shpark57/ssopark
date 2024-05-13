@@ -84,7 +84,13 @@ const OrderView = () =>{
                 cancelText: "No",
                 title: "",
                 handleConfirm: () => {
-                    let tmpOrder = Object.assign({...order} , {order_state: '거래완료'})
+                    let tmpOrder
+                    if(loggedIn){
+                        tmpOrder = Object.assign({...order} , {order_state: '거래완료', mdfr_id : user.user_id , mdfr_time : Time.getTimeString()})
+                    }else{
+                        tmpOrder = Object.assign({...order} , {order_state: '거래완료', mdfr_id : 'system' , mdfr_time : Time.getTimeString()})
+                    }
+
                     axios.patch(process.env.REACT_APP_SERVER_HOST_API + '/Orders/'+order.id, tmpOrder)
                         .then(res=>{
                             navigate("/orderView" , {state : {

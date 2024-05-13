@@ -101,9 +101,9 @@ const OrderBody  = (props:Interface) => {
                     handleConfirm: () => {
                         let tmpOrder
                         if(value == '결제대기' || value == '결제성공'){
-                            tmpOrder = Object.assign({...order} , {order_state: value , courier_company : ''  , invoice_number : ''})
+                            tmpOrder = Object.assign({...order} , {order_state: value , courier_company : ''  , invoice_number : '', mdfr_id : user.user_id , mdfr_time : Time.getTimeString()})
                         }else{
-                            tmpOrder = Object.assign({...order} , {order_state: value})
+                            tmpOrder = Object.assign({...order} , {order_state: value, mdfr_id : user.user_id , mdfr_time : Time.getTimeString()})
                         }
                         setOrder(tmpOrder)
                         axios.patch(process.env.REACT_APP_SERVER_HOST_API + '/Orders/'+order.id, tmpOrder)
