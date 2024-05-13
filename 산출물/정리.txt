@@ -98,3 +98,19 @@ docker exec -t -i shpark57/shpark_farm /bin/bash
 
   show global variables like "PORT";
   마이sql 포트확인
+
+
+
+SET GLOBAL event_scheduler = ON;
+SHOW VARIABLES WHERE VARIABLE_NAME = 'event_scheduler';
+SHOW EVENTS;
+
+
+/config/databases/
+
+
+CREATE EVENT IF NOT EXISTS autoComplate_event
+    ON SCHEDULE EVERY '1' DAY STARTS '2020-01-01'
+    DO update orders set order_state = '거래완료' WHERE order_state ='배송중' AND mdfr_time < (NOW() - INTERVAL 10 DAY);
+
+디비 마운트 절대 하지말기.
