@@ -46,24 +46,8 @@ export default function Home(){
         }
     };
 
-
-    const test = async () => {
-        const param = {
-            "key" :  "7b035420e12cc0e8ec83b7540f668cfe"
-            ,"tel" : "01050348381"
-            ,"cb" : "01090293089"
-            ,"msg" : "테스트 메시지"
-            ,"title" : "테스트 제목"
-            ,"count" : "1"
-        }
-        var test = await axios.post(process.env.REACT_APP_SERVER_HOST_API + "/sendsms"  , param)
-        console.log(test)
-
-    };
-
     return(
         <Container component="main" maxWidth="xs" sx={{textAlign:'center'}}>
-            <button onClick={test}> test </button>
             <div style={{
                 backgroundImage: `url(${process.env.PUBLIC_URL}/images/introduction_3.jpg)`,
                 backgroundSize: '100%',
