@@ -105,6 +105,15 @@ const OrderView = () =>{
             }
         });
     }
+
+    const orderCancel = () => {
+        showModal({
+            modalType: "AlertModal",
+            modalProps: {
+                message: "아직 미지원 서비스 입니다. 대표번호로 연락해주세요."
+            }
+        });
+    }
     return (
         <Container component="main" maxWidth="lg" className='product' sx={{ mb: 8}} >
             <Grid>
@@ -207,6 +216,7 @@ const OrderView = () =>{
                             color="error"
                             sx={{fontSize : 15}}
                             style={{ height : '50px' , margin : '10px'}}
+                            onClick={orderCancel}
 
                         >
                             주문 취소
