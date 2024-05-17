@@ -22,33 +22,39 @@ import Container from "@mui/material/Container";
 
 
 export default function Home(){
-  let navigate = useNavigate();   //페이지 이동을 위해필요.
-  const { showModal } = useModal();
-  const {loggedIn , user } = useContext(LoginContext);
-  const [products , setProducts] = useState<ProductProps[]>([]);
+    let navigate = useNavigate();   //페이지 이동을 위해필요.
+    const { showModal } = useModal();
+    const {loggedIn , user } = useContext(LoginContext);
+    const [products , setProducts] = useState<ProductProps[]>([]);
 
-  useEffect(()=>{
-    fetchData();
-  } , []);
+    useEffect(()=>{
+        fetchData();
+    } , []);
 
-  // API를 호출하는 부분
-  const fetchData = () => {
-    try {
-        axios.get( process.env.REACT_APP_SERVER_HOST_API + '/Products' , {params : {use_yn: 'Y',_sort:'id',_order:'DESC',_limit: 5,_exceptcols : 'content'}})
-            .then(response =>{
-                setProducts(response.data);
-            }).catch((error) =>  {
+    // API를 호출하는 부분
+    const fetchData = () => {
+        try {
+            axios.get( process.env.REACT_APP_SERVER_HOST_API + '/Products' , {params : {use_yn: 'Y',_sort:'id',_order:'DESC',_limit: 5,_exceptcols : 'content'}})
+                .then(response =>{
+                    setProducts(response.data);
+                }).catch((error) =>  {
                 console.log(error);
             })
 
-    } catch (error) {
-        console.log(error);
-    }
-  };
+        } catch (error) {
+            console.log(error);
+        }
+    };
 
 
-  return(
+    const test = () => {
+        axios.post("http://211.172.232.124:9201")
+
+    };
+
+    return(
         <Container component="main" maxWidth="xs" sx={{textAlign:'center'}}>
+            <button onClick={test}> test </button>
             <div style={{
                 backgroundImage: `url(${process.env.PUBLIC_URL}/images/introduction_3.jpg)`,
                 backgroundSize: '100%',
@@ -81,7 +87,6 @@ export default function Home(){
             </div>
 
             <Carousel products={products}/>
-
         </Container>
     )
 }

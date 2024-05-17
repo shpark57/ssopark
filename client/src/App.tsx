@@ -31,7 +31,6 @@ import {BrowserRouter as Router, Routes, Route  } from 'react-router-dom'
 import GlobalModal from "src/components/modal/GlobalModal";
 import CartList from "src/pages/cart/list/CartList";
 import Footer from "src/components/footer/Footer";
-import Nav from "src/components/nav/Nav";
 import OrderAdd from "src/pages/order/add/OrderAdd";
 import CartOrderAdd from 'src/pages/order/add/CartOrderAdd';
 import Payment from "src/pages/payment/Payment";
@@ -43,9 +42,6 @@ import {CartProvider} from "src/contexts/carts/cartsProv";
 
 
 function App() {
-  window.Kakao.init(process.env.REACT_APP_JAVASCRIPT_KEY);
-  window.Kakao.isInitialized(); // init되면 true, 아니면 false를 반환한다
-
   //sessionStorage를 이용한 로그인처리
   // loggedIn 가 true 면 정상 페이지들을 보여주고
   // loggedIn 가 false 면 로그인 회원가입만 표시

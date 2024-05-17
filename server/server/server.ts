@@ -7,6 +7,7 @@ const app = express();
 const router = require("./router/router");
 const file = require("./router/file")
 const mail = require("./router/sendmail")
+const sms = require("./router/sendSMS")
 
 require('dotenv').config();
 
@@ -15,6 +16,7 @@ app.use(bodyParser.urlencoded({extended:true}))
 app.use(bodyParser.json({limit: '100mb'}))
 app.use("/fileService", file);
 app.use("/sendmail", mail);
+app.use("/sendsms", sms);
 app.use("/:table", router);
 
 

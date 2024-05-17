@@ -138,8 +138,7 @@ const OrderBody  = (props:Interface) => {
                                 <option value={'결제성공'} >결제성공</option>
                                 <option value={'배송중'}  >배송중</option>
                                 <option value={'거래완료'} >거래완료</option>
-                                <option value={'환불신청'} >환불신청</option>
-                                <option value={'환불완료'} >환불완료</option>
+                                <option value={'주문취소'} >주문취소</option>
                             </NativeSelect>
                         </FormControl>
                     }
