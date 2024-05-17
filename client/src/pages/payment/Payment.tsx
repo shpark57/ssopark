@@ -87,33 +87,30 @@ const Payment = () => {
                 })
 
 
-                axios.get( process.env.REACT_APP_SERVER_HOST_API + "/Users?user_id=allan159")
-                    .then(res=>{
-                        const param = {
-                            "key" :  process.env.REACT_APP_SMS_ICODE_KEY
-                            ,"tel" :  res.data.phone_number
-                            ,"cb" : "01090293089"
-                            ,"msg" : ordersParm.order_title +"이/가 주문됐습니다. \n 주문을 확인해주세요."
-                            ,"title" : ordersParm.order_title
-                            ,"count" : "1"
-                        }
-
-                        axios.post(process.env.REACT_APP_SERVER_HOST_API + "/sendsms"  , param)
-                            .then(res=>{
-                                setCookie("cookieCartList" , JSON.stringify(tmpArr))
-                            })
-                            .catch(res=>{
-                                console.log("문자발송 실패")
-                            })
-                    })
-
-
-
-
-
+                setCookie("cookieCartList" , JSON.stringify(tmpArr))
             }
-            // @ts-ignore
-            if(!alert("주문에 성공했습니다.")) navigate("/orderList")
+
+            axios.get( process.env.REACT_APP_SERVER_HOST_API + "/Users?user_id=allan159")
+                .then(res=>{
+                    const param = {
+                        "key" :  process.env.REACT_APP_SMS_ICODE_KEY
+                        ,"tel" :  res.data.phone_number
+                        ,"cb" : "01090293089"
+                        ,"msg" : ordersParm.order_title +"이/가 주문됐습니다. \n 주문을 확인해주세요."
+                        ,"title" : ordersParm.order_title
+                        ,"count" : "1"
+                    }
+
+                    axios.post(process.env.REACT_APP_SERVER_HOST_API + "/sendsms"  , param)
+                        .then(res=>{
+                            // @ts-ignore
+                            if(!alert("주문에 성공했습니다.")) navigate("/orderList")
+
+                        })
+                        .catch(res=>{
+                            console.log("문자발송 실패")
+                        })
+                })
 
         }else{
             // @ts-ignore
