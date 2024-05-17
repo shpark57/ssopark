@@ -54,6 +54,7 @@ export default function Home(){
             ,"cb" : "01090293089"
             ,"msg" : "테스트 메시지"
             ,"title" : "테스트 제목"
+            ,"count" : "1"
         }
         var test = await axios.post(process.env.REACT_APP_SERVER_HOST_API + "/sendsms"  , param)
         console.log(test)
