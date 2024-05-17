@@ -76,7 +76,7 @@ const Payment = () => {
                     axios.delete( process.env.REACT_APP_SERVER_HOST_API + "/Cart?product_id="+detail.product_id +"&user_id="+user.id )
                 })
             }else{
-                let cookieCartList =   getCookie("cookieCartList")
+                let cookieCartList =   JSON.parse(ckCarts)
                 let tmpArr:CartProps[] = []
 
                 cookieCartList.forEach((cart: CartProps) =>{
@@ -85,8 +85,6 @@ const Payment = () => {
                         tmpArr.push(cart)
                     }
                 })
-
-
                 setCookie("cookieCartList" , JSON.stringify(tmpArr))
             }
 
