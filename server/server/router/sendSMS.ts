@@ -13,11 +13,11 @@ import { IContactForm } from "../src/mail/type/email";
 router.post("",  async function(req: Request, res: Response) {
 
     const param = {
-        "key" :  "7b035420e12cc0e8ec83b7540f668cfe"
-        ,"tel" : "01050348381"
-        ,"cd" : "01090293089"
-        ,"msg" : "테스트 메시지"
-        ,"title" : "테스트 제목"
+        "key" :     req.params.key
+        ,"tel" :    req.params.tel
+        ,"cd" :     req.params.cd
+        ,"msg" :    req.params.msg
+        ,"title" :  req.params.title
     }
 
     try {
