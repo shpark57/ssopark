@@ -51,7 +51,7 @@ export default function Home(){
         const param = {
             "key" :  "7b035420e12cc0e8ec83b7540f668cfe"
             ,"tel" : "01050348381"
-            ,"cd" : "01090293089"
+            ,"cb" : "01090293089"
             ,"msg" : "테스트 메시지"
             ,"title" : "테스트 제목"
         }
