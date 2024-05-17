@@ -281,7 +281,7 @@ const CartOrderAdd = () => {
           .then(res=>{
             const param = {
               "key" :  process.env.REACT_APP_SMS_ICODE_KEY
-              ,"tel" :  res.data.phone_number
+              ,"tel" :  res.data[0].phone_number
               ,"cb" : "01090293089"
               ,"msg" : ordersParm.order_title +"이/가 주문됐습니다. \n 주문을 확인해주세요."
               ,"title" : ordersParm.order_title
