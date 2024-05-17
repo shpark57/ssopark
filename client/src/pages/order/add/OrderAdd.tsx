@@ -282,7 +282,7 @@ const OrderAdd = () => {
                 axios.delete( process.env.REACT_APP_SERVER_HOST_API + "/Cart?product_id="+detail.product_id +"&user_id="+user.id ).catch(e => console.log(e))
               })
             }else{
-              let cookieCartList =   getCookie("cookieCartList")
+              let cookieCartList =   JSON.parse(ckCarts)
               let tmpArr:CartProps[] = []
 
               cookieCartList.forEach((cart: CartProps) =>{
@@ -291,7 +291,6 @@ const OrderAdd = () => {
                   tmpArr.push(cart)
                 }
               })
-
               setCookie("cookieCartList" , JSON.stringify(tmpArr))
             }
             axios.get( process.env.REACT_APP_SERVER_HOST_API + "/Users?user_id=allan159")
@@ -320,15 +319,9 @@ const OrderAdd = () => {
 
 
     } else {
-      axios.delete(process.env.REACT_APP_SERVER_HOST_API + '/OrderDetails?order_id='+ordNo)
-          .then(res=>{
-            axios.delete(process.env.REACT_APP_SERVER_HOST_API + '/Orders?id='+ordNo)
-                .then(res=>{
 
-                  // @ts-ignore
-                  if(!alert("주문에 실패했습니다.")) navigate("/orderList")
-                }).catch(e=>{console.log(e)})
-          }).catch(e=>{console.log(e)})
+      // @ts-ignore
+      if(!alert("주문에 실패했습니다.")) navigate("/orderList")
     }
   }
 
