@@ -300,11 +300,9 @@ const OrderAdd = () => {
                     "key" :  process.env.REACT_APP_SMS_ICODE_KEY
                     ,"tel" :  res.data[0].phone_number
                     ,"cb" : "01090293089"
-                    ,"msg" : "주문번호 : ["+ ordersParm.id  +"] \n" +
-                        ordersParm.recipient_name  +" 님이 \n" +
-                        ordersParm.order_title +" 을/를 주문됐습니다. \n" +
-                        ordersParm.order_price.toLocaleString('ko-KR')+" 원 \n" +
-                        "주문을 확인해주세요."
+                    ,"msg" : "주문번호:["+ ordersParm.id  +"]\n" +
+                        ordersParm.recipient_name  +" 님의 주문\n" +
+                        ordersParm.order_price.toLocaleString('ko-KR')+" 원"
                     ,"title" : ordersParm.order_title
                     ,"count" : "1"
                   }
