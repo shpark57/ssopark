@@ -296,7 +296,7 @@ const CartOrderAdd = () => {
                   // @ts-ignore
                   if(!alert("주문에 성공했습니다.")) {
                     navigate("/orderView" , {state : {
-                        order :  a1.data
+                        order :  a3.data[0]
                       }})
                   }
                 })
