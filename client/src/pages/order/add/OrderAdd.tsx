@@ -255,7 +255,6 @@ const OrderAdd = () => {
               recipient_phone_number: sckAddInfo.recipient_phone_number
             }
             let a1 = await axios.post( process.env.REACT_APP_SERVER_HOST_API + '/Orders', ordersParm)
-            a1.data.details = []
             for(let i in sckCarts){
               let ordersDetailParm = {
                 order_id: a1.data.id,
@@ -272,7 +271,6 @@ const OrderAdd = () => {
                 mdfr_time: Time.getTimeString(),
               }
               let a2 = await axios.post( process.env.REACT_APP_SERVER_HOST_API + '/OrderDetails', ordersDetailParm)
-              a1.data.details.push(a2.data)
             }
 
             removeSessionCarts()
