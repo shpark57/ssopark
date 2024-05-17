@@ -548,7 +548,7 @@ const OrderAdd = () => {
                 onChange={handleChange}
                 name="radio-buttons-group"
             >
-              <FormControlLabel value="html5_inicis"    control={<Radio />}       label="KG이니시스" />
+              <FormControlLabel value="html5_inicis"    control={<Radio />}       label="신용카드" />
               <FormControlLabel className="mobileHide" value="kakaopay"        control={<Radio />}       label="카카오페이" />
             </RadioGroup>
           </Grid>
