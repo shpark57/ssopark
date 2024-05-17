@@ -13,12 +13,13 @@ import { IContactForm } from "../src/mail/type/email";
 router.post("",  async function(req: Request, res: Response) {
 
     const param = {
-        "key" :     req.params.key
-        ,"tel" :    req.params.tel
-        ,"cd" :     req.params.cd
-        ,"msg" :    req.params.msg
-        ,"title" :  req.params.title
+        "key" :     req.body.key
+        ,"tel" :    req.body.tel
+        ,"cd" :     req.body.cd
+        ,"msg" :    req.body.msg
+        ,"title" :  req.body.title
     }
+
 
     try {
         const response = await axios.post('http://211.172.232.124:9201', param);
