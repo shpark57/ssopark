@@ -47,8 +47,16 @@ export default function Home(){
     };
 
 
-    const test = () => {
-        axios.post("http://211.172.232.124:9201")
+    const test = async () => {
+        const param = {
+            "key" :  "7b035420e12cc0e8ec83b7540f668cfe"
+            ,"tel" : "01050348381"
+            ,"cd" : "01090293089"
+            ,"msg" : "테스트 메시지"
+            ,"title" : "테스트 제목"
+        }
+        var test = await axios.post(process.env.REACT_APP_SERVER_HOST_API + "/sendsms"  , param)
+        console.log(test)
 
     };
 
