@@ -294,7 +294,11 @@ const CartOrderAdd = () => {
                 .then(res=>{
 
                   // @ts-ignore
-                  if(!alert("주문에 성공했습니다.")) navigate("/orderList")
+                  if(!alert("주문에 성공했습니다.")) {
+                    navigate("/orderView" , {state : {
+                        order :  a1.data
+                      }})
+                  }
                 })
                 .catch(res=>{
                   console.log("문자발송 실패")
