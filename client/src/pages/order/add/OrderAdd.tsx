@@ -271,7 +271,6 @@ const OrderAdd = () => {
                 mdfr_time: Time.getTimeString(),
               }
               let a2 = await axios.post( process.env.REACT_APP_SERVER_HOST_API + '/OrderDetails', ordersDetailParm)
-              a1.data.details.push(a2.data)
             }
 
             removeSessionCarts()
