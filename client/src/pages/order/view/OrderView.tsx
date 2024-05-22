@@ -195,6 +195,24 @@ const OrderView = () =>{
                 <Grid item xs={12} sm = {12} sx={{ mb: -4}}>
                     <h4>결제 정보</h4>
                 </Grid>
+                <Grid item xs={4} sm = {1} >
+                    은행 :
+                </Grid>
+                <Grid item xs={8} sm = {2} >
+                    {process.env.REACT_APP_BANK}
+                </Grid>
+                <Grid item xs={4} sm = {1} >
+                    이름 :
+                </Grid>
+                <Grid item xs={8} sm = {2} >
+                    {process.env.REACT_APP_BANK_USER}
+                </Grid>
+                <Grid item xs={4} sm = {2} >
+                    계좌 번호 :
+                </Grid>
+                <Grid item xs={8} sm = {4}>
+                    {process.env.REACT_APP_ACCOUNT_NUMBER}
+                </Grid>
                 <Grid item xs={4} sm = {2} >
                     주문 상태 :
                 </Grid>

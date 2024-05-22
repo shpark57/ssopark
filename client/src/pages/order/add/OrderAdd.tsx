@@ -52,6 +52,7 @@ interface type{
 
 const OrderAdd = () => {
 
+  const [OS, setOS] = React.useState("결제대기");
   const {state} = useLocation() as type;	// 2번 라인
   const {product ,orderCnt ,totalPrice}= state;	// 3번 라인
   const {ckCarts,ckAddInfo,setCkCartsSession,removeSessionCarts} = useContext(CartContext);
@@ -124,7 +125,7 @@ const OrderAdd = () => {
 
 
 
-  const [PG, setPG] = React.useState('html5_inicis');
+  const [PG, setPG] = React.useState('account_transfer');
   const [payMethod, setPayMethod] = React.useState('card');
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     let value = (event.target as HTMLInputElement).value
@@ -134,6 +135,8 @@ const OrderAdd = () => {
       setPayMethod('card')
     }else if(value == 'kakaopay'){
       setPayMethod('card')
+    }else if(value == 'account_transfer'){
+      setPayMethod('account_transfer')
     }
   };
 
@@ -141,91 +144,116 @@ const OrderAdd = () => {
   const ordNo = Time.toDateStringNumRandom();
   const onClickPayment = () => {
 
-    const { IMP }:any = window;
-    IMP.init(`${process.env.REACT_APP_IMP}`);
 
-    if(name == '' || name == null){
-      setAlertMessage('이름을 입력해주세요,')
-      return
-    }else if(phone_number == '' || phone_number == null){
-      setAlertMessage('휴대번호를 입력해주세요,')
-      return
-    }else if(email == '' || email == null){
-      setAlertMessage('이메일을 입력해주세요,')
-      return
-    }else if(recipient_name == '' || recipient_name == null){
-      setAlertMessage('받는사람 이름을 입력해주세요,')
-      return
-    }else if(recipient_phone_number == '' || recipient_phone_number == null){
-      setAlertMessage('받는사람 휴대번호를 입력해주세요,')
-      return
-    }else if(recipient_email == '' || recipient_email == null){
-      setAlertMessage('받는사람 이메일을 입력해주세요,')
-      return
-    }else if(addr == '' || addr == null){
-      setAlertMessage('주소를 입력해주세요,')
-      return
-    }else if(addrDetail == '' || addrDetail == null){
-      setAlertMessage('상세주소를 입력해주세요,')
-      return
-    }else if(zipNo == '' || zipNo == null){
-      setAlertMessage('우편번호를 입력해주세요,')
-      return
-    }
+    showModal({
+      modalType: "ConfirmModal",
+      modalProps: {
+        message: "주문하시겠습니까?",
+        confirmText: "Yes",
+        cancelText: "No",
+        title: "",
+        handleConfirm: () => {
+          const { IMP }:any = window;
+          IMP.init(`${process.env.REACT_APP_IMP}`);
 
-
-
-    let cart = {
-      id : 0 ,
-      cnt : orderCnt ,
-      title_img : product.title_img,
-      product_id : product.id,
-      user_id: user.id != 0 ? user.id : null,
-      product : product,
-      product_nm : product.product_nm,
-      rgstr_id: user.user_id != 'null' ? user.user_id : 'system',
-      rgstr_time: Time.getTimeString(),
-      mdfr_id:  user.user_id != 'null' ? user.user_id : 'system',
-      mdfr_time: Time.getTimeString(),
-    }
+          if(name == '' || name == null){
+            setAlertMessage('이름을 입력해주세요,')
+            return
+          }else if(phone_number == '' || phone_number == null){
+            setAlertMessage('휴대번호를 입력해주세요,')
+            return
+          }else if(email == '' || email == null){
+            setAlertMessage('이메일을 입력해주세요,')
+            return
+          }else if(recipient_name == '' || recipient_name == null){
+            setAlertMessage('받는사람 이름을 입력해주세요,')
+            return
+          }else if(recipient_phone_number == '' || recipient_phone_number == null){
+            setAlertMessage('받는사람 휴대번호를 입력해주세요,')
+            return
+          }else if(recipient_email == '' || recipient_email == null){
+            setAlertMessage('받는사람 이메일을 입력해주세요,')
+            return
+          }else if(addr == '' || addr == null){
+            setAlertMessage('주소를 입력해주세요,')
+            return
+          }else if(addrDetail == '' || addrDetail == null){
+            setAlertMessage('상세주소를 입력해주세요,')
+            return
+          }else if(zipNo == '' || zipNo == null){
+            setAlertMessage('우편번호를 입력해주세요,')
+            return
+          }
 
 
-    /*
-    setCookie("ckCarts" , JSON.stringify(carts));
-    let addInfo ={
-      totalPrice : totalPrice,
-      addr : addr,
-      addrDetail : addrDetail,
-      zipNo : zipNo,
-      recipient_name : recipient_name,
-      recipient_phone_number : recipient_phone_number
-    }
-    setCookie("ckAddInfo" , JSON.stringify(addInfo));
-    */
-    let addInfo ={
-      totalPrice : totalPrice,
-      addr : addr,
-      addrDetail : addrDetail,
-      zipNo : zipNo,
-      recipient_name : recipient_name,
-      recipient_phone_number : recipient_phone_number
-    }
-    setCkCartsSession(JSON.stringify([cart]) , JSON.stringify(addInfo))
 
-    const data = {
-      pg: PG, // PG사
-      pay_method: payMethod, // 결제수단
-      merchant_uid: ordNo, // 주문번호
-      amount: totalPrice, // 결제금액
-      name: product.product_nm, // 주문명
-      buyer_name: name, // 구매자 이름
-      buyer_tel: phone_number, // 구매자 전화번호
-      buyer_email: email, // 구매자 이메일
-      buyer_addr: addr + ' ' +addrDetail, // 구매자 주소
-      buyer_postcode: zipNo, // 구매자 우편번호
-      m_redirect_url : process.env.REACT_APP_CLIENT_HOST + '/payment'
-    };
-    IMP.request_pay(data, callback);
+          let cart = {
+            id : 0 ,
+            cnt : orderCnt ,
+            title_img : product.title_img,
+            product_id : product.id,
+            user_id: user.id != 0 ? user.id : null,
+            product : product,
+            product_nm : product.product_nm,
+            rgstr_id: user.user_id != 'null' ? user.user_id : 'system',
+            rgstr_time: Time.getTimeString(),
+            mdfr_id:  user.user_id != 'null' ? user.user_id : 'system',
+            mdfr_time: Time.getTimeString(),
+          }
+
+
+          /*
+          setCookie("ckCarts" , JSON.stringify(carts));
+          let addInfo ={
+            totalPrice : totalPrice,
+            addr : addr,
+            addrDetail : addrDetail,
+            zipNo : zipNo,
+            recipient_name : recipient_name,
+            recipient_phone_number : recipient_phone_number
+          }
+          setCookie("ckAddInfo" , JSON.stringify(addInfo));
+          */
+          let addInfo ={
+            totalPrice : totalPrice,
+            addr : addr,
+            addrDetail : addrDetail,
+            zipNo : zipNo,
+            recipient_name : recipient_name,
+            recipient_phone_number : recipient_phone_number
+          }
+          setCkCartsSession(JSON.stringify([cart]) , JSON.stringify(addInfo))
+
+          const data = {
+            pg: PG, // PG사
+            pay_method: payMethod, // 결제수단
+            merchant_uid: ordNo, // 주문번호
+            amount: totalPrice, // 결제금액
+            name: product.product_nm, // 주문명
+            buyer_name: name, // 구매자 이름
+            buyer_tel: phone_number, // 구매자 전화번호
+            buyer_email: email, // 구매자 이메일
+            buyer_addr: addr + ' ' +addrDetail, // 구매자 주소
+            buyer_postcode: zipNo, // 구매자 우편번호
+            m_redirect_url : process.env.REACT_APP_CLIENT_HOST + '/payment'
+          };
+          if(PG == 'account_transfer'){
+            setOS("결제대기")
+            callback({success : true, error_msg : null } )
+          }else{
+            setOS("결제성공")
+            IMP.request_pay(data, callback);
+          }
+        },
+        handleClose: () => {
+
+        }
+      }
+    });
+
+
+
+
 
   };
   const callback = async (response: any) => {
@@ -241,7 +269,7 @@ const OrderAdd = () => {
               id: ordNo,
               user_id: user.id != 0 ? user.id : null,
               order_date: Time.getTimeString(),
-              order_state: '결제성공',
+              order_state: OS,
               order_title: sckCarts.length > 1 ?  sckCarts[0].product.product_nm + '외 '+ String(sckCarts.length -1) +'건' : sckCarts[0].product.product_nm   ,
               order_price: sckAddInfo.totalPrice,  //배송비 무료
               rgstr_id: user.user_id != 'null' ? user.user_id : 'system',
@@ -543,8 +571,9 @@ const OrderAdd = () => {
                 onChange={handleChange}
                 name="radio-buttons-group"
             >
-              <FormControlLabel value="html5_inicis"    control={<Radio />}       label="신용카드" />
-              <FormControlLabel className="mobileHide" value="kakaopay"        control={<Radio />}       label="카카오페이" />
+              <FormControlLabel value="account_transfer"    control={<Radio />}       label="계좌이체" aria-readonly={"false"}/>
+              <FormControlLabel value="html5_inicis"    control={<Radio />}       label="신용카드" aria-readonly={"true"} disabled />
+              <FormControlLabel className="mobileHide" value="kakaopay"        control={<Radio />}       label="카카오페이" aria-readonly={"true"} disabled />
             </RadioGroup>
           </Grid>
         </Grid>
