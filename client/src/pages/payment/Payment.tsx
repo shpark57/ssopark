@@ -87,31 +87,28 @@ const Payment = () => {
                 setCookie("cookieCartList" , JSON.stringify(tmpArr))
             }
 
-            axios.get( process.env.REACT_APP_SERVER_HOST_API + "/Users?user_id=allan159")
-                .then(res=>{
-                    const param = {
-                        "key" :  process.env.REACT_APP_SMS_ICODE_KEY
-                        ,"tel" :  res.data[0].phone_number
-                        ,"cb" : "01090293089"
-                        ,"msg" : "주문번호:["+ ordersParm.id  +"]\n" +
-                            ordersParm.recipient_name  +" 님의 주문\n" +
-                            ordersParm.order_price.toLocaleString('ko-KR')+" 원"
-                        ,"title" : ordersParm.order_title
-                        ,"count" : "1"
-                    }
+            const param = {
+                "key" :  process.env.REACT_APP_SMS_ICODE_KEY
+                ,"tel" :  process.env.REACT_APP_BANK_PHONE
+                ,"cb" :   process.env.REACT_APP_SMS_SEND_PHONE
+                ,"msg" : "주문번호:["+ ordersParm.id  +"]\n" +
+                    ordersParm.recipient_name  +" 님의 주문\n" +
+                    ordersParm.order_price.toLocaleString('ko-KR')+" 원"
+                ,"title" : ordersParm.order_title
+                ,"count" : "1"
+            }
 
-                    axios.post(process.env.REACT_APP_SERVER_HOST_API + "/sendsms"  , param)
-                        .then(res=>{
-                            // @ts-ignore
-                            if(!alert("주문에 성공했습니다.")) {
-                                navigate("/orderView" , {state : {
-                                        order :  a3.data[0]
-                                    }})
-                            }
-                        })
-                        .catch(res=>{
-                            console.log("문자발송 실패")
-                        })
+            axios.post(process.env.REACT_APP_SERVER_HOST_API + "/sendsms"  , param)
+                .then(res=>{
+                    // @ts-ignore
+                    if(!alert("주문에 성공했습니다.")) {
+                        navigate("/orderView" , {state : {
+                                order :  a3.data[0]
+                            }})
+                    }
+                })
+                .catch(res=>{
+                    console.log("문자발송 실패")
                 })
 
         }else{

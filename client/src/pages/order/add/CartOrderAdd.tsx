@@ -299,35 +299,62 @@ const CartOrderAdd = () => {
         setCookie("cookieCartList" , JSON.stringify(tmpArr))
       }
 
-      axios.get( process.env.REACT_APP_SERVER_HOST_API + "/Users?user_id=allan159")
-          .then(res=>{
-            const param = {
-              "key" :  process.env.REACT_APP_SMS_ICODE_KEY
-              ,"tel" :  res.data[0].phone_number
-              ,"cb" : "01090293089"
-              ,"msg" : "주문번호:["+ ordersParm.id  +"]\n" +
-                  ordersParm.recipient_name  +" 님의 주문\n" +
-                  ordersParm.order_price.toLocaleString('ko-KR')+" 원"
-              ,"title" : ordersParm.order_title
-              ,"count" : "1"
-            }
+        const param = {
+          "key" :  process.env.REACT_APP_SMS_ICODE_KEY
+          ,"tel":  process.env.REACT_APP_BANK_PHONE
+          ,"cb" :  process.env.REACT_APP_SMS_SEND_PHONE
+          ,"msg" : "주문번호:["+ ordersParm.id  +"]\n" +
+              ordersParm.recipient_name  +" 님의 주문\n" +
+              ordersParm.order_price.toLocaleString('ko-KR')+" 원"
+          ,"title" : ordersParm.order_title
+          ,"count" : "1"
+        }
 
-            axios.post(process.env.REACT_APP_SERVER_HOST_API + "/sendsms"  , param)
-                .then(res=>{
+        axios.post(process.env.REACT_APP_SERVER_HOST_API + "/sendsms"  , param)
+            .then(res=>{
 
-                  // @ts-ignore
-                  if(!alert("주문에 성공했습니다.")) {
-                    navigate("/orderView" , {state : {
-                        order :  a3.data[0]
-                      }})
-                  }
-                })
-                .catch(res=>{
-                  console.log("문자발송 실패")
-                })
-          })
+              if(loggedIn){
+                // @ts-ignore
+                if(!alert("주문에 성공했습니다.")) {
+                  navigate("/orderView" , {state : {
+                      order :  a3.data[0]
+                    }})
+                }
+              }else{
+                const param2 = {
+                  "key"  :  process.env.REACT_APP_SMS_ICODE_KEY
+                  ,"tel" :  phone_number
+                  ,"cb"  :  process.env.REACT_APP_SMS_SEND_PHONE
+                  ,"msg" : "[승현네] \n"+
+                      ordersParm.order_title + "\n" +
+                      "주문번호:"+ ordersParm.id  + "\n" +
+                      "계좌번호 : " +process.env.REACT_APP_ACCOUNT_NUMBER  + "\n" +
+                      "은행 : " + process.env.REACT_APP_BANK   + "\n" +
+                      "예금주 : " + process.env.REACT_APP_BANK_USER  + "\n" +
+                      "연락처 : " + String(process.env.REACT_APP_BANK_PHONE).replace(/(^02.{0}|^01.{1}|[0-9]{3})([0-9]+)([0-9]{4})/,"$1-$2-$3")
+                  ,"title" : ordersParm.order_title
+                  ,"count" : "1"
+                }
 
+                axios.post(process.env.REACT_APP_SERVER_HOST_API + "/sendsms"  , param)
+                    .then(res=>{
 
+                      // @ts-ignore
+                      if(!alert("주문에 성공했습니다.")) {
+                        navigate("/orderView" , {state : {
+                            order :  a3.data[0]
+                          }})
+                      }
+                    })
+                    .catch(res=>{
+                      console.log("문자발송 실패")
+                    })
+
+              }
+            })
+            .catch(res=>{
+              console.log("문자발송 실패")
+            })
     /*
       axios.patch(process.env.REACT_APP_SERVER_HOST_API + '/Orders/'+ordNo ,{ 'order_state' : '결제완료'})
           .then(res=>{
