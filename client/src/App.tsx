@@ -74,7 +74,6 @@ function App() {
                     <Route path="/termsOfUse" element={<TermsOfUse type={"?"}/>}/>
                   </Routes>
                 </div>
-                <Footer />
               </Router>
         </CartProvider>
     </LoginProvider>
