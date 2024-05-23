@@ -331,12 +331,13 @@ const CartOrderAdd = () => {
                       "계좌번호 : " +process.env.REACT_APP_ACCOUNT_NUMBER  + "\n" +
                       "은행 : " + process.env.REACT_APP_BANK   + "\n" +
                       "예금주 : " + process.env.REACT_APP_BANK_USER  + "\n" +
-                      "연락처 : " + String(process.env.REACT_APP_BANK_PHONE).replace(/(^02.{0}|^01.{1}|[0-9]{3})([0-9]+)([0-9]{4})/,"$1-$2-$3")
+                      "연락처 : " + String(process.env.REACT_APP_BANK_PHONE).replace(/(^02.{0}|^01.{1}|[0-9]{3})([0-9]+)([0-9]{4})/,"$1-$2-$3")+ "\n" +
+                      "가격  : " +  ordersParm.order_price.toLocaleString('ko-KR')+" 원"
                   ,"title" : ordersParm.order_title
                   ,"count" : "1"
                 }
 
-                axios.post(process.env.REACT_APP_SERVER_HOST_API + "/sendsms"  , param)
+                axios.post(process.env.REACT_APP_SERVER_HOST_API + "/sendsms"  , param2)
                     .then(res=>{
 
                       // @ts-ignore
