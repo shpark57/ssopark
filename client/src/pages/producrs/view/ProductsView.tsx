@@ -33,10 +33,12 @@ import UserModify from "../../user/modify/UserModify";
 import OrderAdd from "src/pages/order/add/OrderAdd";
 import {getCookie, setCookie} from "../../../types/cookie";
 import {width} from "@mui/system";
+import {CartContext} from "../../../contexts/carts/cartsProv";
 
 const ProductsView = () =>{
 
 
+    const {ckCarts,ckAddInfo,setCkCartsSession,removeSessionCarts} = useContext(CartContext);
     const {id} = useParams();
     const { loggedIn , user } = useContext(LoginContext);
     const { showModal } = useModal();
@@ -184,7 +186,7 @@ const ProductsView = () =>{
                 id : 0
             }
             // 2. 객체
-            let cookieCartList =   getCookie("cookieCartList")
+            let cookieCartList =   JSON.parse(ckCarts)
             let cartList
             if(cookieCartList){
                 cartList = cookieCartList
@@ -199,7 +201,8 @@ const ProductsView = () =>{
             }else{
                 cartList = [params]
             }
-            setCookie("cookieCartList" , JSON.stringify(cartList))
+
+            setCkCartsSession(JSON.stringify(cartList) , JSON.stringify([]))
 
             showModal({
                 modalType: "AlertModal",

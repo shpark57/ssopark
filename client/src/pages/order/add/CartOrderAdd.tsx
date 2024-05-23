@@ -296,7 +296,7 @@ const CartOrderAdd = () => {
             tmpArr.push(cart)
           }
         })
-        setCookie("cookieCartList" , JSON.stringify(tmpArr))
+        setCkCartsSession(JSON.stringify(tmpArr) , JSON.stringify([]))
       }
 
         const param = {
