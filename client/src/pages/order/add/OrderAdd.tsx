@@ -319,7 +319,7 @@ const OrderAdd = () => {
                   tmpArr.push(cart)
                 }
               })
-              setCookie("cookieCartList" , JSON.stringify(tmpArr))
+              setCkCartsSession(JSON.stringify(tmpArr) , JSON.stringify([]))
             }
               const param = {
                 "key"  :  process.env.REACT_APP_SMS_ICODE_KEY

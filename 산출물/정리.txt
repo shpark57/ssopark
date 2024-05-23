@@ -9,11 +9,11 @@ git clone https://github.com/shpark57/ssopark.git
 도커 폴더 접근
 sudo chmod 666 /var/run/docker.sock
 
-docker exec -t -i farm-client-1 /bin/bash
+sudo docker exec -t -i farm-client-1 /bin/bash
 
-docker exec -u 0 -it farm-server-1 sh
+sudo docker exec -u 0 -it farm-server-1 sh
 
-docker logs --tail 50 -f 675841a2095c
+sudo docker logs --tail 50 -f 675841a2095c
 
 git remote add origin https://github.com/shpark57/ssopark.git
 
