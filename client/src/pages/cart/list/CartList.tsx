@@ -24,6 +24,7 @@ import Session from 'react-session-api';
 import OrderAdd from "../../order/add/OrderAdd";
 import CartOrderAdd from "src/pages/order/add/CartOrderAdd";
 import {getCookie, removeCookie, setCookie} from "../../../types/cookie";
+import {CartContext} from "../../../contexts/carts/cartsProv";
 
 export default function CartList(){
     const { showModal } = useModal();
@@ -31,6 +32,8 @@ export default function CartList(){
     const [tableData , setTableData] = useState<CartProps[]>([])
     const [selectIds , setSelectIds] = useState<GridSelectionModel>([])
     const [totalPrice , setTotalPrice] = useState(0)
+
+    const {ckCarts,ckAddInfo,setCkCartsSession,removeSessionCarts} = useContext(CartContext);
 
     const [selectChk , setSelectChk]= useState(0)
     useEffect(() => {
@@ -41,8 +44,7 @@ export default function CartList(){
     },[selectIds ,tableData])
 
     const ontSelect = () => {
-
-        let cookieCartList =   getCookie("cookieCartList")
+        let cookieCartList =   JSON.parse(ckCarts)
         if(loggedIn){
             axios.get( process.env.REACT_APP_SERVER_HOST_API + '/cart' , {params : {user_id: user.id , _rel : 'product' }})
                 .then(res =>  {
@@ -69,7 +71,7 @@ export default function CartList(){
                             }
                         })
                         setTableData(res.data)
-                        removeCookie("cookieCartList")
+                        removeSessionCarts()
                     }else{
                         setTableData(res.data)
                     }
@@ -103,7 +105,7 @@ export default function CartList(){
             axios.post( process.env.REACT_APP_SERVER_HOST_API + "/Cart", updatedItems[  Number(event.target.name) ])
                 .catch((error) =>  {console.log("장바구니 수정 오류")});
         }else{
-            let cookieCartList =   getCookie("cookieCartList")
+            let cookieCartList =   JSON.parse(ckCarts)
             if(cookieCartList){
                 let cartList = JSON.parse(cookieCartList)
                 var findIndex = cartList.findIndex((obj:any, index:number) => obj['product_id'] === updatedItems[ Number(event.target.name)].product_id )
@@ -111,7 +113,7 @@ export default function CartList(){
                     cartList[findIndex].cnt = cartList[findIndex].cnt + 1
                 }
 
-                setCookie("cookieCartList" , JSON.stringify(cartList))
+                setCkCartsSession(JSON.stringify(cartList) , JSON.stringify([]))
             }
         }
 
@@ -127,14 +129,14 @@ export default function CartList(){
             axios.post( process.env.REACT_APP_SERVER_HOST_API + "/Cart", updatedItems[  Number( row.id) ])
                 .catch((error) =>  {console.log("장바구니 수정 오류")});
         }else{
-            let cookieCartList =   getCookie("cookieCartList")
+            let cookieCartList =   JSON.parse(ckCarts)
             if(cookieCartList){
                 let cartList = cookieCartList
                 var findIndex = cartList.findIndex((obj:any, index:number) => obj['product_id'] === updatedItems[Number( row.id)].product_id )
                 if(findIndex != -1){
                     cartList[findIndex].cnt = cartList[findIndex].cnt + 1
                 }
-                setCookie("cookieCartList" , JSON.stringify(cartList))
+                setCkCartsSession(JSON.stringify(cartList) , JSON.stringify([]))
             }
         }
     }
@@ -162,12 +164,12 @@ export default function CartList(){
                         axios.delete( process.env.REACT_APP_SERVER_HOST_API + "/Cart?product_id="+row.product_id +"&user_id="+user.id )
                             .catch( (error) => { alert("장바구니 삭제 오류") });
                     }else{
-                        let cookieCartList =   getCookie("cookieCartList")
+                        let cookieCartList =   JSON.parse(ckCarts)
                         if(cookieCartList){
                             let cartList = cookieCartList
                             let tmpArr = updatedItems.filter((obj:CartProps , index:number) => obj['product_id'] !== updatedItems[Number( row.id)].product_id )
 
-                            setCookie("cookieCartList",JSON.stringify(tmpArr))
+                            setCkCartsSession(JSON.stringify(tmpArr) , JSON.stringify([]))
                         }
                     }
                 },
