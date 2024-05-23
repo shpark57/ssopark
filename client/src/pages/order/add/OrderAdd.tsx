@@ -309,18 +309,8 @@ const OrderAdd = () => {
               details.forEach((detail:OrdersDetailParm) =>{
                 axios.delete( process.env.REACT_APP_SERVER_HOST_API + "/Cart?product_id="+detail.product_id +"&user_id="+user.id ).catch(e => console.log(e))
               })
-            }else{
-              let cookieCartList =   JSON.parse(ckCarts)
-              let tmpArr:CartProps[] = []
-
-              cookieCartList.forEach((cart: CartProps) =>{
-                let index = details.findIndex((detail:OrdersDetailParm) => detail.product_id  === cart.product.id)
-                if(index === -1 ){
-                  tmpArr.push(cart)
-                }
-              })
-              setCkCartsSession(JSON.stringify(tmpArr) , JSON.stringify([]))
             }
+
               const param = {
                 "key"  :  process.env.REACT_APP_SMS_ICODE_KEY
                 ,"tel" :  process.env.REACT_APP_BANK_PHONE

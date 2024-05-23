@@ -10,8 +10,8 @@ import {CartProps} from "../../pages/cart/props/CartProps";
 
 
 const CartContext = createContext({//로그인 시 공유할 유저 정보
-    ckCarts : '',
-    ckAddInfo :'' ,
+    ckCarts : '[]',
+    ckAddInfo :'{}' ,
     setCkCartsSession: (carts:string , addInfo : string) => {},
     removeSessionCarts: () => {}
 
