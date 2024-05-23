@@ -195,17 +195,23 @@ const OrderView = () =>{
                 <Grid item xs={12} sm = {12} sx={{ mb: -4}}>
                     <h4>결제 정보</h4>
                 </Grid>
-                <Grid item xs={4} sm = {1} >
+                <Grid item xs={4} sm = {2} >
                     은행 :
                 </Grid>
-                <Grid item xs={8} sm = {2} >
+                <Grid item xs={8} sm = {4} >
                     {process.env.REACT_APP_BANK}
                 </Grid>
-                <Grid item xs={4} sm = {1} >
-                    이름 :
+                <Grid item xs={4} sm = {2} >
+                    예금주 :
                 </Grid>
-                <Grid item xs={8} sm = {2} >
+                <Grid item xs={8} sm = {4} >
                     {process.env.REACT_APP_BANK_USER}
+                </Grid>
+                <Grid item xs={4} sm = {2} >
+                    연락처 :
+                </Grid>
+                <Grid item xs={8} sm = {4}>
+                    {String(process.env.REACT_APP_BANK_PHONE).replace(/(^02.{0}|^01.{1}|[0-9]{3})([0-9]+)([0-9]{4})/,"$1-$2-$3") }
                 </Grid>
                 <Grid item xs={4} sm = {2} >
                     계좌 번호 :
